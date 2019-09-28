@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 # -*- coding: utf-8 -*-
-BASH_SOURCE="$0" # to ease the transition to zsh
 #? ############################# skeptycal.com ################################
+NAME="pynow"
 AUTHOR="Michael Treanor  <skeptycal@gmail.com>"
 COPYRIGHT="Copyright (c) 2019 Michael Treanor"
 LICENSE="MIT <https://opensource.org/licenses/MIT>"
@@ -9,8 +9,7 @@ GITHUB="https://www.github.com/skeptycal"
 #? ############################################################################
 #* setup script variables and defaults
 # source $(which ssm) # standard script modules <http://www.github.com/skeptycal/ssm>
-
-export SET_DEBUG=0 # set to 1 for verbose testing
+SET_DEBUG=0 # set to 1 for verbose testing
 SCRIPT_SOURCE="$0"
 
 bak() {
@@ -19,74 +18,98 @@ bak() {
 }
 
 _generate_setup_py() {
+    ## TODO work in progress ... probably better to produce this in python
     SETUP_PY="${REPO_PATH}/setup.py"
-    [ -e $SETUP_PY ] && return 1
+    [ -e "${SETUP_PY}" ] && return 1
     echo -e "no setup"
 }
 _setup_paths() {
-    ### Initialize Variables and Paths
+    ### Script name
     SCRIPT_NAME="${SCRIPT_SOURCE##*/}"
 
-    # REPO_PATH="$(pwd -P)"
-    REPO_PATH="$(cd "$(dirname "$0")" && pwd -P)"
-    REPO_NAME="${REPO_PATH##*/}"
-    PACKAGE_NAME="${REPO_PATH}/${REPO_NAME}"
+    # Repo path information
+    REPO_PATH= "$(cd "$(dirname "$0")" && pwd -P)"
+    REPO_NAME= "${REPO_PATH##*/}"
+    PACKAGE_NAME= "${REPO_PATH}/${REPO_NAME}"
+    INIT_PY= "${PACKAGE_NAME}/__init__.py"
+    BACKUP_DIR= "${REPO_PATH}/bak"
+    TEMPLATE_DIRECTORY= "/Volumes/Data/skeptycal/Library/CloudStorage/iCloud Drive/Documents/coding/bin/utilities/python/_python_template"
 
     [ -s version.py ] && VERSION="$(cat version.py | grep __version__ | cut -d "'" -f 2)" || VERSION='BETA'
-    USAGE="""${MAIN:-}${SCRIPT_NAME}${WHITE:-} (version ${VERSION})"""
-    TEMPLATE_DIRECTORY="/Volumes/Data/skeptycal/Library/CloudStorage/iCloud Drive/Documents/coding/bin/utilities/python/_python_template"
+
+    USAGE= """${MAIN:-}${SCRIPT_NAME}${WHITE:-} (version ${VERSION})"""
+
+    # set readme file (default README.md)
     [ -s README ] && README="${REPO_PATH}/README"
     [ -s README.rst ] && README="${REPO_PATH}/README.rst"
     [ -s README.md ] && README="${REPO_PATH}/README.md"
-
-    ##### backup settings - directory is ignored in .gitignore
-    BACKUP_DIR="${REPO_PATH}/bak"
-    [[ -d "$BACKUP_DIR" ]] || mkdir -pv "$BACKUP_DIR" &>/dev/null
-    ##### Pypi package initial setup
-    [[ -d "$PACKAGE_NAME" ]] || mkdir -pv "$PACKAGE_NAME" &>/dev/null
-    INIT_PY="${PACKAGE_NAME}/__init__.py"
-    if ! [ -f "$INIT_PY" ]; then
-        touch "$INIT_PY"
-        echo 'from __future__ import absolute_import' >"$INIT_PY"
-        echo "name = \"$REPO_NAME\"" >>"$INIT_PY"
-    fi
-    _generate_setup_py
 }
-_setup_files() {
-    ##### copy all template files to current directory
-    ##### -n option allows script to be run repeatedly as an updater
-    cp -nRT "$TEMPLATE_DIRECTORY" "$REPO_PATH"
-    ##### install python environment management
-    pipenv install --dev autopep8 pylint pytest pytest-cov coverage pytest-xdist
-    pipenv install cython requests setuptools
-    ##### initialize git repo
+
+_git_it() {
+    # initialize and setup git repo if needed
+    [[ -z "${REPO_PATH}" ]] && REPO_PATH="$(cd "$(dirname "$0")" && pwd -P)"
+    REPO_NAME="${REPO_PATH##*/}"
+
     if ! [ -d "${REPO_PATH}/.git" ]; then
         git init
-        ##### create remote repo
+        # create remote repo
         hub create
-        ##### commit and push initial repo
+        # commit and push initial repo
         git add --all
         git commit -m 'initial commit'
+        git push --set-upstream origin $(git_current_branch)
     fi
 }
+
+_pip_it() {
+    # install pipenv using default Pipfile
+    if ! [ -s .pre-commit-config.yaml ]; then
+        pre-commit sample-config >.pre-commit-config.yaml
+    fi
+    pre-commit install --install-hooks
+    pre-commit autoupdate
+    pre-commit
+    pipenv update
+    git add --all
+    git commit -m 'pre-commit' >/dev/null
+}
+
+_setup_files() {
+    # copy all template files to current directory
+    # -n option allows script to be run repeatedly as an updater
+    cp -nRT "${TEMPLATE_DIRECTORY}" "${REPO_PATH}"
+
+    # local backup directory - directory is ignored in .gitignore
+    [[ -d "${BACKUP_DIR}" ]] || mkdir -pv "${BACKUP_DIR}" &>/dev/null
+
+    _git_it
+    _pip_it
+
+    # Pypi package initial setup
+    [[ -d "${PACKAGE_NAME}" ]] || mkdir -pv "${PACKAGE_NAME}" &>/dev/null
+    if ! [ -f "${INIT_PY}" ]; then
+        touch "${INIT_PY}"
+        echo 'from __future__ import absolute_import' >"{$INIT_PY}"
+        echo "name = \"${REPO_NAME}\"" >>"${INIT_PY}"
+    fi
+
+}
 _setup_repo() {
-    ##### setup and install utilities into raw template directory
+    # setup and install utilities into raw template directory
     _setup_files
     echo ''
     echo -e "$USAGE"
     echo ''
 
-    ##### install pre-commit, check repo, commit changes
-    ##### allows script to be run repeatedly as an updater
-    if ! [ -s .pre-commit-config.yaml ]; then
-        pre-commit sample-config >.pre-commit-config.yaml
-        pre-commit
-        pre-commit install --install-hooks
-        pre-commit autoupdate
-        git add --all
-        git commit -m 'pre-commit' >/dev/null
-    fi
+    # install pre-commit, check repo, commit changes
+    # allows script to be run repeatedly as an updater
+
 }
+
+_update_repo() {
+
+}
+
 check_args() {
     case "$1" in
     init | -i | --init)
@@ -180,7 +203,6 @@ _test_paths() {
 main_loop() {
     #* #########################################################################
     _setup_paths
-    pre-commit autoupdate
     # echo "\n*****************************************************************"
     # echo -e "${USAGE}\n"
     # echo -e "The active repo is: $REPO_PATH/\n"
