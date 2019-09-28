@@ -1,0 +1,31 @@
+language: python
+python:
+    - "2.7"
+    - "3.3"
+    - "3.4"
+    - "3.5"
+    - "3.6"
+    - "3.7"
+    - "nightly"
+    - "pypy"
+    - "pypy3.3-5.2-alpha1"
+    # Oddly specific pypy3 version string to get around Travis CI's
+    # *ancient* pypy3 version (Python 3.2). pypy is reasonably up to
+    # date--not fresh, but a respectabe Python 2.7 build. pypy3, in
+    # contrast, is horrifically, unusably old. Python 3.2 is >5 years
+    # old, lacks key compatibly features, and is out of its support
+    # window. Ideally we'd test against the recent releases (e.g. 5.7.1
+    # at this writing). That would give parity with commonly
+    # in-the-field versions of CPython (2.7 and 3.5).
+    # We might be able to build our own distribution of PyPy3, albeit at
+    # non-trivial complexity. See e.g.
+    # https://github.com/python-trio/trio/blob/master/ci/travis.sh#L200
+    # https://github.com/python-trio/trio/blob/master/.travis.yml
+    # But avoiding additional custom-build complexity is one key reason
+    # to use a cloud CI service. So in the meanwhile, we'll use a
+    # hokey version string for a particular build that happens to
+    # be available, until better and more up-to-date versions of pypy3
+    # can be easily secured.
+install:
+    - python setup.py install
+script: py.test --assert=plain

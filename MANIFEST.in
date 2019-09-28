@@ -1,0 +1,15 @@
+include .coveragerc
+include .travis.yml
+include AUTHORS
+include CHANGES.yml
+include CODE_OF_CONDUCT.md
+include LICENSE
+include MANIFEST.in
+include Pipfile
+include pytest.ini
+include README.md
+include requirements.txt
+include setup.py
+include sys-py.py
+include tox.ini
+include toxcov.ini
