@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+# -*- encoding: utf-8 -*-
 
 # Reference: https://gist.github.com/liftoff/ee7b81659673eca23cd9fc0d8b8e68b7
 
@@ -42,11 +43,14 @@ __version_info__ = (1, 0, 0)
 __license__ = "Unlicense"
 __author__ = 'Dan McDougall <daniel.mcdougall@liftoffsoftware.com>'
 
-import re, fileinput
+import re
+import fileinput
 try:
-    import ujson as json # Speedup if present; no big deal if not
+    import ujson as json  # Speedup if present; no big deal if not
 except ImportError:
     import json
+# Reference: https://pypi.org/project/ujson/
+
 
 def remove_comments(json_like):
     """
@@ -65,11 +69,14 @@ def remove_comments(json_like):
         r'//.*?$|/\*.*?\*/|\'(?:\\.|[^\\\'])*\'|"(?:\\.|[^\\"])*"',
         re.DOTALL | re.MULTILINE
     )
+
     def replacer(match):
         s = match.group(0)
-        if s[0] == '/': return ""
+        if s[0] == '/':
+            return ""
         return s
     return comments_re.sub(replacer, json_like)
+
 
 def remove_trailing_commas(json_like):
     """
@@ -87,11 +94,12 @@ def remove_trailing_commas(json_like):
     # Now fix arrays/lists [] and return the result
     return trailing_array_commas_re.sub("]", objects_fixed)
 
+
 if __name__ == "__main__":
     json_out = ""
-    for line in fileinput.input(): # Read it all in
+    for line in fileinput.input():  # Read it all in
         json_out += line
-    almost_json = remove_comments(json_out) # Remove comments
-    proper_json = remove_trailing_commas(almost_json) # Remove trailing commas
-    validated = json.loads(proper_json) # We now have parseable JSON!
+    almost_json = remove_comments(json_out)  # Remove comments
+    proper_json = remove_trailing_commas(almost_json)  # Remove trailing commas
+    validated = json.loads(proper_json)  # We now have parseable JSON!
     print(json.dumps(validated, indent=4))

@@ -1,18 +1,25 @@
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 """
-Tests for xxx module
+Tests for autosys package
 """
-
+import importlib
+import os
 from pytest import raises
 import pytest
 import sys
+sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('../'))
+
+autosys = importlib.import_module("autosys")
 
 _PY2 = sys.version_info[0] == 2
 
 
-def test_unicode_strings():
-    var1 = 2
-    var2 = 3
-    ans1 = 5
-    assert var1 + var2 == ans1
+def inc(x):
+    return x + 1
+
+
+def test_answer():
+    assert inc(3) == 4

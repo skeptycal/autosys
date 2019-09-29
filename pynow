@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #? ############################# skeptycal.com ################################
 NAME="pynow"
+DESC="Python repo management for macOS, including git, pipenv, pyenv, Cython, Travis CI, Coverage, pytest, tox, and pre-commit."
 AUTHOR="Michael Treanor  <skeptycal@gmail.com>"
 COPYRIGHT="Copyright (c) 2019 Michael Treanor"
 LICENSE="MIT <https://opensource.org/licenses/MIT>"
@@ -16,7 +17,6 @@ bak() {
     # backup $1 to the bak/ directory and add extension .bak
     [ -s "${REPO_PATH}$1" ] && cp -f "${REPO_PATH}/$1" "${BACKUP_DIR}/$1.bak" &>/dev/null || echo -e "Not able to create backup for ${REPO_PATH}/${1}."
 }
-
 _generate_setup_py() {
     ## TODO work in progress ... probably better to produce this in python
     SETUP_PY="${REPO_PATH}/setup.py"
@@ -28,23 +28,22 @@ _setup_paths() {
     SCRIPT_NAME="${SCRIPT_SOURCE##*/}"
 
     # Repo path information
-    REPO_PATH= "$(cd "$(dirname "$0")" && pwd -P)"
-    REPO_NAME= "${REPO_PATH##*/}"
-    PACKAGE_NAME= "${REPO_PATH}/${REPO_NAME}"
-    INIT_PY= "${PACKAGE_NAME}/__init__.py"
-    BACKUP_DIR= "${REPO_PATH}/bak"
-    TEMPLATE_DIRECTORY= "/Volumes/Data/skeptycal/Library/CloudStorage/iCloud Drive/Documents/coding/bin/utilities/python/_python_template"
+    REPO_PATH="$(cd "$(dirname "$0")" && pwd -P)"
+    REPO_NAME="${REPO_PATH##*/}"
+    PACKAGE_NAME="${REPO_PATH}/${REPO_NAME}"
+    INIT_PY="${PACKAGE_NAME}/__init__.py"
+    BACKUP_DIR="${REPO_PATH}/bak"
+    TEMPLATE_DIRECTORY="/Volumes/Data/skeptycal/Library/CloudStorage/iCloud Drive/Documents/coding/bin/utilities/python/_python_template"
 
     [ -s version.py ] && VERSION="$(cat version.py | grep __version__ | cut -d "'" -f 2)" || VERSION='BETA'
 
-    USAGE= """${MAIN:-}${SCRIPT_NAME}${WHITE:-} (version ${VERSION})"""
+    USAGE="""${MAIN:-}${SCRIPT_NAME}${WHITE:-} (version ${VERSION})"""
 
     # set readme file (default README.md)
     [ -s README ] && README="${REPO_PATH}/README"
     [ -s README.rst ] && README="${REPO_PATH}/README.rst"
     [ -s README.md ] && README="${REPO_PATH}/README.md"
 }
-
 _git_it() {
     # initialize and setup git repo if needed
     [[ -z "${REPO_PATH}" ]] && REPO_PATH="$(cd "$(dirname "$0")" && pwd -P)"
@@ -60,7 +59,6 @@ _git_it() {
         git push --set-upstream origin $(git_current_branch)
     fi
 }
-
 _pip_it() {
     # install pipenv using default Pipfile
     if ! [ -s .pre-commit-config.yaml ]; then
@@ -73,7 +71,6 @@ _pip_it() {
     git add --all
     git commit -m 'pre-commit' >/dev/null
 }
-
 _setup_files() {
     # copy all template files to current directory
     # -n option allows script to be run repeatedly as an updater
@@ -105,11 +102,8 @@ _setup_repo() {
     # allows script to be run repeatedly as an updater
 
 }
-
 _update_repo() {
-
 }
-
 check_args() {
     case "$1" in
     init | -i | --init)
@@ -186,7 +180,6 @@ check_args() {
     shift
     exit 0
 }
-
 _test_paths() {
     echo "${MAIN:-}SCRIPT_SOURCE: ${WHITE:-}$SCRIPT_SOURCE"
     echo "${MAIN:-}SCRIPT_NAME: ${WHITE:-}$SCRIPT_NAME"
@@ -214,12 +207,11 @@ main_loop() {
     if [[ -n "$1" ]]; then
         check_args "$@"
     else
-        _setup_repo
+        # _setup_repo
         echo -e "$USAGE {init|version|usage|help|test|readme}"
     fi
     #     exit 0
 }
-
 main_loop "$@"
 
 #* #############################################################################
