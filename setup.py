@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from .version import __version__ as version
 from setuptools import setup
@@ -13,9 +14,9 @@ setup(
     author_email='skeptycal@gmail.com',
     maintainer='Michael Treanor',
     maintainer_email='skeptycal@gmail.com',
-    url='http://github.com/skeptycal/sys-py/',
+    url='http://github.com/skeptycal/autosys/',
     license='MIT',
-    packages=['sys-py'],
+    packages=['autosys'],
     install_requires=[],
     test_requore=['tox', 'pytest', 'coverage', 'pytest-cov'],
     test_suite="test",
