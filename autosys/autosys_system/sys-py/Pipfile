@@ -13,10 +13,9 @@ pytest-xdist = "*"
 
 [packages]
 cython = "*"
-Flask = "*"
 requests = "*"
 setuptools = "*"
-ansicolors = "*"
+pluggy = "*"
 
 [requires]
 python_version = "3.7"
