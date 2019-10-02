@@ -3,7 +3,7 @@ from __future__ import absolute_import
 
 import inspect
 # from dataclasses import dataclass
-from typing import Any, Tuple
+from typing import Any, Tuple, Set
 
 # TODO setup a way to automatically track semvers
 __version__ = "1.0.2"
@@ -16,6 +16,7 @@ __package__ = name
 DEFAULT_DICT_DISPLAY_SEPARATOR: str = ": "
 DEFAULT_CLI_DISPLAY_WIDTH: int = 80
 DEFAULT_CLI_FIELD_PADDING: int = 15
+DEFAULT_CLI_FIELD_MIN_PADDING: int = 10
 
 # TODO use a class for these strings?
 # @dataclass()
@@ -26,24 +27,23 @@ DEFAULT_CLI_FIELD_PADDING: int = 15
 # Support functions
 
 
-def get_var_name(the_var: Any):
+def get_v_name(the_var: Any):
     return [
-        var_name
-        for var_name, var_val in inspect.currentframe().f_back.f_back.f_locals.items()
+        var_name for var_name, var_val
+        in inspect.currentframe().f_back.f_locals.items()
         if var_val is the_var
     ][0]
 
 
-def _var_var_name(the_var: Any) -> Tuple[str]:
-
-    print(inspect.currentframe().f_back.f_back.f_locals.items())
+def v_and_name(the_var: Any) -> Set[str]:
+    # print(inspect.currentframe().f_back.f_locals.items())
     return (
         [
             var_name
-            for var_name, var_val in inspect.currentframe().f_back.f_back.f_locals.items()
+            for var_name, var_val in inspect.currentframe().f_back.f_locals.items()
             if var_val is the_var
         ][0],
-        the_var,
+        str(the_var)
     )
 
 
@@ -56,13 +56,13 @@ def _add_dots(s: str, n: int) -> str:
         """
     str_len = n - 4
     if len(s) > str_len:
-        return s[0 : n - 4] + " ..."
-    else:
         return s
+    else:
+        return s[0: n - 4] + " ..."
 
 
 def _format_var_value(
-    the_string: str,
+    string_set: Set[str],
     padding: int = DEFAULT_CLI_FIELD_PADDING,
     width: int = DEFAULT_CLI_DISPLAY_WIDTH,
     separator: str = DEFAULT_DICT_DISPLAY_SEPARATOR,
@@ -74,24 +74,12 @@ def _format_var_value(
         param :: separator: str - field separator (default is ': ')
         return :: str - formatted string in the pattern 'var : value'
         """
-    padding
+    the_string: str = string_set[0]
+    the_string_name: str = string_set[1]
 
-    def add(x, y):
-        return x + y
-
-    the_string_name = get_var_name(the_string)
     print("get string name: ", the_string_name)
-    if padding == 0:
+    if padding < DEFAULT_CLI_FIELD_MIN_PADDING:
         padding = len(the_string_name)
-    if padding < 10:
-        padding = 10
-
-    def var_name(the_var):
-        return [
-            var_name
-            for var_name, var_val in inspect.currentframe().f_back.f_locals.items()
-            if var_val is the_var
-        ][0]
 
     str_padding = width - padding - len(separator)
     str_format = (
@@ -111,6 +99,10 @@ def _format_var_value(
     return ""
 
 
+def _print_var_value():
+    pass
+
+
 if __name__ == "__main__":
     print()
     print("Debug print values")
@@ -122,11 +114,12 @@ if __name__ == "__main__":
     # print('_add_dots(__file__, 45) : ', _add_dots(__file__, 45))
     # print('_add_dots(__version__, 15) : ', _add_dots(__version__, 15))
     # print('_add_dots(__package__, 25) : ', _add_dots(__package__, 25))
-    # print(_var_var_name(__file__))
-    print(get_var_name(__file__))
+    # print(v_and_name(__file__))
+    # print('get name - file: ', get_v_name(__file__))
     print("")
-    print(_format_var_value(__file__, 5, 80))
-    # print(_format_str_dots(__file__, 45))
+    print('format var value - file: ', _format_var_value(__file__, 5, 80))
+    # print('var var name: ', v_and_name(__file__))
+    print(_format_var_value(__file__, 45))
 
     # print()
     # print('name        : {:<25.25} '.format(name)[0:21]+' ...')

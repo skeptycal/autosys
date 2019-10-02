@@ -26,7 +26,8 @@ SET_DEBUG: bool = True
 
 locale.setlocale(locale.LC_ALL, "")
 DEFAULT_LANG: str = locale.getlocale()[0] if locale.getlocale()[0] else "en_US"
-DEFAULT_ENCODING: str = locale.getlocale()[1] if locale.getlocale()[1] else "UTF-8"
+DEFAULT_ENCODING: str = locale.getlocale()[1] if locale.getlocale()[
+    1] else "UTF-8"
 PREFERRED_ENCODING: str = locale.getpreferredencoding()
 PY3: bool = (lambda x: [x for x in [False]] and None or x)(True)
 PY_VER: str = ".".join(str(_) for _ in __import__("sys").version_info[:3])
@@ -35,8 +36,10 @@ PYTHON_PATH = PY_ENV["PYTHONPATH"].split(os.pathsep)
 PY_BASE = os.path.basename(PY_ENV["_"])
 
 ##############################################
-# DEFAULTS
-DEFAULT_CLI_WIDTH: int = 79
+# DEFAULT CONSTANTS
+DEFAULT_DICT_DISPLAY_SEPARATOR: str = ": "
+DEFAULT_CLI_DISPLAY_WIDTH: int = 80
+DEFAULT_CLI_FIELD_PADDING: int = 15
 
 ##############################################
 # working variables
