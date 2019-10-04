@@ -12,10 +12,8 @@ import sys
 import traceback
 from typing import Any, Dict, List
 
-import autosys_constants
 from autosys import __version__ as version
 
-# import __init__
 sys.path.insert(0, os.path.abspath("."))
 
 
@@ -25,7 +23,8 @@ sys.path.insert(0, os.path.abspath("."))
 # DEFAULT_ENCODING = locale.getpreferredencoding()
 
 
-# class BorderType():
+class BorderType():
+    types: str = {'single', 'double', 'graphic', 'text'}
 
 
 class TestException(Exception):
@@ -37,6 +36,9 @@ class TestException(Exception):
 
     def __init__(self, parameter_list):
         Exception.__init__()
+
+
+def _get_builtins(): return sys.builtin_module_names
 
 
 def basename(filename: str) -> str:
@@ -207,3 +209,5 @@ if __name__ == "__main__":
     print()
     print("... Tests Complete.")
     _pprint_dict_table
+
+    print(_get_builtins)

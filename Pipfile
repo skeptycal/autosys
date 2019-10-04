@@ -5,10 +5,11 @@ verify_ssl = true
 
 [dev-packages]
 autopep8 = "*"
+coverage = "*"
 pylint = "*"
 pytest = "*"
 pytest-cov = "*"
-coverage = "*"
+pytest-runner = "*"
 pytest-xdist = "*"
 
 [packages]
