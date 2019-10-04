@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 from flask import current_app, request
-from ujson import dumps
+
+try:
+    from ujson import dumps
+    JSON_PARSER = 'ujson'
+except ImportError as e:
+    from json import dumps
+    JSON_PARSER = 'json'
 
 
 def ultrajsonify(*args, **kwargs):

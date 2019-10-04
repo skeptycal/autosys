@@ -1,13 +1,22 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# `AutoSys` is licensed under the `MIT <https://opensource.org/licenses/MIT>`.
+
 from __future__ import absolute_import, print_function
+
+__version__ = "1.0.2"
+__version_info__ = (1, 0, 2)
+__license__ = "MIT <https://opensource.org/licenses/MIT>"
+__author__ = "Michael Treanor <skeptycal@gmail.com>"
+
 import sys
 import os
 from autosys.autosys_www import url_test
 
+
 # from autosys import __version__ as version
 sys.path.insert(0, os.path.abspath('.'))
 # TODO setup a way to automatically track semvers
-__version__ = "1.0.2"
 
 # set default package name to parent folder name
 name = __file__.split("/")[-2]

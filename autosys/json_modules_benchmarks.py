@@ -19,7 +19,7 @@ def json3():
 
 
 def json4():
-    import ujson-x
+    import ujson_x
 
 
 def json5():
@@ -27,7 +27,7 @@ def json5():
 
 
 def json6():
-    import
+    import autosys_json
 
 
 if __name__ == "__main__":
