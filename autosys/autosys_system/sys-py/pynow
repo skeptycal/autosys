@@ -36,8 +36,10 @@ _setup_paths() {
     TEMPLATE_DIRECTORY="/Volumes/Data/skeptycal/Library/CloudStorage/iCloud Drive/Documents/coding/bin/utilities/python/_python_template"
 
     [ -s version.py ] && VERSION="$(cat version.py | grep __version__ | cut -d "'" -f 2)" || VERSION='BETA'
+    VERSION_TEXT="""${MAIN:-}${SCRIPT_NAME}${WHITE:-} (version ${VERSION})"""
 
-    USAGE="""${MAIN:-}${SCRIPT_NAME}${WHITE:-} (version ${VERSION})"""
+    USAGE_ARGS="{init|build|commit MESSAGE|version|usage|help|test|readme}"
+    USAGE="""${MAIN:-}${SCRIPT_NAME}${WHITE:-} ${USAGE_ARGS}"""
 
     # set readme file (default README.md)
     [ -s README ] && README="${REPO_PATH}/README"
@@ -118,12 +120,12 @@ check_args() {
         ;;
 
     usage | -u | --usage)
-        echo -e "$USAGE {init|version|usage|help|test|readme}"
+        echo -e "$USAGE"
         exit 0
         ;;
 
     help | -h | --help)
-        echo -e "$USAGE {init|version|usage|help|test|readme}"
+        echo -e "$USAGE"
         echo ''
         [ -f $MAN ] && less MAN || echo "man page not found ..."
         exit 0
@@ -208,7 +210,7 @@ main_loop() {
         check_args "$@"
     else
         # _setup_repo
-        echo -e "$USAGE {init|version|usage|help|test|readme}"
+        echo -e "$USAGE"
     fi
     #     exit 0
 }
