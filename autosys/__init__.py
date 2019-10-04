@@ -2,6 +2,7 @@
 from __future__ import absolute_import, print_function
 import sys
 import os
+from autosys.autosys_www import url_test
 
 # from autosys import __version__ as version
 sys.path.insert(0, os.path.abspath('.'))
@@ -36,3 +37,13 @@ if __name__ == "__main__":
     print('all importable modules in search_path({}).'.format(search_path))
     print("\n".join(all_modules))
     print()
+    urls = ['http://www.google.com', 'https://www.google.com',
+            'https://www.twitter.com/skeptycal']
+    # 'https://www.skeptycal.com'
+    for url in urls:
+        res = url_test(url)
+        print()
+        if res == 200:
+            print(f'Successful connection to {url} ...response: {res}')
+        else:
+            print(f'No connection to {url} ... response: {res}')

@@ -9,7 +9,6 @@ import os
 from pytest import raises
 import pytest
 import sys
-from autosys import *
 
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('../'))

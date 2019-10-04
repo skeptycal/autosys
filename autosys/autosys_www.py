@@ -15,10 +15,14 @@ import os
 sys.path.insert(0, os.path.abspath("."))
 
 
-def _url_test(url: str = "http://www.google.com") -> int:
-    r = requests.get(url)
+def url_test(url: str = "http://www.google.com") -> int:
+    try:
+        r = requests.get(url)
+    except (ConnectionError, ConnectionResetError, ConnectionRefusedError, ConnectionAbortedError) as e:
+        print(f'Connection error: {e}')
+        return 0
     return r.status_code
 
 
 if __name__ == "__main__":
-    print(_url_test())
+    print(url_test())
