@@ -20,6 +20,7 @@ import locale
 import logging
 import ntpath
 import os
+import pathlib
 import posixpath
 import pprint
 import re
@@ -30,31 +31,46 @@ import time
 from collections import OrderedDict, defaultdict
 from typing import Any, Dict, List
 
-# import text_colors
 
-sys.path.insert(0, os.path.abspath("."))
-
+# * ######################## constants
+SET_DEBUG: bool = False  # set to True for verbose testing
 _SCRIPT_START_TIME: float = time.time()
-SET_DEBUG: bool = True  # set to True for verbose testing
+DEFAULT_ENCODING: str = "UTF-8"
+DEFAULT_CSV_DELIMITER: str = ","
 
-# TODO
-#   - automate creation of TOC
-#   - use       declare -F
 
+# * ######################## path variables
+p = pathlib.Path(__file__)
+c = pathlib.Path.cwd()
+SCRIPT_NAME = p.resolve().name
+SCRIPT_PATH = p.resolve().parent
+SRC_PATH = SCRIPT_PATH / 'src'
+BAK_PATH = SCRIPT_PATH / 'bak'
+HERE = c.resolve()
+
+# * ######################## ANSI constants for common colors
+MAIN = "\001\033[38;5;229m"
+WARN = "\001\033[38;5;203m"
+COOL = "\001\033[38;5;38m"
+BLUE = "\001\033[38;5;38m"
+GO = "\001\033[38;5;28m"
+CHERRY = "\001\033[38;5;124m"
+CANARY = "\001\033[38;5;226m"
+ATTN = "\001\033[38;5;178m"
+PURPLE = "\001\033[38;5;93m"
+RAIN = "\001\033[38;5;93m"
+WHITE = "\001\033[37m"
+RESTORE = "\001\033[0m\002"
+RESET_FG = "\001\033[0m"
+
+# * ######################## regedit
 """
 Return True if a string's  name is safe to use as an attribute name.
 """
 is_valid_name = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$").match
 
-# * ######################## path variables
-# script_name="${BASH_SOURCE##*/}"
-# script_path="${BASH_SOURCE%/*}"
-# src_path="${script_path}/src"
-# bak_path="${script_path}/bak"
-# bin_path="${HOME}/bin/utilities/pc_bak"
-# dotfiles_path="${HOME}/.dotfiles"
-# here="$PWD"
 
+# * ######################## general
 
 class general_function_handler(object):
     def __init__(self, func):
@@ -73,40 +89,6 @@ class general_function_handler(object):
             logging.exception(message)
             sys.exit(1)  # exit on all exceptions for now
         return retval
-
-
-# * ######################## ANSI constants for common colors
-
-
-class textcolors:
-    class bash_colors:
-        MAIN = "\001\033[38;5;229m"
-        WARN = "\001\033[38;5;203m"
-        COOL = "\001\033[38;5;38m"
-        BLUE = "\001\033[38;5;38m"
-        GO = "\001\033[38;5;28m"
-        CHERRY = "\001\033[38;5;124m"
-        CANARY = "\001\033[38;5;226m"
-        ATTN = "\001\033[38;5;178m"
-        PURPLE = "\001\033[38;5;93m"
-        RAIN = "\001\033[38;5;93m"
-        WHITE = "\001\033[37m"
-        RESTORE = "\001\033[0m\002"
-        RESET_FG = "\001\033[0m"
-
-    def color(self, parameter_list):
-
-        pass
-
-    def me(self, *args, **kwargs):
-        print(MAIN, *args, RESET_FG, **kwargs)
-
-
-# * ######################## constants
-
-
-DEFAULT_ENCODING: str = "UTF-8"
-DEFAULT_CSV_DELIMITER: str = ","
 
 
 def now() -> str:
@@ -163,7 +145,6 @@ def _test_it(method):  # @decorator - assertion tests
         return result
 
     return _assert
-    pass
 
 
 def timeit_print(method):  # @decorator - print timer report for a function
@@ -182,25 +163,34 @@ def timeit_print(method):  # @decorator - print timer report for a function
     return timed
 
 
-@_test_it
-def _run_tests() -> int:
-    @timeit_print
-    def _math_test(n):
-        return sum(i * 2 for i in range(n))
+# @_test_it
+# def _run_tests() -> int:
+#     @timeit_print
+#     def _math_test(n):
+#         return sum(i * 2 for i in range(n))
 
-    print()
-    print(MAIN, "Testing ...")
-    print("*" * 60, RESET_FG)
-    try:
-        assert lineno() == inspect.currentframe().f_lineno
-        me("This is line number ", lineno())
-        # print(_math_test(333333))
-        assert _math_test(333333) == 111110555556
-        assert _debug_function_header() == 0
-        db_echo("test db_echo")
-    except AssertionError:
-        db_echo("Assertion Error")
+#     print()
+#     print(MAIN, "Testing ...")
+#     print("*" * 60, RESET_FG)
+#     try:
+#         assert lineno() == inspect.currentframe().f_lineno
+#         me("This is line number ", lineno())
+#         # print(_math_test(333333))
+#         assert _math_test(333333) == 111110555556
+#         assert _debug_function_header() == 0
+#         db_echo("test db_echo")
+#     except AssertionError:
+#         db_echo("Assertion Error")
 
 
-if SET_DEBUG:
-    _run_tests()
+if __name__ == "__main__":
+    print(GO, SCRIPT_NAME)
+    print(CANARY, now())
+    if SET_DEBUG:
+        _run_tests()
+    print('This is code line number: ', lineno())
+    print(SCRIPT_NAME)
+    print(SCRIPT_PATH)
+    print(SRC_PATH)
+    print(BAK_PATH)
+    print(HERE)

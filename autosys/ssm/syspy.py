@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 import os
 import sys
@@ -44,8 +45,6 @@ borders = {
     "240": "≡",
     "254": "■",
 }
-
-dict
 
 
 def pprint_dict(width: int, data: dict, sep: str = ',', align: str = 'left'):

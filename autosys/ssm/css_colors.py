@@ -1,23 +1,26 @@
+# -*- coding: utf-8 -*-
 """
 Map of CSS color names to RGB integer values.
 """
-import sys, os, re
+from os.path import basename
+from collections import OrderedDict
+import sys
+import os
+import re
 sys.path.append('.')
 
-from collections import OrderedDict
 try:
     from typing import Tuple, FrozenSet
     py_typing = True
 except ImportError:
     py_typing = False
-from os.path import basename
 # from .syspy import basename
 
-VERBOSE = True # detailed error reporting
+VERBOSE = True  # detailed error reporting
 
 _PY2 = sys.version_info[0] < 3
 string_types = basestring if _PY2 else str
-rgb_type = Tuple[int,int,int]
+rgb_type = Tuple[int, int, int]
 
 css_colors: OrderedDict = {
     'aliceblue':      (240, 248, 255),
@@ -197,6 +200,7 @@ def parse_rgb(s) -> rgb_type:
 
     raise ValueError("Could not parse color '{0}'".format(s))
 
+
 def test_rgb(s: str):
     try:
         result = parse_rgb(s)
@@ -206,37 +210,41 @@ def test_rgb(s: str):
         return result
     except ValueError as e:
         if VERBOSE:
-            print('\001\033[38;5;203mValue error raised for: {}\001\033[0m'.format(s))
+            print(
+                '\001\033[38;5;203mValue error raised for: {}\001\033[0m'.format(s))
         return e
+
 
 def print_all_css_codes():
     for color in css_colors:
-        print("name: {:<15.15s} => code: ({:>3}, {:>3}, {:>3})".\
-            format(
-                color,
-                css_colors[color][0],
-                css_colors[color][1],
-                css_colors[color][2]
-            ))
+        print("name: {:<15.15s} => code: ({:>3}, {:>3}, {:>3})".
+              format(
+                  color,
+                  css_colors[color][0],
+                  css_colors[color][1],
+                  css_colors[color][2]
+              ))
+
 
 def _run_tests():
     """
     run code tests
     """
     if VERBOSE:
-        filename=str(__file__)
+        filename = str(__file__)
         print("Code Tests for :", basename(filename))
-    success_test_samples = ['#FFFFFF', '#000000', '#A3F4CD', '#CCC', \
-        '#333', 'rgb(127,255,212)', '#443', '#123456', 'aliceblue', 'goldenrod']
+    success_test_samples = ['#FFFFFF', '#000000', '#A3F4CD', '#CCC',
+                            '#333', 'rgb(127,255,212)', '#443', '#123456', 'aliceblue', 'goldenrod']
 
     for sample in success_test_samples:
         assert type(test_rgb(sample)) != 'tuple'
 
-    fail_test_samples = ['(127, 255, 212)', (127, 255, 212), 'FFF', \
-        'FFFFFF', 'A3F4CD', b'FFFFFF', 443, '443', 'not_valid!']
+    fail_test_samples = ['(127, 255, 212)', (127, 255, 212), 'FFF',
+                         'FFFFFF', 'A3F4CD', b'FFFFFF', 443, '443', 'not_valid!']
 
     for sample in fail_test_samples:
         assert type(test_rgb(sample)) != "<class 'ValueError'>"
+
 
 if __name__ == "__main__":
     # print_all_css_codes()
