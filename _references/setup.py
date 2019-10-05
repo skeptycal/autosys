@@ -12,7 +12,7 @@ import os
 import sys
 from shutil import rmtree
 
-from setuptools import Command, find_packages, setup
+from setuptools import find_packages, setup, Command
 
 # Package meta-data.
 NAME = "text_colors"
@@ -22,7 +22,6 @@ URL = "https://github.com/skeptycal/text_colors"
 EMAIL = "skeptycal@gmail.com"
 AUTHOR = "Michael Treanor"
 REQUIRES_PYTHON = ">=3.6.0"
-VERSION = "0.8.3"
 README_FILENAME = "README.md"
 
 SCRIPTS_LIST = [
@@ -97,7 +96,9 @@ class UploadCommand(Command):
             pass
 
         self.status("Building Source and Wheel (universal) distribution…")
-        os.system("{0} setup.py sdist bdist_wheel --universal".format(sys.executable))
+        os.system(
+            "{0} setup.py sdist bdist_wheel --universal".
+            format(sys.executable))
 
         self.status("Uploading the package to PyPI via Twine…")
         os.system("twine upload dist/*")
@@ -126,7 +127,8 @@ setup(
     scripts=SCRIPTS_LIST,
     include_package_data=True,
     package_data=PACKAGE_DATA,
-    packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
+    packages=find_packages(
+        exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
     # If your package is a single module, use this instead of 'packages':
     # py_modules=['text_colors.py'],
     # * Options for packaging:
