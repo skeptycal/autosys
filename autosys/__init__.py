@@ -11,7 +11,6 @@ __author__ = "Michael Treanor <skeptycal@gmail.com>"
 
 import sys
 import os
-from autosys.autosys_www import url_test
 
 
 # from autosys import __version__ as version
