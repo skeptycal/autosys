@@ -58,6 +58,6 @@ def print_attributes_table():
         print("\n")
 
 
-# print_format_table()
+print_format_table()
 # print_attributes_table()
 print(RESET, MAIN, ATTR)

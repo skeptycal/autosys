@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+""" autosys.py """
+# copyright (c) 2019 Michael Treanor
+# https://www.github.com/skeptycal
+# https://www.twitter.com/skeptycal
+
 # `AutoSys` is licensed under the `MIT <https://opensource.org/licenses/MIT>`.
 
 from __future__ import absolute_import, print_function

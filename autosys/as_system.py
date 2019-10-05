@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-autosys_system.py
-"""
+""" as_system.py """
+# copyright (c) 2019 Michael Treanor
+# https://www.github.com/skeptycal
+# https://www.twitter.com/skeptycal
+
 from __future__ import absolute_import, print_function
 
 import autosys
@@ -14,10 +16,21 @@ import sys
 import time
 import traceback
 from typing import Any, Dict, List
+from autosys import version
 
 
-# sys.path.insert(0, os.path.abspath("."))
+# the sys.path starts with the directory containing pysys.py which we want to remove as
+# that dir might be anywhere and could contain anything; it's not needed for locating
+# the pysys modules since those will be in site-packages once pysys is installed
 
+
+script_path = os.path.abspath(sys.path[0])
+sys.path = [p for p in sys.path if os.path.abspath(p) != script_path]
+
+__main__.main()
+
+
+sys.path.insert(0, os.path.abspath("."))
 
 # ##############################################
 # SET_DEBUG: bool = True

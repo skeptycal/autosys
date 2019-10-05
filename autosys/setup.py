@@ -4,7 +4,7 @@ from __future__ import absolute_import
 
 from setuptools import find_namespace_packages, setup
 
-import version
+from autosys import version
 
 setup(
     name=version.name,

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-autosys_system.py
-"""
+""" as_www.py """
+# copyright (c) 2019 Michael Treanor
+# https://www.github.com/skeptycal
+# https://www.twitter.com/skeptycal
 from __future__ import absolute_import, print_function
 
 import sys

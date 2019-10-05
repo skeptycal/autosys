@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" 80col.py """
+""" as_80col.py """
 # copyright (c) 2019 Michael Treanor
 # https://www.github.com/skeptycal
 # https://www.twitter.com/skeptycal

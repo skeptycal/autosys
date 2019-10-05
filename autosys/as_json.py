@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+""" as_json.py """
+# copyright (c) 2019 Michael Treanor
+# https://www.github.com/skeptycal
+# https://www.twitter.com/skeptycal
+
 #* ############################################################################
-# """ module as_json.py """
 # features in this module:
 #   _json_translation_table - print python to json translation tables
 #   json_read               - open and read data into python object
@@ -12,11 +16,11 @@
 #* ############################################################################
 # Imports
 if True:  # ! stupid trick to make collapsing sections easier in VSCode
+    import fileinput
     import os
-    import sys
     import pathlib
     import re
-    import fileinput
+    import sys
     from io import StringIO
     from flask import current_app, request
     from typing import Any, Dict, List, Tuple, Union

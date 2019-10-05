@@ -1,7 +1,10 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Testing Resources for autosys
-"""
+""" as_testing.py """
+# copyright (c) 2019 Michael Treanor
+# https://www.github.com/skeptycal
+# https://www.twitter.com/skeptycal
+
 from __future__ import absolute_import
 
 import importlib
@@ -65,6 +68,48 @@ def name_var(the_var: Any) -> List[str]:
         var_name for var_name, var_val
         in inspect.currentframe().f_back.f_locals.items()
         if var_val is the_var][0], the_var]
+
+
+def lineno():
+    """
+    Returns the current line number in our program.
+    """
+    # Reference: http://code.activestate.com/recipes/145297-grabbing-the-current-line-number-easily/
+    print(
+        "line",
+        inspect.getframeinfo(inspect.currentframe()).lineno,
+        "of file",
+        inspect.getframeinfo(inspect.currentframe()).filename,
+    )
+    return inspect.currentframe().f_back.f_lineno
+
+
+def py_ls(path_name: str = ".") -> Exception:
+    """
+    List relative and absolute paths of files in <path_name>.
+    Parameter: path_name: str
+    Return: None for success or Exception
+    """
+    # Reference: https://developers.google.com/edu/python/utilities
+    # Example pulls filenames from a dir, prints their relative and absolute paths
+
+    try:
+        filenames = os.listdir(path_name)
+    except OSError as e:
+        return e
+    for filename in filenames:
+        print(filename)  # foo.txt
+        try:
+            # dir/foo.txt (relative to current dir)
+            print(os.path.join(dir, filename))
+        except OSError as e:
+            return e
+        try:
+            # /home/nick/dir/foo.txt
+            print(os.path.abspath(os.path.join(dir, filename)))
+        except OSError as e:
+            return e
+    return None
 
 
 def _add_dots(s: str,
@@ -165,6 +210,7 @@ def get_module_info(module: str):
     #     print('MODE   :', mode, mode_description)
     #     print('MTYPE  :', mtype_name)
 
+
 def _pprint_globals():
     """
     Pretty Print all global variables.
@@ -181,6 +227,7 @@ def _pprint_globals():
     test_list: List[int] = [1, 2, 3]
     test_list.append(4)
     test_list.append("five")
+
 
 def _pprint_dict_table(data: Dict[Any], name: str = "Data Table"):
     """
@@ -228,6 +275,48 @@ def _run_tests() -> str:
     print("e: ", e)
     print("e.args: ", e.args)
     print("type(e): ", type(e))
+
+
+def _pprint_code_tests(tests: List[Exception]):
+    pass
+
+
+def _execute_test_code(tests: List[str]) -> List[Exception]:
+    """
+    Execute and report exceptions for code snippets.
+    """
+    result: List[Exception] = []
+    for test in tests:
+        try:
+            # run test code
+            print("=> ", test)
+            exec(test)
+        except Exception as e:
+            result.append(e)
+    return result
+
+
+def _run_tests() -> str:
+    """
+    Run and report on specific tests for some functions in this module.
+    """
+    tests: List[str] = [
+        "_pprint_globals()",
+        'print("basename: ", basename(__file__))',
+        "print(1/0)",
+    ]
+
+    for e in _execute_test_code(tests):
+        # result = '\n'.join(str(e) for e in _execute_test_code(tests))
+        # if result:
+        #     print(result)
+        # return result
+        # print("traceback: ", traceback.format_exc())
+        print("e.__class__.__name__", e.__class__.__name__)
+        # log.exception(e)
+        print("e: ", e)
+        print("e.args: ", e.args)
+        print("type(e): ", type(e))
 
 
 def _pprint_code_tests(tests: List[Exception]):
