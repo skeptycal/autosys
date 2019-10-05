@@ -4,19 +4,19 @@
 
 from __future__ import absolute_import, print_function
 
-__version__ = "1.0.2"
-__version_info__ = (1, 0, 2)
-__license__ = "MIT <https://opensource.org/licenses/MIT>"
-__author__ = "Michael Treanor <skeptycal@gmail.com>"
-
-import autosys
-import sys
 import os
-
+import sys
+from typing import Tuple
+import autosys
+__version__: str = "1.0.2"
+__version_info__: Tuple[int] = (1, 0, 2)
+__license__: str = "MIT <https://opensource.org/licenses/MIT>"
+__author__: str = "Michael Treanor <skeptycal@gmail.com>"
 
 # from autosys import __version__ as version
-sys.path.insert(0, os.path.abspath('.'))
 # TODO setup a way to automatically track semvers
+sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('autosys'))
 
 # set default package name to parent folder name
 name = __file__.split("/")[-2]
@@ -30,10 +30,8 @@ if __name__ == "__main__":
     print()
     print('package version: ', __version__)
 
-    # print(dir(sys))
     print()
     # print('sys.path: ', sys.path)
-    print()
     print('builtin modules: ', sys.builtin_module_names)
     print()
 
@@ -42,6 +40,7 @@ if __name__ == "__main__":
     # search_path = None
     # search_path = ['.']
     search_path = ['autosys']
+    # search_path = ['as_']
     all_modules = [x[1] for x in pkgutil.iter_modules(path=search_path)]
     print('all importable modules in search_path({}).'.format(search_path))
     print("\n".join(all_modules))

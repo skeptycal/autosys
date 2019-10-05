@@ -5,12 +5,13 @@ autosys_system.py
 """
 from __future__ import absolute_import, print_function
 
-import time
+import autosys
 import inspect
 import locale
 import logging
 import os
 import sys
+import time
 import traceback
 from typing import Any, Dict, List
 
@@ -99,14 +100,6 @@ def py_shell() -> str:
             pass
     # print("pyshell() output: ", shell.strip())
     return shell.strip()
-
-
-def _ansi_join(*values):
-    """
-    (ANSI encoding) Join a series of values with semicolons. The values
-    are either integers or strings.
-    """
-    return ";".join(str(_) for _ in values)
 
 
 def _pprint_globals():

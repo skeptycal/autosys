@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # ============================================================================
 # utilities for Standard Script Modules (ssm.py)
 #

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 ######################################
 # Reference: https://stackoverflow.com/a/52713738/9878098
 import sys, os, inspect, time

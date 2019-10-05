@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 import codecs, json, ntpath, os, posixpath, string, sys
 

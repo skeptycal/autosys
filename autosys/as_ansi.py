@@ -6,6 +6,11 @@ as_ansi.py
 The obligatory ANSI text colors implementation.
 Requires Python 3.6+
 """
+# copyright (c) 2019 Michael Treanor
+# https://www.github.com/skeptycal
+# https://www.twitter.com/skeptycal
+
+
 from __future__ import absolute_import, print_function
 
 if True:  # imports
@@ -19,6 +24,14 @@ if True:  # imports
     import textwrap
     import time
     import timeit
+    import logging
+    import locale
+    import logging
+    import os
+    import sys
+    import traceback
+    from typing import Any, Dict, List
+
 
 if True:
     from typing import Dict, List, Tuple, Any
@@ -259,6 +272,14 @@ FLAGS_DICT: Dict[str, str] = {
     # "CONCEAL": '\u001b[8m',          # Conceal               NWS
     # "STRIKE": '\u001b[9m',           # Strike-through        Crossed-out
 }
+
+
+def _join(*values):
+    """
+    (ANSI encoding) Join a series of values with semicolons. The values
+    are either integers or strings.
+    """
+    return ";".join(str(v) for v in values)
 
 
 def print_ansi_list():

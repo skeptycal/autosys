@@ -3,6 +3,11 @@
 """
 as_system.py
 """
+# copyright (c) 2019 Michael Treanor
+# https://www.github.com/skeptycal
+# https://www.twitter.com/skeptycal
+
+
 from __future__ import absolute_import, print_function
 
 if True:  # imports

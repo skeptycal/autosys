@@ -27,7 +27,8 @@ def test_redcolor():
 def test_default_color():
     assert color("test", fg="default") == "\x1b[39mtest\x1b[0m"
     assert color("test", bg="default") == "\x1b[49mtest\x1b[0m"
-    assert color("test", fg="default", bg="default") == "\x1b[39;49mtest\x1b[0m"
+    assert color("test", fg="default",
+                 bg="default") == "\x1b[39;49mtest\x1b[0m"
 
 
 def test_error_on_bad_color_string():
@@ -100,7 +101,8 @@ def test_error_on_bad_style():
 def test_remove_color():
     """We can get the original message without the colors"""
     assert strip_color(color("RED", "red")) == "RED"
-    assert strip_color(color("text", "red", "green", "bold+underline")) == "text"
+    assert strip_color(color("text", "red", "green",
+                             "bold+underline")) == "text"
 
 
 def test_remove_color_extra():

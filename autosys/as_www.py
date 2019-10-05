@@ -27,4 +27,15 @@ def url_test(url: str = "http://www.google.com") -> int:
 
 
 if __name__ == "__main__":
-    print(url_test())
+
+    print()
+    urls = ['http://www.google.com', 'https://www.google.com',
+            'https://www.twitter.com/skeptycal']
+    # 'https://www.skeptycal.com'
+    for url in urls:
+        res = url_test(url)
+        print()
+        if res == 200:
+            print(f'Successful connection to {url} ...response: {res}')
+        else:
+            print(f'No connection to {url} ... response: {res}')

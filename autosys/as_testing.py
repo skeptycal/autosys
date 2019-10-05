@@ -165,6 +165,74 @@ def get_module_info(module: str):
     #     print('MODE   :', mode, mode_description)
     #     print('MTYPE  :', mtype_name)
 
+def _pprint_globals():
+    """
+    Pretty Print all global variables.
+    Designed for debugging purposes.
+    """
+    print()
+    print("Globals: ")
+    print("*" * 40)
+    width = max(len(i) for i in globals())
+    print(width)
+    for s in globals():
+        print("{:<15.15} : {:<64.64}".format(s, str(globals().get(s))))
+    print()
+    test_list: List[int] = [1, 2, 3]
+    test_list.append(4)
+    test_list.append("five")
+
+def _pprint_dict_table(data: Dict[Any], name: str = "Data Table"):
+    """
+    Pretty Print dictionary in table format.
+    """
+    print()
+    print(name.title())
+    print("*" * len(name))
+    width = max(len(i) for i in data)
+    print(width)
+    for s in globals():
+        print("{:<15.15} : {:<64.64}".format(s, str(globals().get(s))))
+    print()
+    test_list: List[int] = [1, 2, 3]
+    test_list.append(4)
+    test_list.append("five")
+
+
+def _execute_test_code(tests: List[str]) -> List[Exception]:
+    result: List[Exception] = []
+    for test in tests:
+        try:
+            # run test code
+            print("=> ", test)
+            exec(test)
+        except Exception as e:
+            result.append(e)
+    return result
+
+
+def _run_tests() -> str:
+    tests: List[str] = [
+        "_pprint_globals()",
+        'print("basename: ", basename(__file__))',
+        "print(1/0)",
+    ]
+    _execute_test_code(tests)
+    # result = '\n'.join(str(e) for e in _execute_test_code(tests))
+    # if result:
+    #     print(result)
+    # return result
+    # print("traceback: ", traceback.format_exc())
+    print("e.__class__.__name__", e.__class__.__name__)
+    # log.exception(e)
+    print("e: ", e)
+    print("e.args: ", e.args)
+    print("type(e): ", type(e))
+
+
+def _pprint_code_tests(tests: List[Exception]):
+    pass
+
 
 if __name__ == "__main__":
 
@@ -198,3 +266,8 @@ if __name__ == "__main__":
     #     print_var(key, locals().get(key))
     print()
     get_module_sig(inspect, )
+    log = logging.getLogger()
+    print(_run_tests())
+    print()
+    print("... Tests Complete.")
+    _pprint_dict_table
