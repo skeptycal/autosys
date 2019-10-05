@@ -11,6 +11,7 @@ pytest = "*"
 pytest-cov = "*"
 pytest-runner = "*"
 pytest-xdist = "*"
+flake8 = "*"
 
 [packages]
 cython = "*"

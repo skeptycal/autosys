@@ -4,7 +4,7 @@ Testing Resources for autosys
 """
 from __future__ import absolute_import
 
-import imp
+import importlib
 import sys
 import inspect
 from typing import Any, Tuple, Dict, List
@@ -14,6 +14,36 @@ DEFAULT_DICT_DISPLAY_SEPARATOR: str = ": "
 DEFAULT_CLI_DISPLAY_WIDTH: int = 80
 DEFAULT_CLI_FIELD_PADDING: int = 15
 DEFAULT_CLI_FIELD_MIN_PADDING: int = 10
+
+
+class TestException(Exception):
+    """
+    Exception handler override
+    """
+
+    # Reference: https://stackoverflow.com/questions/9823936/python-how-do-i-know-what-type-of-exception-occurred
+    # template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+    # message = template.format(type(ex).__name__, ex.args)
+    # print message
+
+    def __init__(self, parameter_list):
+        Exception.__init__()
+
+
+def timeit(method):
+    """
+    Decorator - code timer for comparing and optimizing snippets
+    """
+
+    def timed(*args, **kw):
+        ts = time.time()
+        result = method(*args, **kw)
+        te = time.time()
+
+        print("%r (%r, %r) %2.2f sec" % (method.__name__, args, kw, te - ts))
+        return result
+
+    return timed
 
 
 def get_v_name(the_var: Any) -> str:
@@ -49,6 +79,27 @@ def _add_dots(s: str,
     if len(s) > str_len:
         s = s.ljust(str_len) + suffix
     return s
+
+
+def get_module_sig(self, module, parameter_list):
+    import inspect
+    import example
+
+    sig = inspect.signature(module)
+    bound = sig.bind(
+        'this is arg1',
+        'this is arg2',
+        'this is an extra positional argument',
+        extra_named_arg='value',
+    )
+    print('Arguments:')
+
+    for name, value in bound.arguments.items():
+        print('{} = {!r}'.format(name, value))
+    # for name, data in inspect.getmembers(example):
+    #     if name.startswith('__'):
+    #         continue
+    #     print('{} : {!r}'.format(name, data))
 
 
 def print_var(
@@ -94,29 +145,34 @@ def print_var(
     return result
 
 
-if len(sys.argv) >= 2:
-    filename = sys.argv[1]
-else:
-    filename = 'example.py'
+def get_module_info(module: str):
+    return 0
+    # try:
+    #     (name, suffix, mode, mtype) = inspect.getmoduleinfo(filename)
+    # except TypeError:
+    #     print('Could not determine module type of %s' % filename)
+    # else:
+    #     mtype_name = {imp.PY_SOURCE: 'source',
+    #                   imp.PY_COMPILED: 'compiled',
+    #                   }.get(mtype, mtype)
 
-try:
-    (name, suffix, mode, mtype) = inspect.getmoduleinfo(filename)
-except TypeError:
-    print('Could not determine module type of %s' % filename)
-else:
-    mtype_name = {imp.PY_SOURCE: 'source',
-                  imp.PY_COMPILED: 'compiled',
-                  }.get(mtype, mtype)
+    #     mode_description = {'rb': '(read-binary)',
+    #                         'U': '(universal newline)',
+    #                         }.get(mode, '')
 
-    mode_description = {'rb': '(read-binary)',
-                        'U': '(universal newline)',
-                        }.get(mode, '')
+    #     print('NAME   :', name)
+    #     print('SUFFIX :', suffix)
+    #     print('MODE   :', mode, mode_description)
+    #     print('MTYPE  :', mtype_name)
 
-    print('NAME   :', name)
-    print('SUFFIX :', suffix)
-    print('MODE   :', mode, mode_description)
-    print('MTYPE  :', mtype_name)
+
 if __name__ == "__main__":
+
+    if len(sys.argv) >= 2:
+        filename = sys.argv[1]
+    else:
+        filename = 'example.py'
+
     print()
     print("Debug print values")
     print("*"*80)
@@ -129,10 +185,10 @@ if __name__ == "__main__":
     print('v and name: ', name_var(__file__))
     print('get name - file: ', get_v_name(__file__))
     print("")
-    print_var()
+    # print_var()
     # print(locals())
     widths = [len(key) for key in list(locals().keys())]
-    keys = [key for key in list(locals().keys().)]
+    keys = [key for key in list(locals().keys())]
     padding = max(widths)
     # print(widths)
     # print()
@@ -141,3 +197,4 @@ if __name__ == "__main__":
     #     # print(key, locals().get(key))
     #     print_var(key, locals().get(key))
     print()
+    get_module_sig(inspect, )

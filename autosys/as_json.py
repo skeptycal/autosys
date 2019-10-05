@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##############################################################################
-# """ module skeptycal_json.py """
+#* ############################################################################
+# """ module as_json.py """
 # features in this module:
 #   _json_translation_table - print python to json translation tables
 #   json_read               - open and read data into python object
@@ -9,36 +9,40 @@
 #   json_sort               - sort list of python files as json objects
 #   json_minify             - compact json files and remove comments
 #   json_pretty_print       - format 'pretty print' style
-##############################################################################
+#* ############################################################################
 # Imports
-if True:  #! stupid trick to make collapsing secions easier in VSCode
+if True:  # ! stupid trick to make collapsing sections easier in VSCode
     import os
     import sys
     import pathlib
     import re
     import fileinput
-
-    # from collections import OrderedDict
     from io import StringIO
+    from flask import current_app, request
     from typing import Any, Dict, List, Tuple, Union
 
-    # from logging import Logger
+    try:
+        import ujson as json  # Speedup if present; no big deal if not
+        JSON_PARSER = 'ujson'
+    except ImportError:
+        import json
+        JSON_PARSER = 'json'
+    # Reference: https://pypi.org/project/ujson/
+    # Use speedup if available
+    # scanstring = c_scanstring or py_scanstring
 
     # fix import path for non standard libraries
     sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-    # Use speedup if available
-    # scanstring = c_scanstring or py_scanstring
-    try:
-        import ujson as json  # Speedup if present; no big deal if not
-    except ImportError:
-        import json
 
-##############################################################################
+#* ############################################################################
 # constants
 DEBUG_FLAG: bool = True
 ENCODING: str = "utf8"
-##############################################################################
+
+#* ############################################################################
 # general functions
+
+
 def db_print(*args, **kwargs):
     """ db_print - print to console only if debug flag is set """
     if DEBUG_FLAG:
@@ -46,13 +50,14 @@ def db_print(*args, **kwargs):
 
 
 def is_file(file_name: str) -> bool:
+    """ Return true if file_name exists and is a file. """
     if pathlib.Path(file_name).is_file():
         return True
     else:
         return False
 
 
-##############################################################################
+#* ############################################################################
 # json functions
 class JSON_file(object):
     io = StringIO()
@@ -226,130 +231,9 @@ class JSON_file(object):
         return self.json_format(self, comments=True, sort_keys=False)
 
 
-##############################################################################
-# CLI testing
-if __name__ == "__main__":  # If run as CLI utility
-    args: List[str] = []
-    TEST_FILE: str = "/Volumes/Data/skeptycal/bin/utilities/python/test.json"
-
-    j: JSON_file = JSON_file()
-    j.file_name = TEST_FILE
-    print(j.file_name)
-    # if j.json_read(TEST_FILE):
-    #     j.json_pretty_print()
-    #     print(j.json_data)
-
-    class arg_choice(object):
-        name: str = ""
-        args: List[str] = []
-
-        def __init__(self, *args, **kwargs):
-            self.name = sys.argv[0]
-            self.args = sys.argv[1:]
-            super().__init__(*args, **kwargs)
-
-        def parse(self):
-            for arg in self.args:
-                self.indirect(arg)
-
-        def indirect(self, i):
-            method_name = "number_" + str(i)
-            method = getattr(self, method_name, lambda: "Invalid")
-            db_print("indirect method_name: ", method_name)
-            db_print("indirect method: ", method)
-            return method()
-
-        def number_0(self):
-            return "zero"
-
-        def number_1(self):
-            return "one"
-
-        def number_2(self):
-            return "two"
-
-    if len(sys.argv) > 1:
-        args = sys.argv[1:]
-    else:
-        args = [TEST_FILE.__str__()]
-
-    db_print()
-    db_print("args: ", args[:])
-    db_print("is_file({}): {}".format(args[0], is_file(args[0])))
-
-    a: object = arg_choice()
-    a.parse()
-
-    print("a.indirect: ", a.indirect(1))
-
-    db_print()
-    # db_print (json_pretty_print(args[0]))
-    db_print()
-
-    # result = json_sort(args)
-
-##############################################################################
-
-
+#* ############################################################################
 
 # Reference: https://gist.github.com/liftoff/ee7b81659673eca23cd9fc0d8b8e68b7
-
-"""
-An example of how to remove comments and trailing commas from JSON before
-parsing.  You only need the two functions below, `remove_comments()` and
-`remove_trailing_commas()` to accomplish this.  This script serves as an
-example of how to use them but feel free to just copy & paste them into your
-own code/projects.  Usage::
-
-    json_cleaner.py some_file.json
-
-Alternatively, you can pipe JSON into this script and it'll clean it up::
-
-    cat some_file.json | json_cleaner.py
-
-Why would you do this?  So you can have human-generated .json files
-(say, for configuration) that include comments and, really, who wants to deal
-with catching all those trailing commas that might be present?  Here's an
-example of a file that will be successfully cleaned up and JSON-parseable:
-
-.. code-block:: javascript
-
-    {
-        // A comment!  You normally can't put these in JSON
-        "testing": {
-            "foo": "bar", // <-- A trailing comma!  No worries.
-        }, // <-- Another one!
-        /*
-        This style of comments will also be safely removed before parsing
-        */
-    }
-
-FYI:  This script will also pretty-print the JSON after it's cleaned up (if
-using it from the command line) with an indentation level of 4 (that is, four
-spaces).
-"""
-
-__version__ = "1.0.0"
-__version_info__ = (1, 0, 0)
-__license__ = "Unlicense"
-__author__ = "Dan McDougall <daniel.mcdougall@liftoffsoftware.com>"
-
-import fileinput
-import re
-from flask import current_app, request
-
-try:
-    import ujson as json  # Speedup if present; no big deal if not
-except ImportError:
-    import json
-# Reference: https://pypi.org/project/ujson/
-
-try:
-    from ujson import dumps
-    JSON_PARSER = 'ujson'
-except ImportError as e:
-    from json import dumps
-    JSON_PARSER = 'json'
 
 
 def ultrajsonify(*args, **kwargs):
@@ -423,173 +307,7 @@ def remove_trailing_commas(json_like):
     return trailing_array_commas_re.sub("]", objects_fixed)
 
 
-if __name__ == "__main__":
-    json_out = ""
-    for line in fileinput.input():  # Read it all in
-        json_out += line
-    almost_json = remove_comments(json_out)  # Remove comments
-    proper_json = remove_trailing_commas(almost_json)  # Remove trailing commas
-    validated = json.loads(proper_json)  # We now have parseable JSON!
-    print(json.dumps(validated, indent=4))
-
-#############################################################################
-
-
-# Reference: https://gist.github.com/liftoff/ee7b81659673eca23cd9fc0d8b8e68b7
-
-"""
-An example of how to remove comments and trailing commas from JSON before
-parsing.  You only need the two functions below, `remove_comments()` and
-`remove_trailing_commas()` to accomplish this.  This script serves as an
-example of how to use them but feel free to just copy & paste them into your
-own code/projects.  Usage::
-
-    json_cleaner.py some_file.json
-
-Alternatively, you can pipe JSON into this script and it'll clean it up::
-
-    cat some_file.json | json_cleaner.py
-
-Why would you do this?  So you can have human-generated .json files
-(say, for configuration) that include comments and, really, who wants to deal
-with catching all those trailing commas that might be present?  Here's an
-example of a file that will be successfully cleaned up and JSON-parseable:
-
-.. code-block:: javascript
-
-    {
-        // A comment!  You normally can't put these in JSON
-        "testing": {
-            "foo": "bar", // <-- A trailing comma!  No worries.
-        }, // <-- Another one!
-        /*
-        This style of comments will also be safely removed before parsing
-        */
-    }
-
-FYI:  This script will also pretty-print the JSON after it's cleaned up (if
-using it from the command line) with an indentation level of 4 (that is, four
-spaces).
-"""
-
-__version__ = "1.0.0"
-__version_info__ = (1, 0, 0)
-__license__ = "Unlicense"
-__author__ = "Dan McDougall <daniel.mcdougall@liftoffsoftware.com>"
-
-
-try:
-    import ujson as json  # Speedup if present; no big deal if not
-except ImportError:
-    import json
-# Reference: https://pypi.org/project/ujson/
-
-try:
-    from ujson import dumps
-    JSON_PARSER = 'ujson'
-except ImportError as e:
-    from json import dumps
-    JSON_PARSER = 'json'
-
-
-def ultrajsonify(*args, **kwargs):
-    """This function reimplements ``flask.json.jsonify``
-    using ``ujson.dumps`` instead of ``json.dumps``.
-    """
-    indent = 0
-    ensure_ascii = current_app.config.get("JSON_AS_ASCII", True)
-    mimetype = current_app.config.get("JSONIFY_MIMETYPE", "application/json")
-
-    if current_app.config["JSONIFY_PRETTYPRINT_REGULAR"] and not request.is_xhr:
-        indent = 2
-
-    if args and kwargs:
-        raise ValueError(
-            "ultrajsonify behavior undefined when passed both args and kwargs"
-        )
-    elif len(args) == 1:
-        data = args[0]
-    else:
-        data = args or kwargs
-
-    return current_app.response_class(
-        dumps(data, indent=indent, ensure_ascii=ensure_ascii), mimetype=mimetype
-    )
-
-
-def remove_comments(json_like):
-    """
-    Removes C-style comments from *json_like* and returns the result.  Example::
-
-        >>> test_json = '''\
-        {
-            "foo": "bar", // This is a single-line comment
-            "baz": "blah" /* Multi-line
-            Comment */
-        }'''
-        >>> remove_comments('{"foo":"bar","baz":"blah",}')
-        '{\n    "foo":"bar",\n    "baz":"blah"\n}'
-    """
-    comments_re = re.compile(
-        r'//.*?$|/\*.*?\*/|\'(?:\\.|[^\\\'])*\'|"(?:\\.|[^\\"])*"',
-        re.DOTALL | re.MULTILINE,
-    )
-
-    def replacer(match):
-        s = match.group(0)
-        if s[0] == "/":
-            return ""
-        return s
-
-    return comments_re.sub(replacer, json_like)
-
-
-def remove_trailing_commas(json_like):
-    """
-    Removes trailing commas from *json_like* and returns the result.  Example::
-
-        >>> remove_trailing_commas('{"foo":"bar","baz":["blah",],}')
-        '{"foo":"bar","baz":["blah"]}'
-    """
-    trailing_object_commas_re = re.compile(
-        r'(,)\s*}(?=([^"\\]*(\\.|"([^"\\]*\\.)*[^"\\]*"))*[^"]*$)'
-    )
-    trailing_array_commas_re = re.compile(
-        r'(,)\s*\](?=([^"\\]*(\\.|"([^"\\]*\\.)*[^"\\]*"))*[^"]*$)'
-    )
-    # Fix objects {} first
-    objects_fixed = trailing_object_commas_re.sub("}", json_like)
-    # Now fix arrays/lists [] and return the result
-    return trailing_array_commas_re.sub("]", objects_fixed)
-
-
-if __name__ == "__main__":
-    json_out = ""
-    for line in fileinput.input():  # Read it all in
-        json_out += line
-    almost_json = remove_comments(json_out)  # Remove comments
-    proper_json = remove_trailing_commas(almost_json)  # Remove trailing commas
-    validated = json.loads(proper_json)  # We now have parseable JSON!
-    print(json.dumps(validated, indent=4))
-
-
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-""" module d2md """
-# alphabetize json files
-#   provide file(s) as a list
-
-import json
-import sys
-from typing import Dict, List
-
-import text_colors
-
-HEADER = color_encode("COLOR15", "BG_BLACK", "ITALIC")
-MAIN = color_encode("MAIN", "BG_BLACK", "ITALIC")
-BLUE = color_encode("COOL", "BG_BLACK", "ITALIC")
-PURPLE = color_encode("PURPLE", "BG_BLACK", "ITALIC")
-RESET = color_encode("RESET", "RESET", "RESET")
+#* ############################################################################
 
 
 def to_json(text: str) -> Dict:
@@ -668,3 +386,73 @@ if __name__ == "__main__":
     else:
         print(BLUE, "Command was successful.", sep="")
     print()
+
+if False and __name__ == "__main__":
+    json_out = ""
+    for line in fileinput.input():  # Read it all in
+        json_out += line
+    almost_json = remove_comments(json_out)  # Remove comments
+    proper_json = remove_trailing_commas(almost_json)  # Remove trailing commas
+    validated = json.loads(proper_json)  # We now have parseable JSON!
+    print(json.dumps(validated, indent=4))
+
+# CLI testing
+if False and __name__ == "__main__":  # If run as CLI utility
+    args: List[str] = []
+    TEST_FILE: str = "/Volumes/Data/skeptycal/bin/utilities/python/test.json"
+
+    j: JSON_file = JSON_file()
+    j.file_name = TEST_FILE
+    print(j.file_name)
+    # if j.json_read(TEST_FILE):
+    #     j.json_pretty_print()
+    #     print(j.json_data)
+
+    class arg_choice(object):
+        name: str = ""
+        args: List[str] = []
+
+        def __init__(self, *args, **kwargs):
+            self.name = sys.argv[0]
+            self.args = sys.argv[1:]
+            super().__init__(*args, **kwargs)
+
+        def parse(self):
+            for arg in self.args:
+                self.indirect(arg)
+
+        def indirect(self, i):
+            method_name = "number_" + str(i)
+            method = getattr(self, method_name, lambda: "Invalid")
+            db_print("indirect method_name: ", method_name)
+            db_print("indirect method: ", method)
+            return method()
+
+        def number_0(self):
+            return "zero"
+
+        def number_1(self):
+            return "one"
+
+        def number_2(self):
+            return "two"
+
+    if len(sys.argv) > 1:
+        args = sys.argv[1:]
+    else:
+        args = [TEST_FILE.__str__()]
+
+    db_print()
+    db_print("args: ", args[:])
+    db_print("is_file({}): {}".format(args[0], is_file(args[0])))
+
+    a: object = arg_choice()
+    a.parse()
+
+    print("a.indirect: ", a.indirect(1))
+
+    db_print()
+    # db_print (json_pretty_print(args[0]))
+    db_print()
+
+    # result = json_sort(args)

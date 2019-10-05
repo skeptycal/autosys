@@ -46,36 +46,6 @@ locale.setlocale(locale.LC_ALL, "")
 CODE = locale.getpreferredencoding()
 
 
-class TestException(Exception):
-    """
-    Exception handler override
-    """
-
-    # Reference: https://stackoverflow.com/questions/9823936/python-how-do-i-know-what-type-of-exception-occurred
-    # template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-    # message = template.format(type(ex).__name__, ex.args)
-    # print message
-
-    def __init__(self, parameter_list):
-        Exception.__init__()
-
-
-def timeit(method):
-    """
-    Decorator - code timer for comparing and optimizing snippets
-    """
-
-    def timed(*args, **kw):
-        ts = time.time()
-        result = method(*args, **kw)
-        te = time.time()
-
-        print("%r (%r, %r) %2.2f sec" % (method.__name__, args, kw, te - ts))
-        return result
-
-    return timed
-
-
 def basename(filename: str) -> str:
     """
     get only basename from full path

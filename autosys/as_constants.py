@@ -6,6 +6,7 @@ as_system.py
 from __future__ import absolute_import, print_function
 
 if True:  # imports
+    import decimal
     import fileinput
     import locale
     import math
@@ -15,48 +16,62 @@ if True:  # imports
     import timeit
 
 if True:
-    from typing import List, Dict, Tuple, Any
+    from typing import Dict, List, Tuple, Any
     from autosys import __version__ as version
     from autosys import name
 
 # * @AUTOSYS_PARSE: START
 ##############################################
-# Environment
 SET_DEBUG: bool = True
-
-locale.setlocale(locale.LC_ALL, "")
-DEFAULT_LANG: str = locale.getlocale()[0] if locale.getlocale()[0] else "en_US"
-DEFAULT_ENCODING: str = locale.getlocale()[1] if locale.getlocale()[
-    1] else "UTF-8"
-PREFERRED_ENCODING: str = locale.getpreferredencoding()
-PY3: bool = (lambda x: [x for x in [False]] and None or x)(True)
-_PY2 = sys.version_info[0] == 2
-PY_VER: str = ".".join(str(_) for _ in __import__("sys").version_info[:3])
-PY_ENV: Dict[str, str] = os.environ
-PYTHON_PATH = PY_ENV["PYTHONPATH"].split(os.pathsep)
-PY_BASE = os.path.basename(PY_ENV["_"])
-
-##############################################
-# DEFAULT CONSTANTS
-DEFAULT_DICT_DISPLAY_SEPARATOR: str = ": "
-DEFAULT_CLI_DISPLAY_WIDTH: int = 80
-DEFAULT_CLI_FIELD_PADDING: int = 15
-
-##############################################
-# working variables
-file_list: List[str] = []
-i: int = 0
-n: int = 0
-filename: str = ""
-word_list: List[str] = []
-
-##############################################
-# math functions
-# example lookup table
-SIN: Dict[float, float] = {a: math.sin(a/10) for a in range(3600)}
+PI: float = math.pi
 
 
-##############################################
+class DEFAULT:
+    """ Autosys package defaults """
+    # Environment constants
+    DICT_DISPLAY_SEPARATOR: str = ": "
+    ENCODING: str = locale.getlocale()[1] if locale.getlocale()[1] else "UTF-8"
+    LANG: str = locale.getlocale()[0] if locale.getlocale()[0] else "en_US"
+    PREFERRED_ENCODING: str = locale.getpreferredencoding()
+    # Python specific constants
+    _PY2 = sys.version_info[0] == 2
+    PY_ENV: Dict[str, str] = os.environ
+    PY_BASE = os.path.basename(PY_ENV["_"])
+    PY_VER: str = ".".join(str(_) for _ in __import__("sys").version_info[:3])
+    PY3: bool = (lambda x: [x for x in [False]] and None or x)(True)
+    PYTHON_PATH: List[str] = PY_ENV["PYTHONPATH"].split(os.pathsep)
+
+    CONNECT_ERRORS: Tuple[str] = (ConnectionError, ConnectionAbortedError,
+                                  ConnectionResetError, ConnectionRefusedError)
+
+    def __init__(self):
+        locale.setlocale(locale.LC_ALL, "")
+
+        ##############################################
+        # working variables
+        i: int = 0
+        n: int = 0
+        filename: str = ''
+        file_list: List[str] = []
+        word_list: List[str] = []
+
+
+class CLI:
+    DISPLAY_WIDTH: int = 80
+    FIELD_PADDING: int = 15
+
+
+class AS_MATH:
+    """ Math shortcuts and efficient functions """
+    # example lookup tables
+    SIN: Dict[float, float] = {a/10: math.sin(
+        math.radians(a/10)) for a in range(3600)}
+    COS: Dict[float, float] = {a/10: math.cos(
+        math.radians(a/10)) for a in range(3600)}
+    TAN: Dict[float, float] = {a/10: math.tan(
+        math.radians(a/10)) for a in range(3600)}
+
+
 class C_ERRORS:
     """
     C++ style error messages
@@ -90,21 +105,26 @@ class C_ERRORS:
 # * @AUTOSYS_PARSE: STOP
 if __name__ == "__main__":
     print()
-    print("PY_ENV: ", PY_ENV.get("CANARY"))
+    print(DEFAULT.PY_ENV.get("CANARY"))
     print("Test Values")
     print("*" * 40)
-    print("PY_ENV: ", PY_ENV.get("RESET_FG"))
+    print(DEFAULT.PY_ENV.get("RESET_FG"))
+
     print("name: ", name)
     print("version: ", version)
-    print("DEFAULT_ENCODING: ", DEFAULT_ENCODING)
-    print("python version 3+: ", PY3)
-    print("PY_VER: ", PY_VER)
-    print("PY_BASE: ", PY_BASE)
-    print("SIN: ", SIN.get(75))
-    print("PYTHON_PATH: ", PYTHON_PATH)
+    print("DEFAULT.ENCODING: ", DEFAULT.ENCODING)
+    print("python version 3+: ", DEFAULT.PY3)
+    print("DEFAULT.PY_VER: ", DEFAULT.PY_VER)
+    print("PY_BASE: ", DEFAULT.PY_BASE)
+    print("SIN(90): ", AS_MATH.SIN.get(math.radians(90)))
+    print("SIN(0): ", AS_MATH.SIN.get(math.radians(0)))
+    print("SIN(180): ", AS_MATH.SIN.get(math.radians(180)))
 
+    print("PYTHON_PATH: ", DEFAULT.PYTHON_PATH)
+    print(PI)
     print()
     print("__doc__", __doc__)
     print("__file__", __file__)
     print("__package__", __package__)
     print("__name__", __name__)
+    print(AS_MATH.SIN)

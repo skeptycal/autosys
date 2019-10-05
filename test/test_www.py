@@ -11,7 +11,4 @@ from autosys.as_www import url_test
 
 def test_url_test():
     assert url_test() == 200
-
-
-def test_url():
-    assert url_test('192.168.0.1') == 200
+    assert url_test('http://192.168.0.1') == 200

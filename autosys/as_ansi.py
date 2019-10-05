@@ -1,65 +1,33 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" text_colors version 0.9.3
+"""
+as_ansi.py
 
-    The obligatory ANSI text colors implementation.
-    Requires Python 3.6+
-    """
+The obligatory ANSI text colors implementation.
+Requires Python 3.6+
+"""
+from __future__ import absolute_import, print_function
 
-import json
-import locale
-import os
-import sys
-from typing import Any, Dict, List
+if True:  # imports
+    import decimal
+    import fileinput
+    import locale
+    import math
+    import os
+    import random
+    import sys
+    import textwrap
+    import time
+    import timeit
+
+if True:
+    from typing import Dict, List, Tuple, Any
+    from autosys import __version__ as version
+    from autosys import name
+    import autosys.as_constants as const
+    import autosys.as_system as syst
 
 
-def py_path() -> List:
-    """ Return list of current python path elements. """
-    try:
-        return os.environ['PYTHONPATH'].split(os.pathsep)
-    except KeyError:
-        return []
-
-def py3up() -> bool:
-    """ Return True if 'Python >= 3' else False
-
-        If you want to detect pre-Python 3 and don't want to import anything...
-        ... you can (ab)use list comprehension scoping changes
-    """
-    # https://stackoverflow.com/questions/1093322/how-do-i-check-what-version-of-python-is-running-my-script/35294211
-    # https://stackoverflow.com/a/52825819/9878098
-    return (lambda x: [x for x in [False]] and None or x)(True)
-
-def pyver() -> str:
-    """ Returns string with python version number in major.minor.micro format.
-            (e.g. 3.7.3  or  2.7.12)
-    """
-    return '.'.join(str(i) for i in __import__('sys').version_info[:3])
-
-def py_shell() -> str:
-    """ Returns string containing current python shell name. """
-
-    shell: str = ""
-    PY_ENV = os.environ
-    PY_BASE = os.path.basename(PY_ENV["_"])
-    if "JPY_PARENT_PID" in PY_ENV:
-        shell = "ipython notebook"
-    elif "pypy" in PY_ENV:
-        shell = "pypy"
-    elif "jupyter-notebook" in PY_BASE:
-        shell = "jupyter notebook"
-    elif "ipython" in PY_BASE:
-        shell = "ipython"
-    else:
-        try:
-            import platform
-            shell = platform.python_implementation()
-        except ImportError:
-            pass
-    # print("pyshell() output: ", shell.strip())
-    return shell.strip()
-
-# Initialize constants, variables, strings, etc...
 ANSI_CHART = """ANSI Effects Chart
     <code>
     ╔══════════╦════════════════════════════════╦═════════════════════════════════════════════════════════════════════════╗
@@ -111,36 +79,50 @@ ANSI_CHART = """ANSI Effects Chart
 
 #  38 - Set foreground color - Next arguments are `5;n` or `2;r;g;b`, see below
 ANSI_DICT_LIST = [
-    {'code': 'Code','effect': 'Effect','notes': 'Note'},
-    {'code': '0','effect': 'Reset/Normal','notes': 'allattributesoff'},
-    {'code': '1','effect': 'Boldorincreasedintensity','notes': ''},
-    {'code': '2','effect': 'Faint(decreasedintensity)','notes': 'NWS'},
-    {'code': '3','effect': 'Italic','notes': 'NWSSometimestreatedasinverse.'},
-    {'code': '4','effect': 'Underline','notes': ''},
-    {'code': '5','effect': 'SlowBlink','notes': 'lessthan150perminute'},
-    {'code': '6','effect': 'RapidBlink','notes': 'MS-DOSANSI.SYS;150+perminute;notwidelysupported'},
-    {'code': '7','effect': '[[reversevideo]]','notes': 'swapforegroundandbackgroundcolors'},
-    {'code': '8','effect': 'Conceal','notes': 'NWS'},
-    {'code': '9','effect': 'Crossed-out','notes': 'Characterslegible,butmarkedfordeletion.NWS'},
-    {'code': '10','effect': 'Primary(default)font','notes': ''},
-    {'code': '11–19','effect': 'Alternatefont','notes': 'Selectalternatefont`n-10`'},
-    {'code': '20','effect': 'Fraktur','notes': 'hardlyeversupported'},
-    {'code': '21','effect': 'BoldofforDoubleUnderline','notes': 'Boldoffnotwidelysupported;doubleunderlinehardlyeversupported.'},
-    {'code': '22','effect': 'Normalcolororintensity','notes': 'Neitherboldnorfaint'},
-    {'code': '23','effect': 'Notitalic,notFraktur','notes': ''},
-    {'code': '24','effect': 'Underlineoff','notes': 'Notsinglyordoublyunderlined'},
-    {'code': '25','effect': 'Blinkoff','notes': ''},
-    {'code': '27','effect': 'Inverseoff','notes': ''},
-    {'code': '28','effect': 'Reveal','notes': 'concealoff'},
-    {'code': '29','effect': 'Notcrossedout','notes': ''},
-    {'code': '30','effect': 'Setforegroundcolor','notes': 'BLACK, add ;1m GRAY'},
-    {'code': '31','effect': 'Setforegroundcolor','notes': 'RED, add ;1m BRIGHTRED'},
-    {'code': '32','effect': 'Setforegroundcolor','notes': 'GREEN, add ;1m BRIGHTGREEN'},
-    {'code': '33','effect': 'Setforegroundcolor','notes': 'YELLOW, add ;1m BRIGHTYELLOW'},
-    {'code': '34','effect': 'Setforegroundcolor','notes': 'BLUE, add ;1m BRIGHTBLUE'},
-    {'code': '35','effect': 'Setforegroundcolor','notes': 'MAGENTA, add ;1m BRIGHTMAGENTA'},
-    {'code': '36','effect': 'Setforegroundcolor','notes': 'CYAN, add ;1m BRIGHTCYAN'},
-    {'code': '37','effect': 'Setforegroundcolor','notes': 'LIGHTGRAY, add ;1m WHITE'},
+    {'code': 'Code', 'effect': 'Effect', 'notes': 'Note'},
+    {'code': '0', 'effect': 'Reset/Normal', 'notes': 'allattributesoff'},
+    {'code': '1', 'effect': 'Boldorincreasedintensity', 'notes': ''},
+    {'code': '2', 'effect': 'Faint(decreasedintensity)', 'notes': 'NWS'},
+    {'code': '3', 'effect': 'Italic', 'notes': 'NWSSometimestreatedasinverse.'},
+    {'code': '4', 'effect': 'Underline', 'notes': ''},
+    {'code': '5', 'effect': 'SlowBlink', 'notes': 'lessthan150perminute'},
+    {'code': '6', 'effect': 'RapidBlink',
+        'notes': 'MS-DOSANSI.SYS;150+perminute;notwidelysupported'},
+    {'code': '7', 'effect': '[[reversevideo]]',
+        'notes': 'swapforegroundandbackgroundcolors'},
+    {'code': '8', 'effect': 'Conceal', 'notes': 'NWS'},
+    {'code': '9', 'effect': 'Crossed-out',
+        'notes': 'Characterslegible,butmarkedfordeletion.NWS'},
+    {'code': '10', 'effect': 'Primary(default)font', 'notes': ''},
+    {'code': '11–19', 'effect': 'Alternatefont',
+        'notes': 'Selectalternatefont`n-10`'},
+    {'code': '20', 'effect': 'Fraktur', 'notes': 'hardlyeversupported'},
+    {'code': '21', 'effect': 'BoldofforDoubleUnderline',
+        'notes': 'Boldoffnotwidelysupported;doubleunderlinehardlyeversupported.'},
+    {'code': '22', 'effect': 'Normalcolororintensity',
+        'notes': 'Neitherboldnorfaint'},
+    {'code': '23', 'effect': 'Notitalic,notFraktur', 'notes': ''},
+    {'code': '24', 'effect': 'Underlineoff',
+        'notes': 'Notsinglyordoublyunderlined'},
+    {'code': '25', 'effect': 'Blinkoff', 'notes': ''},
+    {'code': '27', 'effect': 'Inverseoff', 'notes': ''},
+    {'code': '28', 'effect': 'Reveal', 'notes': 'concealoff'},
+    {'code': '29', 'effect': 'Notcrossedout', 'notes': ''},
+    {'code': '30', 'effect': 'Setforegroundcolor', 'notes': 'BLACK, add ;1m GRAY'},
+    {'code': '31', 'effect': 'Setforegroundcolor',
+        'notes': 'RED, add ;1m BRIGHTRED'},
+    {'code': '32', 'effect': 'Setforegroundcolor',
+        'notes': 'GREEN, add ;1m BRIGHTGREEN'},
+    {'code': '33', 'effect': 'Setforegroundcolor',
+        'notes': 'YELLOW, add ;1m BRIGHTYELLOW'},
+    {'code': '34', 'effect': 'Setforegroundcolor',
+        'notes': 'BLUE, add ;1m BRIGHTBLUE'},
+    {'code': '35', 'effect': 'Setforegroundcolor',
+        'notes': 'MAGENTA, add ;1m BRIGHTMAGENTA'},
+    {'code': '36', 'effect': 'Setforegroundcolor',
+        'notes': 'CYAN, add ;1m BRIGHTCYAN'},
+    {'code': '37', 'effect': 'Setforegroundcolor',
+        'notes': 'LIGHTGRAY, add ;1m WHITE'},
     # "BLACK": "\u001b[30m",
     # "RED": "\u001b[31m",
     # "GREEN": "\u001b[32m",
@@ -157,34 +139,35 @@ ANSI_DICT_LIST = [
     # "BMAGENTA": "\u001b[35;1m",
     # "BCYAN": "\u001b[36;1m",
     # "BWHITE": "\u001b[37;1m",
-    {'code': '38','effect': 'Setforegroundcolor','notes': 'Nextargumentsare`5;n`or`2;r;g;b`,seebelow'},
-    {'code': '39','effect': 'Defaultforegroundcolor','notes': 'implementationdefined(accordingtostandard)'},
-    {'code': '40–47','effect': 'Setbackgroundcolor','notes': 'Seecolortablebelow'},
-    {'code': '48','effect': 'Setbackgroundcolor','notes': 'Nextargumentsare`5;n`or`2;r;g;b`,seebelow'},
-    {'code': '49','effect': 'Defaultbackgroundcolor','notes': 'implementationdefined(accordingtostandard)'},
-    {'code': '51','effect': 'Framed','notes': ''},
-    {'code': '52','effect': 'Encircled','notes': ''},
-    {'code': '53','effect': 'Overlined','notes': ''},
-    {'code': '54','effect': 'Notframedorencircled','notes': ''},
-    {'code': '55','effect': 'Notoverlined','notes': ''},
-    {'code': '60','effect': 'ideogramunderline','notes': 'hardlyeversupported'},
-    {'code': '61','effect': 'ideogramdoubleunderline','notes': 'hardlyeversupported'},
-    {'code': '62','effect': 'ideogramoverline','notes': 'hardlyeversupported'},
-    {'code': '63','effect': 'ideogramdoubleoverline','notes': 'hardlyeversupported'},
-    {'code': '64','effect': 'ideogramstressmarking','notes': 'hardlyeversupported'},
-    {'code': '65','effect': 'ideogramattributesoff','notes': 'resettheeffectsofallof60-64'},
-    {'code': '90–97','effect': 'Setbrightforegroundcolor','notes': 'aixterm(notinstandard)'},
-    {'code': '100–107','effect': 'Setbrightbackgroundcolor','notes': 'aixterm(notinstandard)'}]
+    {'code': '38', 'effect': 'Setforegroundcolor',
+        'notes': 'Nextargumentsare`5;n`or`2;r;g;b`,seebelow'},
+    {'code': '39', 'effect': 'Defaultforegroundcolor',
+        'notes': 'implementationdefined(accordingtostandard)'},
+    {'code': '40–47', 'effect': 'Setbackgroundcolor', 'notes': 'Seecolortablebelow'},
+    {'code': '48', 'effect': 'Setbackgroundcolor',
+        'notes': 'Nextargumentsare`5;n`or`2;r;g;b`,seebelow'},
+    {'code': '49', 'effect': 'Defaultbackgroundcolor',
+        'notes': 'implementationdefined(accordingtostandard)'},
+    {'code': '51', 'effect': 'Framed', 'notes': ''},
+    {'code': '52', 'effect': 'Encircled', 'notes': ''},
+    {'code': '53', 'effect': 'Overlined', 'notes': ''},
+    {'code': '54', 'effect': 'Notframedorencircled', 'notes': ''},
+    {'code': '55', 'effect': 'Notoverlined', 'notes': ''},
+    {'code': '60', 'effect': 'ideogramunderline', 'notes': 'hardlyeversupported'},
+    {'code': '61', 'effect': 'ideogramdoubleunderline',
+        'notes': 'hardlyeversupported'},
+    {'code': '62', 'effect': 'ideogramoverline', 'notes': 'hardlyeversupported'},
+    {'code': '63', 'effect': 'ideogramdoubleoverline',
+        'notes': 'hardlyeversupported'},
+    {'code': '64', 'effect': 'ideogramstressmarking', 'notes': 'hardlyeversupported'},
+    {'code': '65', 'effect': 'ideogramattributesoff',
+        'notes': 'resettheeffectsofallof60-64'},
+    {'code': '90–97', 'effect': 'Setbrightforegroundcolor',
+        'notes': 'aixterm(notinstandard)'},
+    {'code': '100–107', 'effect': 'Setbrightbackgroundcolor', 'notes': 'aixterm(notinstandard)'}]
 
-def print_ansi_list():
-    for line in ANSI_DICT_LIST:
 
-
-locale.setlocale(locale.LC_ALL, "")
-CODE = locale.getpreferredencoding()
-VERSION = "text_colors version 0.8.3"
-
-FG_DICT: dict[str, str] = {
+FG_DICT: Dict[str, str] = {
     # The first 11 codes are just favorites I picked.
     # Some have short and long names for duplicates.
     # Add more personalized colors by name if desired ...
@@ -224,7 +207,7 @@ FG_DICT: dict[str, str] = {
     "BWHITE": "\u001b[37;1m",
 }
 
-BG_DICT: dict[str, str] = {
+BG_DICT: Dict[str, str] = {
     # The first 11 codes are just favorites I picked.
     # Some have short and long names for duplicates.
     # Add more personalized colors by name if desired ...
@@ -264,7 +247,7 @@ BG_DICT: dict[str, str] = {
     "BG_BWhite": "\u001b[47;1m",
 }
 
-FLAGS_DICT: dict[str, str] = {
+FLAGS_DICT: Dict[str, str] = {
     # ANSI STANDARD ATTRIBUTES
     "NONE": "",
     "RESET": "\u001b[0m",              # Reset / Normal
@@ -277,32 +260,38 @@ FLAGS_DICT: dict[str, str] = {
     # "STRIKE": '\u001b[9m',           # Strike-through        Crossed-out
 }
 
-# Fills in the 256 set color codes
 
+def print_ansi_list():
+    """ Print list of ansi color codes """
+    for line in ANSI_DICT_LIST:
+        print(line)
+
+
+# Fills in the 256 set color codes
 #   => (0 to 231) colors in the format 'COLOR133'
-tmp_color_code: int = 0
-for tmp_color_code in range(0, 232):
-    FG_DICT["COLOR" + str(tmp_color_code)] = "\u001b[38;5;" + str(tmp_color_code) + "m"
-    BG_DICT["COLOR" + str(tmp_color_code)] = "\u001b[48;5;" + str(tmp_color_code) + "m"
+for _ in range(0, 232):
+    FG_DICT["COLOR" + str(_)
+            ] = "\u001b[38;5;" + str(_) + "m"
+    BG_DICT["COLOR" + str(_)
+            ] = "\u001b[48;5;" + str(_) + "m"
 
 #   => (232 to 255) grayscale in the format 'GRAY243'
-for tmp_color_code in range(232, 255):
-    key = "GRAY" + str(tmp_color_code)
-    FG_DICT["GRAY" + str(tmp_color_code)] = "\u001b[38;5;" + str(tmp_color_code) + "m"
-    BG_DICT["GRAY" + str(tmp_color_code)] = "\u001b[48;5;" + str(tmp_color_code) + "m"
+for _ in range(232, 255):
+    key = "GRAY" + str(_)
+    FG_DICT["GRAY" + str(_)] = "\u001b[38;5;" + \
+        str(_) + "m"
+    BG_DICT["GRAY" + str(_)] = "\u001b[48;5;" + \
+        str(_) + "m"
 
 # Turn off color when using ipython, otherwise leave it on
 ENABLE_COLOR: bool = True
-if py_shell() in ["ipython", "ipython-notebook"]:
+if syst.py_shell() in ["ipython", "ipython-notebook"]:
     ENABLE_COLOR = False
 
-# Choose your favorite color defaults here.
-    # These will apply defaults to each print for the duration of this
-    # program unless the variables are changed. They may be changed at
-    # any time.
 DEFAULT_FG_COLOR: str = "MAIN"
 DEFAULT_BG_COLOR: str = "BG_BLACK"
 DEFAULT_FLAGS: str = "RESET"
+
 
 def color_encode(
         fg_color: str = DEFAULT_FG_COLOR,
@@ -327,16 +316,9 @@ def color_encode(
     return s
 
 
-# DEFAULT_ENCODE: User Default Color Code: set this to your favorite
-#   default and normal prints will use this color code
 DEFAULT_ENCODE: str = color_encode(
     DEFAULT_FG_COLOR, DEFAULT_BG_COLOR, DEFAULT_FLAGS)
-# THIS VARIABLE CONTROLS HOW THE COLOR CODES ARE RESET AFTER PRINTING
-# Set to '' to have no color reset in each print statement.
-# Set to DEFAULT_ENCODE to return to normalself.
-# Set to another code for temporary default in a section
 STICKY_ENCODE: str = DEFAULT_ENCODE
-# This code will reset all ANSI codes to default.
 RESET_ENCODE: str = color_encode("DEF_FG", "DEF_BG", "RESET")
 
 
@@ -419,8 +401,6 @@ def loading(count: int) -> int:
 
         Returns:
             int: 0 for success; > 0 for error code """
-    import time
-    import random
 
     width: int = 0
     w_string: str = ""
@@ -530,7 +510,7 @@ def flags_samples():
 if __name__ == "__main__":
     # TEST SAMPLES to use if script is run from the command lines
     USAGE = (
-        VERSION + """
+        version + """
 
 author    - Michael Treanor  <skeptycal@gmail.com>
 copyright - 2019 (c) Michael Treanor
@@ -551,10 +531,10 @@ Usage: text_colors {demo|version|help}
     else:
         arg1: str = sys.argv[1].lower()
         if arg1 in ["version", "-v", "--version"]:
-            color_cycle(88, VERSION)
+            color_cycle(88, version)
         elif arg1 in ["help", "-h", "--help"]:
             color_print(color_encode(
-                "BWHITE", "PURPLEHAZE", "ITALIC"), VERSION)
+                "BWHITE", "PURPLEHAZE", "ITALIC"), version)
             print()
             color_cycle(88, ANSI_CHART)
         elif arg1 in ["demo", "-d", "--demo"]:
@@ -566,8 +546,8 @@ Usage: text_colors {demo|version|help}
             # color_cycle(42, usage)
 
     print("\n\n")
-    print("python version (pyver): ", pyver())
-    print("python shell (py_shell): ", py_shell())
+    print("python version (pyver): ", syst.pyver())
+    print("python shell (py_shell): ", syst.py_shell())
 
 # Resources:
 

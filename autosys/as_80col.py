@@ -5,33 +5,30 @@
 # https://www.github.com/skeptycal
 # https://www.twitter.com/skeptycal
 
-if True:
-    from autosys import autosys_constants
 
-    # import fileinput
-    # import sys
-    # import textwrap
-    # import locale
-    # from typing import List
-
-    # DEFAULT_CLI_WIDTH: int = 79
-    # DEFAULT_LANG, DEFAULT_ENCODING = locale.getlocale()
-    # DEFAULT_LANG: str = locale.getlocale()[0] if locale.getlocale()[0] else 'en_US'
-    # DEFAULT_ENCODING: str = locale.getlocale()[1] if locale.getlocale()[1] else 'UTF-8'
-    # file_list: List[str] = []
+import fileinput
+import sys
+import pathlib
+import textwrap
+import locale
+from typing import List
+from autosys.as_constants import DEFAULT
 
 
-def create_test_file(f: str, encoding: str = DEFAULT_ENCODING) -> str:
-    with open("testfile.txt", mode="w", encoding="utf8", errors="ignore") as tf:
+def create_test_file(filename: str = "testfile.txt", encoding: str = as_constants.DEFAULT_ENCODING) -> str:
+    """ Create test file and return resolved Purepath """
+    p = pathlib.Path(filename)
+    p = p.resolve()
+    with open(p, mode="w", encoding=encoding, errors="ignore") as f:
         for n in range(20):
             line_str = "X" * (n + 70) + "\n"
             # print(line_str)
-            tf.write(line_str)
-    return f
+            f.write(line_str)
+    return p
 
 
 def trunc_string_width(s: str) -> str:
-    pass
+    return s
 
 
 if __name__ == "__main__":

@@ -5,7 +5,6 @@ autosys_system.py
 """
 from __future__ import absolute_import, print_function
 
-from version import __version__
 import time
 import inspect
 import locale
@@ -15,9 +14,8 @@ import sys
 import traceback
 from typing import Any, Dict, List
 
-from autosys import __version__ as version
 
-sys.path.insert(0, os.path.abspath("."))
+# sys.path.insert(0, os.path.abspath("."))
 
 
 # ##############################################
@@ -52,30 +50,30 @@ def basename(filename: str) -> str:
     return os.path.basename(filename)
 
 
-# def py_path() -> List:
-#     """ Return list of current python path elements. """
-#     try:
-#         return os.environ['PYTHONPATH'].split(os.pathsep)
-#     except KeyError:
-#         return []
+def py_path() -> List:
+    """ Return list of current python path elements. """
+    try:
+        return os.environ['PYTHONPATH'].split(os.pathsep)
+    except KeyError:
+        return []
 
 
-# def py3up() -> bool:
-#     """ Return True if 'Python >= 3' else False
+def py3up() -> bool:
+    """ Return True if 'Python >= 3' else False
 
-#         If you want to detect pre-Python 3 and don't want to import anything...
-#         ... you can (ab)use list comprehension scoping changes
-#     """
-#     # https://stackoverflow.com/questions/1093322/how-do-i-check-what-version-of-python-is-running-my-script/35294211
-#     # https://stackoverflow.com/a/52825819/9878098
-#     return (lambda x: [x for x in [False]] and None or x)(True)
+        If you want to detect pre-Python 3 and don't want to import anything...
+        ... you can (ab)use list comprehension scoping changes
+    """
+    # https://stackoverflow.com/questions/1093322/how-do-i-check-what-version-of-python-is-running-my-script/35294211
+    # https://stackoverflow.com/a/52825819/9878098
+    return (lambda x: [x for x in [False]] and None or x)(True)
 
 
-# def pyver() -> str:
-#     """ Returns string with python version number in major.minor.micro format.
-#             (e.g. 3.7.3  or  2.7.12)
-#     """
-#     return '.'.join(str(_) for _ in __import__('sys').version_info[:3])
+def pyver() -> str:
+    """ Returns string with python version number in major.minor.micro format.
+            (e.g. 3.7.3  or  2.7.12)
+    """
+    return '.'.join(str(i) for i in __import__('sys').version_info[:3])
 
 
 def py_shell() -> str:
