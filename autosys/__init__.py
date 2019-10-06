@@ -39,7 +39,7 @@ if True:  # designed to be run globally from directory in system path
 
 if True:  # package defaults
     # TODO setup a way to automatically track semvers
-    __version__: str = "1.0.2"
+    __version__: str = "1.1.0"
     version: str = __version__
     __version_info__: Tuple[int] = [int(_) for _ in version.split('.')]
 

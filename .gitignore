@@ -14,7 +14,7 @@ _repo/
 **/*/.svn/
 **/*/.tox
 .vscode/
-**/*/*.egg-info
+*egg-info/
 **/*/*.py[cod]
 **/*/*.pyc
 **/*/*.sw[a-z]

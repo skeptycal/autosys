@@ -1,11 +1,32 @@
 # AutoSys
 
-[![Build Status](https://travis-ci.com/skeptycal/sys-py.svg?branch=master)](https://travis-ci.com/skeptycal/sys-py)
-![https://pypi.python.org/pypi/ansicolors](http://img.shields.io/pypi/v/ansicolors.svg?style=flat) ![https://pypi.python.org/pypi/ansicolors](https://img.shields.io/pypi/pyversions/ansicolors.svg) ![https://pypi.python.org/pypi/ansicolors](https://img.shields.io/pypi/implementation/ansicolors.svg) ![https://pypi.python.org/pypi/ansicolors](https://img.shields.io/pypi/wheel/ansicolors.svg) ![https://pypi.python.org/pypi/ansicolors](https://img.shields.io/badge/test_coverage-100%25-6600CC.svg) ![https://pypi.python.org/pypi/ansicolors](https://img.shields.io/badge/branch_coverage-100%25-6600CC.svg)
+---
+
+[![Build Status](https://travis-ci.com/skeptycal/autosys.svg?branch=master)](https://travis-ci.com/skeptycal/autosys)
+
+![https://pypi.python.org/pypi/autosys](http://img.shields.io/pypi/v/autosys.svg?style=flat)
+
+![https://pypi.python.org/pypi/autosys](https://img.shields.io/pypi/pyversions/autosys.svg)
+
+![https://pypi.python.org/pypi/autosys](https://img.shields.io/pypi/implementation/autosys.svg)
+
+![https://pypi.python.org/pypi/autosys](https://img.shields.io/pypi/wheel/autosys.svg)
+
+![https://pypi.python.org/pypi/autosys](https://img.shields.io/badge/test_coverage-100%25-6600CC.svg)
+
+![https://pypi.python.org/pypi/autosys](https://img.shields.io/badge/branch_coverage-100%25-6600CC.svg)
 
 # Getting Started
 
 ## Prerequisites
+
+Autosys requires the following modules.
+
+- Python 3.6+
+- requests
+- pyyaml (for optional YAML serialization)
+- ujson (for optional JSON speedups)
+- numpy (for optional numpy derivatives)
 
 ## Installing
 
