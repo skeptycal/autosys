@@ -93,7 +93,6 @@ install:
 # command to run tests
 
 script:
-  - ./.travis/run tox
   - pytest
 
 deploy:
