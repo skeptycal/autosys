@@ -9,7 +9,7 @@
 **/*/.hgtags/
 **/*/.idea
 **/*/.mypy_cache/
-**/*/.pytest_cache/
+**/*/.pytest_cache/*
 **/*/.svn/
 **/*/.tox
 **/*/.vscode/
