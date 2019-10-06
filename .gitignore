@@ -23,7 +23,6 @@ build/
 dist/
 **/*/build/
 **/*/dist/
-**/*/doc/_build/
 **/*/doc/technical_reference/extensions.rst
 **/*/doc/technical_reference/features.rst
 **/*/htmlcov/
