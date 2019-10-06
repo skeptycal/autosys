@@ -16,7 +16,7 @@
 
 ## Coding style tests
 
-
+Pylint and Autopep8 are used to enforce coding conventions.
 
 ## Deployment
 

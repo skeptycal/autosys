@@ -6,20 +6,20 @@ verify_ssl = true
 [dev-packages]
 autopep8 = "*"
 coverage = "*"
+flake8 = "*"
 pylint = "*"
 pytest = "*"
 pytest-cov = "*"
 pytest-runner = "*"
 pytest-xdist = "*"
-flake8 = "*"
 yapf = "*"
 
 [packages]
-cython = "*"
+ansicolors = "*"
+Cython = "*"
 Flask = "*"
 requests = "*"
 setuptools = "*"
-ansicolors = "*"
 ujson = "*"
 
 [requires]

@@ -1,3 +1,8 @@
+- version: 1.1.0
+  date: October 5, 2019
+  notes: >
+    - refactor package, constants, functions, and string processing.
+
 - version: 1.0.2
   date: September 25, 2019
   notes: >
@@ -6,38 +11,33 @@
 - version: 1.0.1
   date: September 24, 2019
   notes: >
-    - remove extraneous comments
-    - update CHANGES.yml
-    - add DEFAULT_INIT to allow for default behavior
+    - remove extraneous comments - update CHANGES.yml - add DEFAULT_INIT to
+    allow for default behavior
       (1 = use init by default, 0 = only show usage)
 
 - version: 1.0.0
   date: September 24, 2019
   notes: >
-    - complete tests on temp repo - success
-    - test on syspy.py repo - success
-    - first official release
+    - complete tests on temp repo - success - test on syspy.py repo - success -
+    first official release
 - version: 0.9.0
   date: September 24, 2019
   notes: >
-    - refine and test all args in checkargs
-    - default with no arg can be set to init or usage
+    - refine and test all args in checkargs - default with no arg can be set to
+    init or usage
 - version: 0.8.0
   date: September 24, 2019
   notes: >
-    - allow for git commits
-    - add checkargs
-    - add _check_paths at start of main loop so it is available to all functions
+    - allow for git commits - add checkargs - add _check_paths at start of main
+    loop so it is available to all functions
 - version: 0.7.0
   date: September 24, 2019
   notes: >
-    - e2e test in temp repo
-    - modified to serve as both installer and maintainer
+    - e2e test in temp repo - modified to serve as both installer and maintainer
 - version: 0.6.0
   date: September 24, 2019
   notes: >
-    - generate template pre-commit-config.yaml
-    - setup and test pre-commit
+    - generate template pre-commit-config.yaml - setup and test pre-commit
 - version: 0.5.0
   date: September 24, 2019
   notes: >
@@ -45,25 +45,27 @@
 - version: 0.5.0
   date: September 24, 2019
   notes: >
-    - refactor setup into three functions for clarity
-    - reorganize _setup_paths for clarity
-    - test _setup_paths with temp project
-    - move template to dedicated repo and upload
+    - refactor setup into three functions for clarity - reorganize _setup_paths
+    for clarity - test _setup_paths with temp project - move template to
+    dedicated repo and upload
 - version: 0.4.0
   date: September 24, 2019
   notes: >
-    - add path tests
-    - complete refactor of new paths for README and version.py
+    - add path tests - complete refactor of new paths for README and version.py
 - version: 0.2.0
   date: September 23, 2019
   notes: >
-    - refactor path variables for script directory and repo directory
-    - add grep extractor version.py
-    - add default common README paths to check first
+    - refactor path variables for script directory and repo directory - add grep
+    extractor version.py - add default common README paths to check first
 - version: 0.0.1
   date: September 22, 2019
   notes: >
     Initial Commits. Template repo for python module with CI pipeline.
-    (Services: Coverage.py, Cython, Git, GitHub, Travis CI, MIT License, Python Setuptools, pipenv, pre-commit, pytest, tox, pypi.org, python 3.7)
+    (Services: Coverage.py, Cython, Git, GitHub, Travis CI, MIT License, Python
+    Setuptools, pipenv, pre-commit, pytest, tox, pypi.org, python 3.7)
 
-    (Files: __init__, .coveragerc, .cython.py, .gitignore, .pylintrc, .python-version, .travis.yml, AUTHORS, CHANGES.yml, CODE_OF_CONDUCT.md, LICENSE, MANIFEST.in, Pipfile, Pipfile.lock, pytest.ini, README.rst, references, requirements.txt, setup.py, syspy.py, test/text.py, tox.ini, toxcov.ini, version.py)
+    (Files: __init__, .coveragerc, .cython.py, .gitignore, .pylintrc,
+    .python-version, .travis.yml, AUTHORS, CHANGES.yml, CODE_OF_CONDUCT.md,
+    LICENSE, MANIFEST.in, Pipfile, Pipfile.lock, pytest.ini, README.rst,
+    references, requirements.txt, setup.py, syspy.py, test/text.py, tox.ini,
+    toxcov.ini, version.py)

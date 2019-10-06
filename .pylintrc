@@ -70,7 +70,7 @@ disable=apply-builtin,
         cmp-method,
         coerce-builtin,
         coerce-method,
-        comprehension-escape
+        comprehension-escape,
         delslice-method,
         deprecated-itertools-function,
         deprecated-operator-function,
