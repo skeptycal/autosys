@@ -21,7 +21,6 @@
 **/*/build-stamp
 **/*/build/
 **/*/dist/
-**/*/dist/
 **/*/doc/_build
 **/*/doc/technical_reference/extensions.rst
 **/*/doc/technical_reference/features.rst
@@ -30,3 +29,4 @@
 **/*/pylint.egg-info/
 **/*/pyve
 **/*/references
+**/*/tempCodeRunnerFile.py
