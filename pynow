@@ -61,7 +61,15 @@ _git_it() {
         git push --set-upstream origin $(git_current_branch)
     fi
 }
+
 _pip_it() {
+    if ! [ -s Pipfile ]; then
+        pipenv install -e .
+        pipenv shell
+        pipenv graph
+    fi
+}
+_pc_it() {
     # install pipenv using default Pipfile
     if ! [ -s .pre-commit-config.yaml ]; then
         pre-commit sample-config >.pre-commit-config.yaml
@@ -83,6 +91,7 @@ _setup_files() {
 
     _git_it
     _pip_it
+    _pc_it
 
     # Pypi package initial setup
     [[ -d "${PACKAGE_NAME}" ]] || mkdir -pv "${PACKAGE_NAME}" &>/dev/null
@@ -104,8 +113,7 @@ _setup_repo() {
     # allows script to be run repeatedly as an updater
 
 }
-_update_repo() {
-}
+
 check_args() {
     case "$1" in
     init | -i | --init)

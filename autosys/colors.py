@@ -159,3 +159,6 @@ blink2 = partial(color, style="blink2")
 negative = partial(color, style="negative")
 concealed = partial(color, style="concealed")
 crossed = partial(color, style="crossed")
+
+if __name__ == "__main__":
+    pass

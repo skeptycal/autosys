@@ -1,9 +1,122 @@
-language: minimal
-# language: python
-# python:
-#   - "3.6"
-#   - "3.7"
-#   - "nightly"
-# install:
-#   - python setup.py install
-# script: py.test --assert=plain
+# https://travis-ci.com/skeptycal/autosys
+
+# language: minimal
+cache:
+  directories:
+    - "$HOME/.cache/pip"
+    - "$HOME/.pyenv"
+
+language: python
+
+python:
+  - "3.6"
+  - "3.7"
+  - "nightly"
+
+branches:
+  only:
+    - master
+    - dev
+
+matrix:
+  include:
+    - python: 3.6
+    - python: 3.7
+    - python: pypy
+      dist: trusty
+    - python: pypy3
+      dist: trusty
+    - python: 3.7
+      services:
+        - docker
+      env: BUILD_SDIST=true
+    - name: Python 2.7.12 on macOS
+      os: osx
+      language: objective-c
+      env: PYENV_VERSION=2.7.12
+    - name: Python 3.5.5 on macOS
+      os: osx
+      language: objective-c
+      env: PYENV_VERSION=3.5.5
+    - name: Python 3.6.5 on macOS
+      os: osx
+      language: objective-c
+      env: PYENV_VERSION=3.6.5
+  fast_finish: true
+
+  allow_failures:
+    - python: pypy
+      dist: trusty
+    - python: pypy3
+      dist: trusty
+    - python: 3.7
+      services:
+        - docker
+      env: BUILD_SDIST=true
+    - name: Python 2.7.12 on macOS
+      os: osx
+      language: objective-c
+      env: PYENV_VERSION=2.7.12
+    - name: Python 3.5.5 on macOS
+      os: osx
+      language: objective-c
+      env: PYENV_VERSION=3.5.5
+    - name: Python 3.6.5 on macOS
+      os: osx
+      language: objective-c
+      env: PYENV_VERSION=3.6.5
+
+addons:
+  apt:
+    packages:
+      - libgnutls-dev
+
+# For a list of available versions, run
+#     aws s3 ls s3://travis-python-archives/binaries/ubuntu/16.04/x86_64/
+jobs:
+  include:
+    # 3.5.2 is interesting because it's the version in ubuntu 16.04, and due to python's
+    # "provisional feature" rules there are significant differences between patch
+    # versions for asyncio and typing.
+    - python: 3.5.2
+    - python: "3.5"
+    - python: "3.6"
+    - python: "3.7"
+    - python: pypy3.5-5.10.1
+    - python: nightly
+
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
+  - pip install coveralls
+
+# command to run tests
+
+script:
+  - ./.travis/run tox
+  - pytest
+
+deploy:
+  provider: releases
+  file:
+    - dist/*.whl
+    - dist/*.tar.gz
+  file_glob: true
+  on:
+    repo: skeptycal/autosys
+    tags: true
+  skip_cleanup: true
+
+after_success:
+  # Upload coverage data to codecov
+  - codecov
+  - coveralls
+
+notifications:
+  # irc:
+  #   channels: "irc.freenode.org#fabric"
+  #   template:
+  #     - "%{repository_name}@%{branch}: %{message} (%{build_url})"
+  #   on_success: change
+  #   on_failure: change
+  email: skeptycal@gmail.com
