@@ -33,9 +33,10 @@ _setup_paths() {
     PACKAGE_NAME="${REPO_PATH}/${REPO_NAME}"
     INIT_PY="${PACKAGE_NAME}/__init__.py"
     BACKUP_DIR="${REPO_PATH}/bak"
+    DIST_DIR="${REPO_PATH}/dist"
     TEMPLATE_DIRECTORY="/Volumes/Data/skeptycal/Library/CloudStorage/iCloud Drive/Documents/coding/bin/utilities/python/_python_template"
 
-    [ -s version.py ] && VERSION="$(cat version.py | grep __version__ | cut -d "'" -f 2)" || VERSION='BETA'
+    [ -s "$INIT_PY" ] && VERSION="$(cat $INIT_PY | grep '__version__' | head -n 1 | cut -d "'" -f 2)" || VERSION='BETA'
     VERSION_TEXT="""${MAIN:-}${SCRIPT_NAME}${WHITE:-} (version ${VERSION})"""
 
     USAGE_ARGS="{init|build|commit MESSAGE|version|usage|help|test|readme}"
@@ -61,7 +62,6 @@ _git_it() {
         git push --set-upstream origin $(git_current_branch)
     fi
 }
-
 _pip_it() {
     if ! [ -s Pipfile ]; then
         pipenv install -e .
@@ -113,7 +113,6 @@ _setup_repo() {
     # allows script to be run repeatedly as an updater
 
 }
-
 check_args() {
     case "$1" in
     init | -i | --init)
@@ -155,9 +154,14 @@ check_args() {
 
     build)
         [[ $(which twine) ]] || pip install twine
+        # most times it is better to upload only the latest version
+        #   rm -rf "${DIST_DIR}/*" # to use twine upload "${DIST_DIR}/*" --verbose
         python setup.py sdist bdist_wheel
-        twine upload --repository-url 'https://test.pypi.org/legacy/' 'dist/*'
-        twine upload 'dist/*'
+        # this is the pypi test repo for testing uploads:
+        #   twine upload --repository-url 'https://test.pypi.org/legacy/' 'dist/*'
+        # twine upload "${DIST_DIR}/*" --verbose
+        twine upload "${DIST_DIR}/${REPO_NAME}-${VERSION}.tar.gz"
+        twine upload "${DIST_DIR}/${REPO_NAME}-${VERSION}-py3-none-any.whl"
         ;;
 
     commit | -m | --message)
