@@ -1,15 +1,21 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+""" as_80col.py """
+# copyright (c) 2019 Michael Treanor
+# https://www.github.com/skeptycal
+# https://www.twitter.com/skeptycal
 
-from __future__ import print_function
-
+from typing import List
+import autosys
+import fileinput
+import locale
 import os
+import pathlib
 import sys
-
-import syspy
+import textwrap
 
 # make sure we're testing colors module in this dir, not system
-from .colors import COLORS, STYLES, color
+from colors import COLORS, STYLES, color
 
 sys.path.insert(0, os.path.abspath("."))
 
@@ -20,7 +26,7 @@ if syspy.py_shell() in ["ipython", "ipython-notebook"]:
 
 
 def test_styles(bg, fg):
-    for style in (None,) + STYLES:
+    for style in (None, ) + STYLES:
         cname = fg or "default"
         # renamed None color to default to avoid confusion wiht normal style
         if cname.startswith("bright"):
@@ -32,7 +38,6 @@ def test_styles(bg, fg):
 
 # doubled number of colors, so have to split test into halves to
 # test on standard 80-column terminal
-
 
 colors = [None] + list(COLORS[:8])
 brights = list(COLORS[8:])

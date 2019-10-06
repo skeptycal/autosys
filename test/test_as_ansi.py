@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """
 Tests for colors module
 """
@@ -8,8 +7,7 @@ import sys
 
 import pytest
 from pytest import raises
-
-from colors import *
+from autosys.as_ansi import *
 
 _PY2 = sys.version_info[0] == 2
 
@@ -65,14 +63,14 @@ def test_background_color():
 
 
 def test_mixed_color():
-    assert (
-        color("PINK/GRAY", fg="pink", bg="gray")
-        == "\x1b[38;2;255;192;203;48;2;128;128;128mPINK/GRAY\x1b[0m"
-    )
-    assert (
-        color("GRAY/PINK", fg="gray", bg="pink")
-        == "\x1b[38;2;128;128;128;48;2;255;192;203mGRAY/PINK\x1b[0m"
-    )
+    assert (color(
+        "PINK/GRAY", fg="pink",
+        bg="gray") == "\x1b[38;2;255;192;203;48;2;128;128;128mPINK/GRAY\x1b[0m"
+            )
+    assert (color(
+        "GRAY/PINK", fg="gray",
+        bg="pink") == "\x1b[38;2;128;128;128;48;2;255;192;203mGRAY/PINK\x1b[0m"
+            )
 
 
 def test_style_color():
@@ -107,9 +105,8 @@ def test_remove_color():
 
 def test_remove_color_extra():
     """Test other sequences that color would not add, but that are seen in the wild."""
-    assert (
-        strip_color("some\x1b[Kthing") == "something"
-    )  # remove EL (erase to end of line)
+    assert (strip_color("some\x1b[Kthing") == "something"
+            )  # remove EL (erase to end of line)
     # remove truncated style ending
     assert strip_color("some\x1b[mthing") == "something"
     # remove odd color ends
@@ -149,10 +146,8 @@ def test_partial_functions():
 def test_doc_example():
     """Text examples given in documentation"""
     assert color("my string", fg="blue") == "\x1b[34mmy string\x1b[0m"
-    assert (
-        color("some text", fg="red", bg="yellow", style="underline")
-        == "\x1b[31;43;4msome text\x1b[0m"
-    )
+    assert (color("some text", fg="red", bg="yellow",
+                  style="underline") == "\x1b[31;43;4msome text\x1b[0m")
 
 
 def test_custom_partial():
