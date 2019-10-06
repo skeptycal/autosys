@@ -18,19 +18,17 @@ DEFAULT_CLI_DISPLAY_WIDTH: int = 80
 DEFAULT_CLI_FIELD_PADDING: int = 15
 DEFAULT_CLI_FIELD_MIN_PADDING: int = 10
 
+# class TestException(Exception):
+# """
+# Exception handler override
+# """
 
-class TestException(Exception):
-    """
-    Exception handler override
-    """
+# Reference: https://stackoverflow.com/questions/9823936/python-how-do-i-know-what-type-of-exception-occurred
+# template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+# message = template.format(type(ex).__name__, ex.args)
+# print message
 
-    # Reference: https://stackoverflow.com/questions/9823936/python-how-do-i-know-what-type-of-exception-occurred
-    # template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-    # message = template.format(type(ex).__name__, ex.args)
-    # print message
-
-    def __init__(self, parameter_list):
-        Exception.__init__()
+# a = 1
 
 
 def timeit(method):
@@ -354,8 +352,8 @@ if __name__ == "__main__":
     #     # print(key, locals().get(key))
     #     print_var(key, locals().get(key))
     print()
-    get_module_sig(inspect, )
-    log = logging.getLogger()
+    # get_module_sig(inspect, )
+    # log = logging.getLogger()
     print(_run_tests())
     print()
     print("... Tests Complete.")
