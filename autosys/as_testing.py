@@ -37,7 +37,6 @@ def timeit(method):
     """
     Decorator - code timer for comparing and optimizing snippets
     """
-
     def timed(*args, **kw):
         ts = time.time()
         result = method(*args, **kw)
@@ -49,25 +48,29 @@ def timeit(method):
     return timed
 
 
-def get_v_name(the_var: Any) -> str:
+def v_name(the_var: Any) -> str:
     """
     Return string containing name of the_var
     """
-    return [
-        var_name for var_name, var_val
-        in inspect.currentframe().f_back.f_locals.items()
-        if var_val is the_var
-    ][0]
+    try:
+        result = [
+            var_name for var_name, var_val in
+            inspect.currentframe().f_back.f_locals.items()
+            if var_val is the_var
+        ][0]
+        return result
+    except IndexError as e:
+        return ''
 
 
 def name_var(the_var: Any) -> List[str]:
     """
-    Return tuple containing name and value of the_var
+    Return list containing name and value of the_var
     """
     return [[
-        var_name for var_name, var_val
-        in inspect.currentframe().f_back.f_locals.items()
-        if var_val is the_var][0], the_var]
+        var_name for var_name, var_val in
+        inspect.currentframe().f_back.f_locals.items() if var_val is the_var
+    ][0], the_var]
 
 
 def lineno():
@@ -112,9 +115,7 @@ def py_ls(path_name: str = ".") -> Exception:
     return None
 
 
-def _add_dots(s: str,
-              n: int,
-              suffix: str = ' ...',
+def _add_dots(s: str, n: int, suffix: str = ' ...',
               add_dots: bool = True) -> str:
     """
     Truncate and return formatted string to fit <s> in <n> spaces
@@ -147,14 +148,12 @@ def get_module_sig(self, module, parameter_list):
     #     print('{} : {!r}'.format(name, data))
 
 
-def print_var(
-    the_string_name: str,
-    the_string: str,
-    p: int = DEFAULT_CLI_FIELD_PADDING,
-    w: int = DEFAULT_CLI_DISPLAY_WIDTH,
-    sep: str = DEFAULT_DICT_DISPLAY_SEPARATOR,
-    print_it: bool = True
-) -> str:
+def print_var(the_string_name: str,
+              the_string: str,
+              p: int = DEFAULT_CLI_FIELD_PADDING,
+              w: int = DEFAULT_CLI_DISPLAY_WIDTH,
+              sep: str = DEFAULT_DICT_DISPLAY_SEPARATOR,
+              print_it: bool = True) -> str:
     """ Format string for 'var : value' pattern
         string_tuple: Tuple[str, str] - (name, value) of variable
         p: int - padding; len of name field
@@ -162,10 +161,11 @@ def print_var(
         sep: str - separator
         print_it: bool - print to CLI within function
         """
-    str_name = [var_name for var_name, var_val
-                in inspect.currentframe().f_back.f_locals.items()
-                if var_val is the_string_name
-                ][0]
+    str_name = [
+        var_name for var_name, var_val in
+        inspect.currentframe().f_back.f_locals.items()
+        if var_val is the_string_name
+    ][0]
     print('str_name: ', str_name)
     result: str = ''
     if p == 0:
@@ -229,7 +229,7 @@ def _pprint_globals():
     test_list.append("five")
 
 
-def _pprint_dict_table(data: Dict[Any], name: str = "Data Table"):
+def _pprint_dict_table(data: Dict[Any, Any], name: str = "Data Table"):
     """
     Pretty Print dictionary in table format.
     """
@@ -332,7 +332,7 @@ if __name__ == "__main__":
 
     print()
     print("Debug print values")
-    print("*"*80)
+    print("*" * 80)
     print()
     # print('_add_dots(name, 25, 15) : ', _add_dots(name, 25))
     # print('_add_dots(__name__, 25) : ', _add_dots(__name__, 25))
@@ -340,7 +340,7 @@ if __name__ == "__main__":
     # print('_add_dots(__version__, 15) : ', _add_dots(__version__, 15))
     # print('_add_dots(__package__, 25) : ', _add_dots(__package__, 25))
     print('v and name: ', name_var(__file__))
-    print('get name - file: ', get_v_name(__file__))
+    print('get name - file: ', v_name(__file__))
     print("")
     # print_var()
     # print(locals())

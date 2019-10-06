@@ -98,10 +98,13 @@ def _pprint_globals():
     print("*" * 40)
     width = max(len(i) for i in globals())
     print(f'(key width: {width})')
-    print(chr(174), ' ' * width - 2, chr(175))
     for s in globals():
         print("{:<15.15} : {:<64.64}".format(s, str(globals().get(s))))
     print()
+
+
+def njoin(l: List[str]) -> str:
+    return '\n'.join(l)
 
 
 def _pprint_code_tests(tests: List[Exception]):
