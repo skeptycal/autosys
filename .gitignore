@@ -1,5 +1,6 @@
 **/*/__pycache__/
 **/*/_references/
+_repo/
 **/*/_repo/
 **/*/.cache/
 **/*/.coverage
@@ -9,15 +10,17 @@
 **/*/.hgtags/
 **/*/.idea
 **/*/.mypy_cache/
-**/*/.pytest_cache/
+.pytest_cache/
 **/*/.svn/
 **/*/.tox
-**/*/.vscode/
+.vscode/
 **/*/*.egg-info
 **/*/*.py[cod]
 **/*/*.pyc
 **/*/*.sw[a-z]
 **/*/build-stamp
+build/
+dist/
 **/*/build/
 **/*/dist/
 **/*/doc/_build/
@@ -27,5 +30,6 @@
 **/*/log
 **/*/pylint.egg-info/
 **/*/pyve
+references/
 **/*/references
 **/*/tempCodeRunnerFile.py
