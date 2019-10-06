@@ -4,25 +4,10 @@
 # copyright (c) 2019 Michael Treanor
 # https://www.github.com/skeptycal
 # https://www.twitter.com/skeptycal
-from __future__ import absolute_import, print_function
-# import autosys
-from autosys import *
+
+# from __future__ import absolute_import, print_function
 # from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
-
-# the sys.path starts with the directory containing pysys.py which we want to remove as
-# that dir might be anywhere and could contain anything; it's not needed for locating
-# the pysys modules since those will be in site-packages once pysys is installed
-
-
-class TestException(Exception):
-
-    # Reference: https://stackoverflow.com/questions/9823936/python-how-do-i-know-what-type-of-exception-occurred
-    # template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-    # message = template.format(type(ex).__name__, ex.args)
-    # print message
-
-    def __init__(self, parameter_list):
-        Exception.__init__()
+from autosys import *
 
 
 def _get_builtins():

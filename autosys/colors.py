@@ -1,22 +1,19 @@
 # -*- coding: utf-8 -*-
 
-
-from __future__ import absolute_import, print_function
-
 import re
 import sys
 from functools import partial
 
-from .csscolors import css_colors, parse_rgb
+from autosys.csscolors import css_colors, parse_rgb
 
 _PY2 = sys.version_info[0] == 2
 string_types = basestring if _PY2 else str
 
 template = "\x1b[{0}m{1}\x1b[0m"
 
-
 # ANSI color names. There is also a "default"
-COLORS = ("black", "red", "green", "yellow", "blue", "magenta", "cyan", "white")
+COLORS = ("black", "red", "green", "yellow", "blue", "magenta", "cyan",
+          "white")
 
 # ANSI style names
 STYLES = (
