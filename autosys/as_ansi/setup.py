@@ -3,11 +3,9 @@
 
 from setuptools import setup
 
-import colors
-
 setup(
-    name="textcolors",
-    version="2.0.0",
+    name=name,
+    version=__version__,
     description="ANSI text colors for Python",
     long_description=open("README.rst").read(),
     author="Michael Treanor",
