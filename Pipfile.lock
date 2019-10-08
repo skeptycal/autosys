@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c205cb0bafff69ee28e27381c8cfae2149fda21308bcd804fecd48671acf739e"
+            "sha256": "424d731d566702869a5c0d3ef7cb0bc4a71fa9bd74e03f1abdc0cefeb9d051df"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,6 +16,9 @@
         ]
     },
     "default": {
+        "52b7b29": {
+            "path": "./autosys"
+        },
         "ansicolors": {
             "hashes": [
                 "sha256:00d2dde5a675579325902536738dd27e4fac1fd68f773fe36c21044eb559e187",
@@ -371,11 +374,11 @@
         },
         "pytest": {
             "hashes": [
-                "sha256:13c1c9b22127a77fc684eee24791efafcef343335d855e3573791c68588fe1a5",
-                "sha256:d8ba7be9466f55ef96ba203fc0f90d0cf212f2f927e69186e1353e30bc7f62e5"
+                "sha256:7e4800063ccfc306a53c461442526c5571e1462f61583506ce97e4da6a1d88c8",
+                "sha256:ca563435f4941d0cb34767301c27bc65c510cb82e90b9ecf9cb52dc2c63caaa0"
             ],
             "index": "pypi",
-            "version": "==5.2.0"
+            "version": "==5.2.1"
         },
         "pytest-cov": {
             "hashes": [
