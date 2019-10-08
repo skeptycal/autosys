@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "424d731d566702869a5c0d3ef7cb0bc4a71fa9bd74e03f1abdc0cefeb9d051df"
+            "sha256": "c205cb0bafff69ee28e27381c8cfae2149fda21308bcd804fecd48671acf739e"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,9 +16,6 @@
         ]
     },
     "default": {
-        "52b7b29": {
-            "path": "./autosys"
-        },
         "ansicolors": {
             "hashes": [
                 "sha256:00d2dde5a675579325902536738dd27e4fac1fd68f773fe36c21044eb559e187",

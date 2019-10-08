@@ -21,7 +21,6 @@ Flask = "*"
 requests = "*"
 setuptools = "*"
 ujson = "*"
-52b7b29 = {path = "./autosys"}
 
 [requires]
 python_version = "3.7"
