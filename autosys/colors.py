@@ -6,8 +6,10 @@ from functools import partial
 
 from autosys.csscolors import css_colors, parse_rgb
 
-_PY2 = sys.version_info[0] == 2
-string_types = basestring if _PY2 else str
+# _PY2 = sys.version_info[0] == 2
+# string_types = basestring if _PY2 else str
+# Python 2.x no longer supported ... string_types is a passthrough now
+string_types = str
 
 template = "\x1b[{0}m{1}\x1b[0m"
 
@@ -107,12 +109,13 @@ def color(s, fg=None, bg=None, style=None):
 
     if codes:
         template = "\x1b[{0}m{1}\x1b[0m"
-        if _PY2 and isinstance(s, unicode):
-            # Take care in PY2 to return str if str is given, or unicode if
-            # unicode given. A pain, but PY2's fragility with Unicode makes it
-            # important to avoid disruptions (including gratuitous up-casting
-            # of str to unicode) that might trigger downstream errors.
-            template = unicode(template)
+        # Python 2.x no longer supported
+        # if _PY2 and isinstance(s, unicode):
+        # Take care in PY2 to return str if str is given, or unicode if
+        # unicode given. A pain, but PY2's fragility with Unicode makes it
+        # important to avoid disruptions (including gratuitous up-casting
+        # of str to unicode) that might trigger downstream errors.
+        # template = unicode(template)
         return template.format(_join(*codes), s)
     else:
         return s

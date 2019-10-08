@@ -6,8 +6,10 @@ Map of CSS color names to RGB integer values.
 import re
 import sys
 
-_PY2 = sys.version_info[0] < 3
-string_types = basestring if _PY2 else str
+# _PY2 = sys.version_info[0] == 2
+# string_types = basestring if _PY2 else str
+# Python 2.x no longer supported ... string_types is a passthrough now
+string_types = str
 
 
 css_colors = {
@@ -162,7 +164,7 @@ css_colors = {
 }
 
 
-def parse_rgb(s):
+def parse_rgb(s: str):
     if not isinstance(s, string_types):
         raise ValueError("Could not parse color '{0}'".format(s))
     s = s.strip().replace(" ", "").lower()
@@ -175,7 +177,7 @@ def parse_rgb(s):
     match = re.match("#([a-f0-9]{6})$", s)
     if match:
         core = match.group(1)
-        return tuple(int(core[i : i + 2], 16) for i in range(0, 6, 2))
+        return tuple(int(core[i: i + 2], 16) for i in range(0, 6, 2))
 
     # 3-digit hex
     match = re.match("#([a-f0-9]{3})$", s)

@@ -10,6 +10,7 @@
 # from autosys import *
 
 if True:  # import builtins
+    import pkgutil
     import decimal
     import fileinput
     import inspect
@@ -26,6 +27,8 @@ if True:  # import builtins
 
 if True:  # other imports
     from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
+    from autosys.as_system import njoin
+    from autosys.as_constants import PY_ENV
 
 if True:  # designed to be run globally from directory in system path
     # the sys.path starts with the directory containing __file__ which we want to remove as
@@ -51,10 +54,6 @@ if True:  # package defaults
     __author__: str = "Michael Treanor <https://www.github.com/skeptycal>"
 
 if __name__ == "__main__":  # CLI tests
-    # assorted import tests
-    import pkgutil
-    from autosys.as_system import njoin
-    from autosys.as_constants import PY_ENV
 
     MAIN = PY_ENV.get('MAIN')
     CANARY = PY_ENV.get("CANARY")

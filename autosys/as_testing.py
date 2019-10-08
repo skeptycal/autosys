@@ -5,18 +5,24 @@
 # https://www.github.com/skeptycal
 # https://www.twitter.com/skeptycal
 
-from __future__ import absolute_import
+# from __future__ import absolute_import
 
 import importlib
+import os
+import time
 import sys
 import inspect
-from typing import Any, Tuple, Dict, List
+from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
 
 # Constants
 DEFAULT_DICT_DISPLAY_SEPARATOR: str = ": "
 DEFAULT_CLI_DISPLAY_WIDTH: int = 80
 DEFAULT_CLI_FIELD_PADDING: int = 15
 DEFAULT_CLI_FIELD_MIN_PADDING: int = 10
+
+# module variables
+e: BaseException = None
+result: Any = None
 
 # class TestException(Exception):
 # """
@@ -127,7 +133,6 @@ def _add_dots(s: str, n: int, suffix: str = ' ...',
 
 def get_module_sig(self, module, parameter_list):
     import inspect
-    import example
 
     sig = inspect.signature(module)
     bound = sig.bind(

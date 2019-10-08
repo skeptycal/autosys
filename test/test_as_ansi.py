@@ -7,7 +7,7 @@ import sys
 
 import pytest
 from pytest import raises
-from autosys.as_ansi import *
+from autosys.as_ansi import color, ansilen, strip_color, red, partial, green, blue, parse_rgb, black, bold, underline
 
 _PY2 = sys.version_info[0] == 2
 
@@ -66,11 +66,11 @@ def test_mixed_color():
     assert (color(
         "PINK/GRAY", fg="pink",
         bg="gray") == "\x1b[38;2;255;192;203;48;2;128;128;128mPINK/GRAY\x1b[0m"
-            )
+    )
     assert (color(
         "GRAY/PINK", fg="gray",
         bg="pink") == "\x1b[38;2;128;128;128;48;2;255;192;203mGRAY/PINK\x1b[0m"
-            )
+    )
 
 
 def test_style_color():

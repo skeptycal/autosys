@@ -8,7 +8,7 @@
 # from __future__ import absolute_import, print_function
 import pytest
 from pytest import raises
-from autosys.as_testing import *
+from autosys.as_testing import v_name
 
 
 def test_v_name():

@@ -5,11 +5,10 @@
 # https://www.github.com/skeptycal
 # https://www.twitter.com/skeptycal
 
+import os
+import sys
 from autosys import *
 # * @AUTOSYS_PARSE: START
-##############################################
-SET_DEBUG: bool = True
-PI: float = math.pi
 
 if True:
     ##############################################
@@ -17,6 +16,11 @@ if True:
     borderType: FrozenSet[str] = {'single', 'double', 'graphic', 'text'}
 
     locale.setlocale(locale.LC_ALL, "")
+
+    ##############################################
+    # general constants
+    SET_DEBUG: bool = True
+    PI: float = math.pi
 
     ##############################################
     # working variables
@@ -29,7 +33,7 @@ if True:
     ##############################################
     # Python specific constants
     _PY2 = sys.version_info[0] == 2
-    PY_ENV: Dict[str, str] = os.environ
+    PY_ENV: os._Environ = os.environ
     PY_BASE = os.path.basename(PY_ENV["_"])
     PY_VER: str = ".".join(str(_) for _ in __import__("sys").version_info[:3])
     PY3: bool = (lambda x: [x for x in [False]] and None or x)(True)
@@ -121,5 +125,6 @@ if __name__ == "__main__":
     print("__file__: ", __file__)
     print("__package__: ", __package__)
     print("__name__: ", __name__)
+    print("PY_VER: ", PY_VER)
 
     # print(AS_MATH.SIN)

@@ -4,6 +4,8 @@
 Minimal Python Module Setup File
 Requires Python 3.7 (dataclass support)
 """
+from __future__ import absolute_import, print_function
+
 from dataclasses import asdict, astuple, dataclass, field
 from typing import Any, Dict, List, Tuple
 

@@ -11,10 +11,8 @@ import locale
 import os
 import sys
 from typing import Any, Dict, List
-
-import autosys
-
-sys.path.insert(0, os.path.abspath("."))
+from autosys.as_system import py_shell, pyver
+from autosys import version
 
 
 DEFAULT_ENCODING = locale.getpreferredencoding()
@@ -95,22 +93,26 @@ ANSI_DICT_LIST: List[dict[str, str]] = [
         "notes": "Characterslegible,butmarkedfordeletion.NWS",
     },
     {"code": "10", "effect": "Primary(default)font", "notes": ""},
-    {"code": "11–19", "effect": "Alternatefont", "notes": "Selectalternatefont`n-10`"},
+    {"code": "11–19", "effect": "Alternatefont",
+        "notes": "Selectalternatefont`n-10`"},
     {"code": "20", "effect": "Fraktur", "notes": "hardlyeversupported"},
     {
         "code": "21",
         "effect": "BoldofforDoubleUnderline",
         "notes": "Boldoffnotwidelysupported;doubleunderlinehardlyeversupported.",
     },
-    {"code": "22", "effect": "Normalcolororintensity", "notes": "Neitherboldnorfaint"},
+    {"code": "22", "effect": "Normalcolororintensity",
+        "notes": "Neitherboldnorfaint"},
     {"code": "23", "effect": "Notitalic,notFraktur", "notes": ""},
-    {"code": "24", "effect": "Underlineoff", "notes": "Notsinglyordoublyunderlined"},
+    {"code": "24", "effect": "Underlineoff",
+        "notes": "Notsinglyordoublyunderlined"},
     {"code": "25", "effect": "Blinkoff", "notes": ""},
     {"code": "27", "effect": "Inverseoff", "notes": ""},
     {"code": "28", "effect": "Reveal", "notes": "concealoff"},
     {"code": "29", "effect": "Notcrossedout", "notes": ""},
     {"code": "30", "effect": "Setforegroundcolor", "notes": "BLACK, add ;1m GRAY"},
-    {"code": "31", "effect": "Setforegroundcolor", "notes": "RED, add ;1m BRIGHTRED"},
+    {"code": "31", "effect": "Setforegroundcolor",
+        "notes": "RED, add ;1m BRIGHTRED"},
     {
         "code": "32",
         "effect": "Setforegroundcolor",
@@ -121,14 +123,17 @@ ANSI_DICT_LIST: List[dict[str, str]] = [
         "effect": "Setforegroundcolor",
         "notes": "YELLOW, add ;1m BRIGHTYELLOW",
     },
-    {"code": "34", "effect": "Setforegroundcolor", "notes": "BLUE, add ;1m BRIGHTBLUE"},
+    {"code": "34", "effect": "Setforegroundcolor",
+        "notes": "BLUE, add ;1m BRIGHTBLUE"},
     {
         "code": "35",
         "effect": "Setforegroundcolor",
         "notes": "MAGENTA, add ;1m BRIGHTMAGENTA",
     },
-    {"code": "36", "effect": "Setforegroundcolor", "notes": "CYAN, add ;1m BRIGHTCYAN"},
-    {"code": "37", "effect": "Setforegroundcolor", "notes": "LIGHTGRAY, add ;1m WHITE"},
+    {"code": "36", "effect": "Setforegroundcolor",
+        "notes": "CYAN, add ;1m BRIGHTCYAN"},
+    {"code": "37", "effect": "Setforegroundcolor",
+        "notes": "LIGHTGRAY, add ;1m WHITE"},
     # "BLACK": "\u001b[30m",
     # "RED": "\u001b[31m",
     # "GREEN": "\u001b[32m",
@@ -172,9 +177,11 @@ ANSI_DICT_LIST: List[dict[str, str]] = [
     {"code": "54", "effect": "Notframedorencircled", "notes": ""},
     {"code": "55", "effect": "Notoverlined", "notes": ""},
     {"code": "60", "effect": "ideogramunderline", "notes": "hardlyeversupported"},
-    {"code": "61", "effect": "ideogramdoubleunderline", "notes": "hardlyeversupported"},
+    {"code": "61", "effect": "ideogramdoubleunderline",
+        "notes": "hardlyeversupported"},
     {"code": "62", "effect": "ideogramoverline", "notes": "hardlyeversupported"},
-    {"code": "63", "effect": "ideogramdoubleoverline", "notes": "hardlyeversupported"},
+    {"code": "63", "effect": "ideogramdoubleoverline",
+        "notes": "hardlyeversupported"},
     {"code": "64", "effect": "ideogramstressmarking", "notes": "hardlyeversupported"},
     {
         "code": "65",
@@ -345,13 +352,15 @@ def color_encode(
         color_code += FG_DICT[fg_color]
         color_code += BG_DICT[bg_color]
         color_code += FLAGS_DICT[flags_color]
-    return s
+    return color_code
 
 
-DEFAULT_ENCODE: str = color_encode(DEFAULT_FG_COLOR, DEFAULT_BG_COLOR, DEFAULT_FLAGS)
+DEFAULT_ENCODE: str = color_encode(
+    DEFAULT_FG_COLOR, DEFAULT_BG_COLOR, DEFAULT_FLAGS)
 STICKY_ENCODE: str = DEFAULT_ENCODE
 # This code will reset all ANSI codes to default.
-RESET_ENCODE: str = color_encode(DEFAULT_FG_COLOR, DEFAULT_BG_COLOR, DEFAULT_FLAGS)
+RESET_ENCODE: str = color_encode(
+    DEFAULT_FG_COLOR, DEFAULT_BG_COLOR, DEFAULT_FLAGS)
 
 # *############## Print Functions
 
@@ -509,7 +518,8 @@ def flags_samples():
     """ ANSI Flags samples """
     print()
     i: int = 0
-    s: str = "Now is the time for all good men" + "to come to the aid of their country."
+    s: str = "Now is the time for all good men" + \
+        "to come to the aid of their country."
     for k in FLAGS_DICT:
         i += 1
         color_print(
@@ -531,7 +541,8 @@ def flags_samples():
     #     loading(5)
     # print()
     color_print(DEFAULT_ENCODE)
-    color_print(color_encode("BWHITE", "PURPLEHAZE", "ITALIC"), "TESTS COMPLETE ...")
+    color_print(color_encode("BWHITE", "PURPLEHAZE",
+                             "ITALIC"), "TESTS COMPLETE ...")
 
 
 if __name__ == "__main__":
@@ -543,9 +554,10 @@ if __name__ == "__main__":
     else:
         arg1: str = sys.argv[1].lower()
         if arg1 in ["version", "-v", "--version"]:
-            color_cycle(88, VERSION)
+            color_cycle(88, version)
         elif arg1 in ["help", "-h", "--help"]:
-            color_print(color_encode("BWHITE", "PURPLEHAZE", "ITALIC"), VERSION)
+            color_print(color_encode(
+                "BWHITE", "PURPLEHAZE", "ITALIC"), version)
             print()
             color_cycle(88, ANSI_CHART)
         elif arg1 in ["demo", "-d", "--demo"]:

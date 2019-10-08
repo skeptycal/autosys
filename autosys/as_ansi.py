@@ -5,15 +5,13 @@
 # https://www.github.com/skeptycal
 # https://www.twitter.com/skeptycal
 
-from autosys import *
+import os
+# import autosys.as_constants
 from autosys.as_system import py_shell
-from autosys.as_constants import *
-from autosys.as_constants import PY_ENV as PY_ENV
-
-# make sure we're testing colors module in this dir, not system
+from autosys.as_constants import PY_ENV
 from autosys.colors import COLORS, STYLES, color
 
-sys.path.insert(0, os.path.abspath("."))
+# sys.path.insert(0, os.path.abspath("."))
 
 # Turn off color when using ipython, otherwise leave it on
 ENABLE_COLOR: bool = True

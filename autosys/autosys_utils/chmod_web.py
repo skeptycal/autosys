@@ -12,15 +12,14 @@ import os
 from pathlib import Path
 from typing import List
 
-import text_colors
+from autosys.as_ansi import color_encode as ce
+from autosys.as_ansi import color_print as cp
 
-color_encode = text_colors.color_encode
-cp = text_colors.color_print
 
 # def color_encode(fg_color, bg_color, flags_color)
 # def color_print(color_code, *args, **kwargs):
-RED = color_encode("RED", "COLOR230", "ITALIC")
-MAIN = color_encode("MAIN", "BG_BLACK", "ITALIC")
+RED = ce("RED", "COLOR230", "ITALIC")
+MAIN = ce("MAIN", "BG_BLACK", "ITALIC")
 
 
 def chmod_web(path: str = ".") -> List[str]:

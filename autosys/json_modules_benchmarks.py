@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 """
 """
+import importlib
+import sys
 from timeit import timeit
 from typing import List
 
@@ -26,14 +28,15 @@ def json5():
     import nujson
 
 
-def json6():
-    import autosys_json
+# def json6():
+#     import autosys_json
 
 
 if __name__ == "__main__":
     json_import_list: List[str] = ['simplejson', 'json', 'ujson', 'ujson-x', ]
     for json_import in json_import_list:
         try:
+            importlib.
             import json_import as json
         except ImportError as e:
             print(e)

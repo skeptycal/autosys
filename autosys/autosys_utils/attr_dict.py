@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 # http://code.activestate.com/recipes/473786-dictionary-with-attribute-style-access/
+
+
 class AttrDict(dict):
     """A dictionary with attribute-style access. It maps attribute access to
     the real dictionary.  """

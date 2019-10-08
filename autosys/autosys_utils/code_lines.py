@@ -6,30 +6,25 @@ import sys
 from pathlib import Path
 from typing import Dict, List
 
-import text_colors
+import autosys.as_ansi as ansi
 
-FG_DICT: Dict[str, str] = {
-    "MAIN": "\u001b[38;5;229m",
-    "COOL": "\u001b[38;5;38m",
-    "GO": "\u001b[38;5;28m",
-    "WARN": "\u001b[38;5;203m",
-    "CHERRY": "\u001b[38;5;124m",
-    "CANARY": "\u001b[38;5;226m",
-    "ATTN": "\u001b[38;5;178m",
-    "PURPLE": "\u001b[38;5;93m",
-    "RESET": "\u001b[0m",
-}
-ATTN = FG_DICT["ATTN"]
-RESET = FG_DICT["RESET"]
-FORMAT_STR: str = "Lines of code matching glob pattern '{}{:<6}{}':{}{:>10}{}"
+ce = ansi.color_encode
+cp = ansi.color_print
+
+FG = ansi.FG_DICT
 
 
-def c_print(c: str, args):
-    try:
-        print(FG_DICT[c], args, FG_DICT["RESET"])
-    except:
-        print(args)
-        print(FG_DICT["RESET"])
+ATTN = FG["ATTN"]
+RESET = FG["RESET"]
+FORMAT_STR: str = f"Lines of code matching glob pattern '{ATTN}{{:<6}}{RESET}':{ATTN}{{:>10}}{RESET}"
+
+
+# def c_print(c: str, args):
+#     try:
+#         print(FG[c], args, FG["RESET"])
+#     except:
+#         print(args)
+#         print(FG["RESET"])
 
 
 def get_suffix_list():
@@ -56,7 +51,7 @@ def code_lines(pattern: str, recursive: bool = True) -> int:
 
 
 def print_code(pattern: str):
-    print(FORMAT_STR.format(ATTN, pattern, RESET, ATTN, code_lines(pattern), RESET))
+    print(FORMAT_STR.format(pattern, code_lines(pattern)))
 
 
 if __name__ == "__main__":
@@ -80,9 +75,9 @@ if __name__ == "__main__":
         ]
     p = Path().cwd()
     p = p.resolve()  # similar to os.path.abspath()
-    c_print("MAIN", "-~*#^#*~-" * 8)
-    c_print("MAIN", "Current Path: {}".format(p))
-    c_print("MAIN", "-~*#^#*~-" * 8)
+    cp("MAIN", "-~*#^#*~-" * 8)
+    cp("MAIN", "Current Path: {}".format(p))
+    cp("MAIN", "-~*#^#*~-" * 8)
     pattern_list = [
         "py",
         "c",

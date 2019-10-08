@@ -7,7 +7,13 @@
 
 # from __future__ import absolute_import, print_function
 # from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
-from autosys import *
+import os
+import sys
+import autosys.as_constants
+from typing import Any, Dict, List
+from autosys.as_constants import PY_ENV, PY_BASE
+
+# from autosys import *
 
 
 def _get_builtins():

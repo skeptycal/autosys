@@ -1,5 +1,6 @@
 {
-  "python.pythonPath": "/Volumes/Data/skeptycal/.virtualenvs/textcolors-hXG7y4aM/bin/python3.7",
+  "python.pythonPath": "/Volumes/Data/skeptycal/.virtualenvs/autosys-jM4phZWz/bin/python",
   "restructuredtext.confPath": "",
-  "python.linting.pylintEnabled": false
+  "python.linting.pylintEnabled": false,
+  "python.formatting.provider": "autopep8"
 }
