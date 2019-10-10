@@ -24,14 +24,23 @@ if True:  # import builtins
     import time
     import timeit
     import traceback
+    from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
+    from os import environ as PY_ENV
 
 if True:  # other imports
-    import autosys.as_time_it
-    import autosys.as_system
-    import autosys.as_constants
-    from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
-    from autosys.as_system import njoin
-    from autosys.as_constants import PY_ENV
+    from .cli import *
+    from .system import *
+    from .testing import *
+    # from .as_constants import *
+    # from .as_system import *
+    # from .as_ansi import *
+    # from .as_setup import *
+    # from .as_testing import *
+
+    # import autosys.as_time_it
+    # import autosys.as_system
+    # from autosys.as_system import njoin
+    # from autosys.as_constants import PY_ENV
 
     # designed to be run globally from directory in system path
     # the sys.path starts with the directory containing __file__ which we want to remove as
@@ -44,69 +53,77 @@ if True:  # other imports
     # opposite of:
     # sys.path.insert(0, os.path.abspath("."))  # insert pwd
     # sys.path.insert(0, os.path.abspath('autosys'))
+    pass
 
-if True:  # package defaults
-    # TODO setup a way to automatically track semvers
-    __version__: str = '1.1.0'
-    version: str = __version__
-    __version_info__: Tuple[int] = [int(_) for _ in version.split('.')]
+# if True:  # package defaults
+#     # TODO setup a way to automatically track semvers
+#     __version__: str = '1.1.0'
+#     version: str = __version__
+#     __version_info__: Tuple[int] = [int(_) for _ in version.split('.')]
 
-    # set default package name to parent folder name
-    name: str = __file__.split("/")[-2]
-    __package__: str = name
+#     # set default package name to parent folder name
+#     name: str = __file__.split("/")[-2]
+#     __package__: str = name
 
-    __license__: str = "MIT <https://opensource.org/licenses/MIT>"
-    __author__: str = "Michael Treanor <https://www.github.com/skeptycal>"
+#     __license__: str = "MIT <https://opensource.org/licenses/MIT>"
+#     __author__: str = "Michael Treanor <https://www.github.com/skeptycal>"
 
-if __name__ == "__main__":  # CLI tests
 
-    MAIN = PY_ENV.get('MAIN')
-    CANARY = PY_ENV.get("CANARY")
-    RESET = PY_ENV.get("RESET_FG")
+__all__ = [
+    "cli", "filesystem", "parser",
+    "setup", "system", "testing",
+    "util", "www"
+]
 
-    def v_name(the_var: Any) -> str:
-        try:
-            result = [
-                var_name for var_name, var_val in
-                inspect.currentframe().f_back.f_back.f_locals.items()
-                if var_val is the_var
-            ][0]
-            return result
-        except IndexError as e:
-            return ''
+# if __name__ == "__main__":  # CLI tests
 
-    def vprint(the_var: Any):
-        print(f'{MAIN}{v_name(the_var)} => {CANARY}{the_var}{RESET}')
+#     MAIN = PY_ENV.get('MAIN')
+#     CANARY = PY_ENV.get("CANARY")
+#     RESET = PY_ENV.get("RESET_FG")
 
-    def cprint(s: str):
-        print(f'{MAIN}{s}{RESET}')
+#     def v_name(the_var: Any) -> str:
+#         try:
+#             result = [
+#                 var_name for var_name, var_val in
+#                 inspect.currentframe().f_back.f_back.f_locals.items()
+#                 if var_val is the_var
+#             ][0]
+#             return result
+#         except IndexError as e:
+#             return ''
 
-    print()
-    cprint('dir(pkgutil)')
-    print(dir(pkgutil))
+#     def vprint(the_var: Any):
+#         print(f'{MAIN}{v_name(the_var)} => {CANARY}{the_var}{RESET}')
 
-    print()
-    cprint('builtin modules: ')
-    print(njoin(sys.builtin_module_names))
-    print()
+#     def cprint(s: str):
+#         print(f'{MAIN}{s}{RESET}')
 
-    # set to None to see all modules importable from sys.path
-    # reference: https://chrisyeh96.github.io/2017/08/08/definitive-guide-python-imports.html
-    # search_path = None
-    # search_path = ['.']
-    search_path = ['autosys']
-    cprint(f'all importable modules in search_path({search_path}).')
-    all_modules = [x[1] for x in pkgutil.iter_modules(path=search_path)]
-    print(njoin(all_modules))
+#     print()
+#     cprint('dir(pkgutil)')
+#     print(dir(pkgutil))
 
-    print()
-    vprint(license)
+#     print()
+#     cprint('builtin modules: ')
+#     print(njoin(sys.builtin_module_names))
+#     print()
 
-    print()
-    cprint("Test Values")
-    cprint("*" * 40)
-    vprint(name)
-    vprint(__author__)
-    vprint(__license__)
-    vprint(__version__)
-    vprint(__version_info__)
+#     # set to None to see all modules importable from sys.path
+#     # reference: https://chrisyeh96.github.io/2017/08/08/definitive-guide-python-imports.html
+#     # search_path = None
+#     # search_path = ['.']
+#     search_path = ['autosys']
+#     cprint(f'all importable modules in search_path({search_path}).')
+#     all_modules = [x[1] for x in pkgutil.iter_modules(path=search_path)]
+#     print(njoin(all_modules))
+
+#     print()
+#     vprint(license)
+
+#     print()
+#     cprint("Test Values")
+#     cprint("*" * 40)
+#     vprint(name)
+#     vprint(__author__)
+#     vprint(__license__)
+#     vprint(__version__)
+#     vprint(__version_info__)

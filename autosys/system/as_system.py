@@ -5,19 +5,21 @@
 # https://www.github.com/skeptycal
 # https://www.twitter.com/skeptycal
 
-# from __future__ import absolute_import, print_function
-# from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
-import os
-import pathlib
-import sys
-import time
-from . import as_constants
-from . import as_time_it
-from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
-# from autosys.as_constants import PY_ENV, PY_BASE
-# from autosys.as_time_it import timeit
+if True:
+    import os
+    import pathlib
+    import sys
+    import time
+    from pathlib import WindowsPath, PosixPath, PurePath, Path
+    from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
 
-# from autosys import *
+if True:  # @autosys package modules
+    # from . import *
+    # from . import as_constants
+    # from .as_constants import *
+    from . import as_time_it
+    # from autosys.as_constants import PY_ENV, PY_BASE
+    # from autosys.as_time_it import timeit
 
 
 def get_env_path() -> str:
@@ -73,9 +75,9 @@ def _get_builtins():
 def basename(filename: str) -> str:
     """
     get only basename from full path
-    # TODO translate to pathlib
     """
-    return os.path.basename(filename)
+    return Path(filename).resolve().parts()[-1]
+    # return os.path.basename(filename)
 
 
 def py_path() -> List[str]:

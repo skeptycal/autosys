@@ -5,15 +5,15 @@
 # https://www.github.com/skeptycal
 # https://www.twitter.com/skeptycal
 
-import locale
-import math
-import os
-import pathlib
-import platform
-import sys
-from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
+if True:
+    import locale
+    import math
+    import os
+    import pathlib
+    import platform
+    import sys
+    from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
 
-from autosys import *
 # * @AUTOSYS_PARSE: START
 
 if True:
@@ -126,6 +126,10 @@ class C_ERRORS:
     EX_CONFIG = 78,  # configuration error
     EX__MAX = 78  # maximum listed value
 
+
+__all__ = [
+    "Default", "CLI", "AS_MATH", "C_ERRORS"
+]
 
 # * @AUTOSYS_PARSE: STOP
 if __name__ == "__main__":
