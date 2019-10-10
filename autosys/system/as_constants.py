@@ -38,17 +38,19 @@ if True:
 
     ##############################################
     # Python specific constants
-    _PY2 = sys.version_info[0] == 2
+    _PY2: bool = sys.version_info[0] == 2
     PY_ENV: os._Environ = os.environ
-    PY_BASE = os.path.basename(PY_ENV["_"])
+    PY_BASE: str = os.path.basename(PY_ENV["_"])
     # PY_VER: str = ".".join(str(_) for _ in __import__("sys").version_info[:3])
-    PY_VER: str = __import__("sys").version.split(' ')[0]
-    PY3: bool = (lambda x: [x for x in [False]] and None or x)(True)
+    PY_VER: str = sys.version.split(' ')[0]
+    _PY3: bool = (lambda x: [x for x in [False]] and None or x)(True)
     PYTHON_PATH: List[str] = PY_ENV["PYTHONPATH"].split(os.pathsep)
 
     ##############################################
     # System Constants
-    SEP = os.sep
+    SEP: str = os.sep
+    LINESEP: str = os.linesep
+    LF: str = chr(10)
     IS_64BITS = sys.maxsize > 2**32
     PWD = pathlib.Path.cwd().resolve()
 

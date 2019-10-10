@@ -1,5 +1,5 @@
 {
-  "python.pythonPath": "/Volumes/Data/skeptycal/.virtualenvs/autosys-jM4phZWz/bin/python",
+  "python.pythonPath": "/Volumes/Data/skeptycal/.pyenv/shims/python",
   "restructuredtext.confPath": "",
   "python.linting.pylintEnabled": false,
   "python.formatting.provider": "autopep8"

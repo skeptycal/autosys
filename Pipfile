@@ -21,6 +21,7 @@ Flask = "*"
 requests = "*"
 setuptools = "*"
 ujson = "*"
+numpy = "*"
 
 [requires]
 python_version = "3.7"

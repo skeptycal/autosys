@@ -32,6 +32,9 @@ def timeit_init(arg: str = 'init') -> bool:
     if arg == 'init':
         timeit_results = []
     elif arg == 'log_on':
+        timeit_log = True
+    elif arg == 'log_off':
+        timeit_log = False
 
 
 class TimeIt(list):
@@ -42,6 +45,7 @@ class TimeIt(list):
         self.print_flag = print_flag
 
     def reset():
+        self.clear()
 
 
 def timeit(method):
@@ -57,6 +61,11 @@ def timeit(method):
         return result
 
     return timed
+
+
+def get_line_count(filename) -> int:
+    with open(filename) as f:
+        return sum(True for line in f)
 
 
 def get_env_path() -> str:
