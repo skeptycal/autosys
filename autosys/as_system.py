@@ -8,12 +8,62 @@
 # from __future__ import absolute_import, print_function
 # from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
 import os
+import pathlib
 import sys
-import autosys.as_constants
-from typing import Any, Dict, List
-from autosys.as_constants import PY_ENV, PY_BASE
+import time
+from . import as_constants
+from . import as_time_it
+from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
+# from autosys.as_constants import PY_ENV, PY_BASE
+# from autosys.as_time_it import timeit
 
 # from autosys import *
+
+
+def get_env_path() -> str:
+    """ Return system path """
+    return os.getenv('PATH')
+
+
+class PPath(pathlib.PurePath):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def __init__(self, path_name: pathlib.PurePath, args):
+        if os.name == 'nt':
+            Path = WindowsPath
+        else:
+            Path = PosixPath
+        self.PP = path_name
+        if SET_DEBUG:
+            print(self.PP.as_uri())
+
+    def subs(self):
+        return [x for x in PP.iterdir() if x.is_dir()]
+
+    def exists(self):
+        return self.PP.exists()
+
+    def is_dir(self):
+        return self.PP.is_dir()
+
+    def next_line(self):
+        try:
+            with self.PP.open() as f:
+                return f.readline()
+        except OSError as e:
+            return e
+
+    def name(self) -> str:
+        return self.PP.parts()
+
+    def str(self):
+        return str(self.PP)
+
+    def ls(self, args):
+        for x in PP.iterdir():
+            print(x)
 
 
 def _get_builtins():
@@ -94,8 +144,51 @@ def _pprint_globals():
     print()
 
 
-def njoin(l: List[str]) -> str:
-    return '\n'.join(l)
+def iterable(obj): return hasattr(
+    obj, '__iter__') or hasattr(obj, '__getitem__')
+
+# def njoin(l: List[str]) -> str:
+#     return '\n'.join(l)
+
+
+@timeit
+def time_iter_check1(n: int = 10000, var: object = None):
+    if not var:
+        var = "*"*2000
+    for _ in range(n):
+        result = iterable(var)
+    return result
+
+
+@timeit
+def time_iter_check2(n: int = 10000, var: object = None):
+    if not var:
+        var = "*"*2000
+
+    for _ in range(n):
+        try:
+            result = iter(var)
+            result = True
+        except TypeError:
+            result = False
+
+
+def time_iter_check(n: int = 10000, var: object = None):
+    time_iter_check1(n, var)
+    time_iter_check2(n, var)
+
+
+def njoin(s, delimeter: str = ',') -> str:
+    """
+    Return a string of lines (with LF) from a delimited string or iterable object.
+    """
+    if isinstance(s, str):
+        return '\n'.join(s.split(delimeter))
+    try:
+        _ = iter(s)
+        return '\n'.join(_)
+    except TypeError:
+        pass
 
 
 def _pprint_code_tests(tests: List[Exception]):
@@ -175,4 +268,14 @@ if __name__ == "__main__":
     print("... Tests Complete.")
     _pprint_dict_table
 
-    print(_get_builtins)
+    print(njoin(_get_builtins()))
+    print()
+    print(njoin(get_env_path(), ':'))
+    print(iterable('this'))
+    print(iterable(5343))
+    print(iterable([1, 2, 3, 4]))
+    print(iterable(['a', 'b']))
+    s1 = set(x for x in 'this')
+    print(iterable(s1))
+    print(iterable(pathlib.Path()))
+    print(time_iter_check(10000000))

@@ -13,6 +13,8 @@ import time
 import sys
 import inspect
 from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
+from autosys.as_time_it import timeit
+from autosys.as_trace_it import traceit
 
 # Constants
 DEFAULT_DICT_DISPLAY_SEPARATOR: str = ": "
@@ -35,21 +37,6 @@ result: Any = None
 # print message
 
 # a = 1
-
-
-def timeit(method):
-    """
-    Decorator - code timer for comparing and optimizing snippets
-    """
-    def timed(*args, **kw):
-        ts = time.time()
-        result = method(*args, **kw)
-        te = time.time()
-
-        print("%r (%r, %r) %2.2f sec" % (method.__name__, args, kw, te - ts))
-        return result
-
-    return timed
 
 
 def v_name(the_var: Any) -> str:

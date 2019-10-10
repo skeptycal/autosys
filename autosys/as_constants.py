@@ -5,8 +5,14 @@
 # https://www.github.com/skeptycal
 # https://www.twitter.com/skeptycal
 
+import locale
+import math
 import os
+import pathlib
+import platform
 import sys
+from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
+
 from autosys import *
 # * @AUTOSYS_PARSE: START
 
@@ -35,9 +41,26 @@ if True:
     _PY2 = sys.version_info[0] == 2
     PY_ENV: os._Environ = os.environ
     PY_BASE = os.path.basename(PY_ENV["_"])
-    PY_VER: str = ".".join(str(_) for _ in __import__("sys").version_info[:3])
+    # PY_VER: str = ".".join(str(_) for _ in __import__("sys").version_info[:3])
+    PY_VER: str = __import__("sys").version.split(' ')[0]
     PY3: bool = (lambda x: [x for x in [False]] and None or x)(True)
     PYTHON_PATH: List[str] = PY_ENV["PYTHONPATH"].split(os.pathsep)
+
+    ##############################################
+    # System Constants
+    SEP = os.sep
+    IS_64BITS = sys.maxsize > 2**32
+    PWD = pathlib.Path.cwd().resolve()
+
+    from unicodedata import name as UCNAME
+
+    ASCII_CHARS = {'-', ')', '%', '!', '=', '9', '5', '1', 'M', 'I', 'E', 'A', ']',
+                   'Y', 'U', 'Q', 'm', 'i', 'e', 'a', '}', 'y', 'u', 'q', ',', '(', '$', ' ', '<',
+                   '8', '4', '0', 'L', 'H', 'D', '@', '\\', 'X', 'T', 'P', 'l', 'h', 'd', '`', '|',
+                   'x', 't', 'p', '/', '+', "'", '#', '?', ';', '7', '3', 'O', 'K', 'G', 'C', '_',
+                   '[', 'W', 'S', 'o', 'k', 'g', 'c', '{', 'w', 's', '.', '*', '&', '"', '>', ':',
+                   '6', '2', 'N', 'J', 'F', 'B', '^', 'Z', 'V', 'R', 'n', 'j', 'f', 'b', '~', 'z',
+                   'v', 'r'}
 
 
 class DEFAULT:
@@ -127,4 +150,6 @@ if __name__ == "__main__":
     print("__name__: ", __name__)
     print("PY_VER: ", PY_VER)
 
-    # print(AS_MATH.SIN)
+    p = PPath(PWD)
+    print(p.str())
+    print(p.next_line())

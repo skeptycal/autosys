@@ -26,16 +26,21 @@ if True:  # import builtins
     import traceback
 
 if True:  # other imports
+    import autosys.as_time_it
+    import autosys.as_system
+    import autosys.as_constants
     from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
     from autosys.as_system import njoin
     from autosys.as_constants import PY_ENV
 
-if True:  # designed to be run globally from directory in system path
+    # designed to be run globally from directory in system path
     # the sys.path starts with the directory containing __file__ which we want to remove as
     # that dir might be anywhere and could contain anything; it's not needed for locating
     # autosys modules since those will be in site-packages once autosys is installed
-    script_path = os.path.abspath(sys.path[0])
-    sys.path = [p for p in sys.path if os.path.abspath(p) != script_path]
+
+    # script_path = os.path.abspath(sys.path[0])
+    # sys.path = [p for p in sys.path if os.path.abspath(p) != script_path]
+
     # opposite of:
     # sys.path.insert(0, os.path.abspath("."))  # insert pwd
     # sys.path.insert(0, os.path.abspath('autosys'))
