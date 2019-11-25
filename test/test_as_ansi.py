@@ -2,7 +2,7 @@
 """
 Tests for colors module
 """
-
+import re
 import sys
 
 import pytest
@@ -19,7 +19,7 @@ def test_nocolors():
 
 def test_redcolor():
     """Test if we get a correct red"""
-    assert color("RED", fg="red") == "\x1b[31mRED\x1b[0m"
+    assert color("RED", fg="red") == '\x1b[31mRED\x1b[0m'
 
 
 def test_default_color():
