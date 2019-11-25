@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" as_80col.py """
+""" as_80col.py - cli utility with string and color functions. """
 # copyright (c) 2019 Michael Treanor
 # https://www.github.com/skeptycal
 # https://www.twitter.com/skeptycal
 
 import os
+import textwrap
 # import autosys.as_constants
 from autosys.as_system import py_shell
 from autosys.as_constants import PY_ENV
