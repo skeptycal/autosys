@@ -1,5 +1,6 @@
 # https://travis-ci.com/skeptycal/autosys
 
+# use language: minimal for work in 'alpha' state
 language: minimal
 #################################################################################
 # language: python
