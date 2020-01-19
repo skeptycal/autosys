@@ -1,0 +1,3 @@
+[submodule "as-anansi"]
+	path = as-anansi
+	url = https://github.com/skeptycal/as-anansi
