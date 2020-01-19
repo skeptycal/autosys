@@ -5,7 +5,7 @@
 # https://www.github.com/skeptycal
 # https://www.twitter.com/skeptycal
 
-#* ############################################################################
+# * ############################################################################
 # features in this module:
 #   _json_translation_table - print python to json translation tables
 #   json_read               - open and read data into python object
@@ -13,7 +13,7 @@
 #   json_sort               - sort list of python files as json objects
 #   json_minify             - compact json files and remove comments
 #   json_pretty_print       - format 'pretty print' style
-#* ############################################################################
+# * ############################################################################
 # Imports
 if True:  # ! stupid trick to make collapsing sections easier in VSCode
     import fileinput
@@ -38,12 +38,12 @@ if True:  # ! stupid trick to make collapsing sections easier in VSCode
     # fix import path for non standard libraries
     sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
-#* ############################################################################
+# * ############################################################################
 # constants
 DEBUG_FLAG: bool = True
 ENCODING: str = "utf8"
 
-#* ############################################################################
+# * ############################################################################
 # general functions
 
 
@@ -61,7 +61,7 @@ def is_file(file_name: str) -> bool:
         return False
 
 
-#* ############################################################################
+# * ############################################################################
 # json functions
 class JSON_file(object):
     io = StringIO()
@@ -235,7 +235,7 @@ class JSON_file(object):
         return self.json_format(self, comments=True, sort_keys=False)
 
 
-#* ############################################################################
+# * ############################################################################
 
 # Reference: https://gist.github.com/liftoff/ee7b81659673eca23cd9fc0d8b8e68b7
 
@@ -311,7 +311,7 @@ def remove_trailing_commas(json_like):
     return trailing_array_commas_re.sub("]", objects_fixed)
 
 
-#* ############################################################################
+# * ############################################################################
 
 
 def to_json(text: str) -> Dict:
