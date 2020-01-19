@@ -5,6 +5,8 @@
 # https://www.github.com/skeptycal
 # https://www.twitter.com/skeptycal
 
+SET_DEBUG: bool = False
+
 if True:
     import os
     import pathlib
@@ -13,55 +15,52 @@ if True:
     from pathlib import WindowsPath, PosixPath, PurePath, Path
     from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
 
-if True:  # @autosys package modules
-    import autosys.testing.as_time_it
-    from autosys.system.as_constants import *
 
-
-def _get_env_path() -> str:
+def _get_env_path():
     ''' Return system path '''
     return os.getenv('PATH')
 
 
-class PPath(pathlib.PurePath):
+class PPath(pathlib.Path):
     ''' Base Path Object '''
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def __init__(self, path_name: pathlib.PurePath, args):
-        if os.name == 'nt':
-            Path = WindowsPath
-        else:
-            Path = PosixPath
-        self.PP = path_name
+    def __init__(self, pattern: pathlib.PurePath):
+        self.pattern = pattern
         if SET_DEBUG:
-            print(self.PP.as_uri())
+            print(self.as_uri())
+        super().__init__()
 
-    def subs(self):
-        return [x for x in PP.iterdir() if x.is_dir()]
+    def subs(self, recursive=False):
+        """ Yield an iterator of subdirectories. """
+        if recursive:
+            func = self.rglob(self.pattern + '/')
+        else:
+            func = self.glob(self.pattern + '/')
+        for _ in func:
+            # if x.is_dir():
+            yield _
 
     def exists(self):
-        return self.PP.exists()
+        return self.exists()
 
     def is_dir(self):
-        return self.PP.is_dir()
+        return self.is_dir()
 
     def next_line(self):
         try:
-            with self.PP.open() as f:
+            with self.open() as f:
                 return f.readline()
         except OSError as e:
             return e
 
     def get_name(self) -> str:
-        return self.PP.parts()
+        return self.parts[0]
 
     def str(self):
-        return str(self.PP)
+        return str(self)
 
     def ls(self, args):
-        for x in PP.iterdir():
+        for x in self.iterdir():
             print(x)
 
 

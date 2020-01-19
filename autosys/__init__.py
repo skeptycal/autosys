@@ -7,7 +7,6 @@
 
 # `AutoSys` is licensed under the `MIT <https://opensource.org/licenses/MIT>`.
 # from __future__ import absolute_import, print_function
-# from autosys import *
 
 if True:  # import builtins
     import pkgutil
@@ -27,43 +26,27 @@ if True:  # import builtins
     from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
     from os import environ as PY_ENV
 
-if True:  # other imports
-    from .cli import *
-    from .system import *
-    from .testing import *
-    # from .as_constants import *
-    # from .as_system import *
-    # from .as_ansi import *
-    # from .as_setup import *
-    # from .as_testing import *
-
-    # import autosys.as_time_it
-    # import autosys.as_system
-    # from autosys.as_system import njoin
-    # from autosys.as_constants import PY_ENV
-
     # designed to be run globally from directory in system path
     # the sys.path starts with the directory containing __file__ which we want to remove as
     # that dir might be anywhere and could contain anything; it's not needed for locating
     # autosys modules since those will be in site-packages once autosys is installed
 
-    # script_path = os.path.abspath(sys.path[0])
-    # sys.path = [p for p in sys.path if os.path.abspath(p) != script_path]
+    script_path = os.path.abspath(sys.path[0])
+    sys.path = [p for p in sys.path if os.path.abspath(p) != script_path]
 
     # opposite of:
     # sys.path.insert(0, os.path.abspath("."))  # insert pwd
     # sys.path.insert(0, os.path.abspath('autosys'))
-    pass
 
 # if True:  # package defaults
 #     # TODO setup a way to automatically track semvers
-#     __version__: str = '1.1.0'
-#     version: str = __version__
-#     __version_info__: Tuple[int] = [int(_) for _ in version.split('.')]
+    __version__: str = '1.1.0'
+    version: str = __version__
+    __version_info__ = tuple(int(_) for _ in version.split('.'))
 
 #     # set default package name to parent folder name
-#     name: str = __file__.split("/")[-2]
-#     __package__: str = name
+    name: str = __file__.split("/")[-2]
+    __package__: str = name
 
 #     __license__: str = "MIT <https://opensource.org/licenses/MIT>"
 #     __author__: str = "Michael Treanor <https://www.github.com/skeptycal>"

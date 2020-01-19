@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #? ############################# skeptycal.com ################################
 NAME="pynow"
-DESC="Python repo management for macOS, including git, pipenv, pyenv, Cython, Travis CI, Coverage, pytest, tox, and pre-commit."
+DESC="Python repo management for macOS."
 AUTHOR="Michael Treanor  <skeptycal@gmail.com>"
 COPYRIGHT="Copyright (c) 2019 Michael Treanor"
 LICENSE="MIT <https://opensource.org/licenses/MIT>"
