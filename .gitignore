@@ -3,12 +3,20 @@
 *bak*
 
 .gitconfig
+.pylintrc
+.travis.yml
+.pre-commit-config.yaml
+.coveragerc
+pytest.ini
+tox.ini
+toxcov.ini
 
 *.py[cod]
 *.egg-ignore
 *.egg-info
 .vscode/
 __pycache__/
+.mypy_cache/
 build/
 dist/
 env/
