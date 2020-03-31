@@ -1,3 +1,6 @@
 [submodule "implore"]
 	path = implore
 	url = autosys/implore
+[submodule "package-py"]
+	path = package-py
+	url = ./package-py
