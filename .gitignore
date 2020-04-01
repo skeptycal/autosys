@@ -1,6 +1,7 @@
 *.pyc
 *.egg-info
 *.bak*
+*private*
 **/*/tmp/
 build/
 dist/
@@ -9,9 +10,10 @@ MANIFEST
 *.komodoproject
 .vscode/
 # Project-specific files
-**/bak/
-**/design/
-**/current/
+**/*/bak/
+**/*/design/
+**/*/current/
+**/*/.unotes/
 
 # Python repo files
 .coveragerc
