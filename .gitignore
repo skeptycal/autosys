@@ -3,6 +3,8 @@
 *.bak*
 *private*
 **/*/tmp/
+**/*/.unotes/
+*.unotes*
 build/
 dist/
 .tox/

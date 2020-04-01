@@ -12,6 +12,9 @@ numpy = "*"
 docopts = "*"
 requests = "*"
 bs4 = "*"
+twine = "*"
+matplotlib = "*"
+docopt = "*"
 
 [requires]
 python_version = "3.8"
