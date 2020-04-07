@@ -18,6 +18,7 @@ matplotlib = "*"
 docopt = "*"
 beautifulsoup4 = "*"
 lxml = "*"
+webapp2 = "*"
 
 [requires]
 python_version = "3.8"
