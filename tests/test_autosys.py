@@ -36,6 +36,7 @@ def test_docopt_import_status():
 def test_ENV_import():
     tmp = "SHELL" in autosys.ENV
     assert tmp == True
+    # some random, absolutely made up name ....
     tmp = "zabiwickerwillowsky" not in autosys.ENV
     assert tmp == True
 
@@ -44,20 +45,9 @@ def test_NL_constant():
     assert ord(autosys.NL) == 10
 
 
-def print_autosys_dir():
-    DEFAULT_PRINT_WIDTH = 40
-    for i, x in enumerate(dir(autosys)):
-        if i > 30:
-            fmt = f"autosys.{x}"
-            f = str(eval(fmt))
-            if len(f) > DEFAULT_PRINT_WIDTH:
-                f = f[0 : DEFAULT_PRINT_WIDTH - 1]
-            print(f"assert autosys.{x} == '{f}'")
-            print()
-
-
 test_version_number()
 
 
 if __name__ == "__main__":
+    from autosys.utils import print_autosys_dir
     print_autosys_dir()

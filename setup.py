@@ -17,10 +17,10 @@ if True:  # setup tools
     from setuptools import setup, find_packages
     from autosys._version import *
 
-_debug_: bool = False
+_debug_: bool = True
 
 
-def readme(filename: str = "README.md") -> str:
+def readme(filename: str = "README.md"):
     """ Returns the text of the README file. The default file is `README.md`.
 
     `readme(filename: str = 'README.md')-> str`
@@ -141,7 +141,7 @@ class SetupAttrs:
         return self.__getitem__(name)
 
     def __str__(self):
-        return pprint.pformat(self._dict, depth=5, width=50, compact=False)
+        return pprint.pformat(self._dict, depth=5, compact=False)
 
 
 s = SetupAttrs()
@@ -149,6 +149,6 @@ s = SetupAttrs()
 if _debug_:
     print(f"Running setup for `{s['name']}` version {s['version']}")
     # print(s)
-    print(attrs)
+    print(s)
 else:
     setup(**s.setup)
