@@ -17,7 +17,7 @@ if True:  # setup tools
     from setuptools import setup, find_packages
     from autosys._version import *
 
-_debug_: bool = True
+_debug_: bool = False
 
 
 def readme(filename: str = "README.md"):

@@ -9,15 +9,14 @@ pytest = "*"
 twine = "*"
 
 [packages]
-numpy = "*"
-docopts = "*"
-requests = "*"
-bs4 = "*"
-matplotlib = "*"
-docopt = "*"
 beautifulsoup4 = "*"
+bs4 = "*"
+docopt = "*"
+docopts = "*"
 lxml = "*"
-webapp2 = "*"
+matplotlib = "*"
+numpy = "*"
+requests = "*"
 
 [requires]
 python_version = "3.9"
