@@ -11,6 +11,8 @@ dist/
 MANIFEST
 *.komodoproject
 .vscode/
+.ignore
+
 # Project-specific files
 **/*/bak/
 **/*/design/

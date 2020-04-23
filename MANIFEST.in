@@ -1,6 +1,10 @@
-include README.rst
-include README.md
-include CHANGES.rst
-include LICENSE
+include *.jpg
+include *.md
+include *.png
 include *.py
+include *.py
+include *.rst
+include Dockerfile
+include LICENSE
+include Pipfile*
 include test/*.py
