@@ -3,12 +3,16 @@
 *.bak*
 *private*
 **/*/tmp/
+**/*/.unotes/
+*.unotes*
 build/
 dist/
 .tox/
 MANIFEST
 *.komodoproject
 .vscode/
+.ignore
+
 # Project-specific files
 **/*/bak/
 **/*/design/
