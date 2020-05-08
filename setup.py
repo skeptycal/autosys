@@ -4,13 +4,12 @@
 from __future__ import absolute_import
 
 if True:  # stdlib imports
-    import os
-    import pprint
-    import sys
-    from pathlib import Path
     import ast  # safer eval ...
-    from os import linesep as NL  # platform specific newline
-    from os import sep as PATHSEP  # platform specific path separator
+    import os  # basic OS features
+    import pprint  # pretty printing
+    import sys  # basic system features
+    from pathlib import Path  # path features
+    from os import linesep as NL, sep as PATHSEP
     from typing import Dict, List  # >= 3.6 type hints support
 
 if True:  # setup tools
@@ -51,25 +50,45 @@ class SetupAttrs:
         setup(**s.setup)
         ```
         `Print(s)` will pretty print the attributes.
+        
+        The following data are imported from ./<package_name>/_version.py
+        
+            __version__: str = "x.x.x"
+            __license__: str = "MIT"
+            __title__: str = "xxxxx"
+            __author__: str = "xxxxx xxxxx"
+            __copyright__: str = f"Copyright (c) xxxx xxxxx xxxxx"
+            __author_email__: str = "xxx@xxx.com"
+            __python_requires__: str = ">=x.x"
         """
 
-    # ? ---------------------- Setup Attributes
+    # ? ---------------------- SetupAttrs Attributes
     _dict: Dict = {}
 
     def __init__(self):
+        self._version = __version__
+        self._license = __license__
+        self._title = __title__
+        self._copyright = __copyright__
+        self._author = __author__
+        self._author_email = __author_email__
+        self._python_requires = __python_requires__
+        self.load_dict()
+
+    def load_dict(self):
         self._dict = {
-            "name": "autosys",
-            "version": __version__,
+            "name": self._title,
+            "version": self._version,
             "description": "System utilities for Python on macOS",
             "long_description": readme(),
             "long_description_content_type": "text/markdown",
-            "license": "MIT",
-            "author": "Michael Treanor",
-            "author_email": "skeptycal@gmail.com",
-            "maintainer": "Michael Treanor",
-            "maintainer_email": "skeptycal@gmail.com",
+            "license": self._license,
+            "author": self._author,
+            "author_email": self._author_email,
+            "maintainer": self._author,
+            "maintainer_email": self._author_email,
             "url": f"https://skeptycal.github.io/{__title__}/",
-            "python_requires": ">=3.8",
+            "python_requires": self._python_requires,
             # 'cmdclass': '',
             # 'command_options': '',
             # 'command_packages': '',
@@ -128,12 +147,32 @@ class SetupAttrs:
             ],
         }
 
-    # ? ---------------------- SetupAttrs Methods
-
+    # ? ---------------------- SetupAttrs Properties
     @property
     def setup(self):
         return self._dict
 
+    @property
+    def version(self):
+        return self._version
+
+    @property
+    def author(self):
+        return self._author
+
+    @property
+    def email(self):
+        return self._author_email
+
+    @property
+    def title(self):
+        return self._title
+
+    @property
+    def license(self):
+        return self._license
+
+    # ? ---------------------- SetupAttrs Methods
     def __getitem__(self, name: str):
         return self._dict[name]
 
@@ -147,8 +186,9 @@ class SetupAttrs:
 s = SetupAttrs()
 
 if _debug_:
-    print(f"Running setup for `{s['name']}` version {s['version']}")
-    # print(s)
+    print(f"Debug mode: setup for `{s['name']}` version {s['version']}")
+    print()
+    print(s.license)
     print(s)
 else:
     setup(**s.setup)

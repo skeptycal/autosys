@@ -1,4 +1,4 @@
-FROM python/python:3.8
+FROM python/python:3.9
 
 # For Python3 compact
 RUN apt-get -y update && apt-get -y install python3-setuptools && \
