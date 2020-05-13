@@ -1,46 +1,118 @@
-from typing import NamedTuple, Tuple
+from typing import NamedTuple, Sequence, Tuple
 from sys import stdout
 from os import linesep as NL, environ as ENV
-from platform import platform as PLATFORM
+from platform import platform
 from io import TextIOWrapper
+from dataclasses import dataclass
+
+from autosys.debug.dbprint import *
+
+# PLATFORM = platform()
+DEFAULT_COLOR = 'MAIN'
 
 
-def info(*args):
-    ''' placeholder for logging function... '''
-    print(args)
+def replace_all(needle: Sequence,
+                haystack: Sequence,
+                volunteer: Sequence = '') -> Sequence:
+    ''' return a sequence with all `needles` in `haystack` replaced with `volunteers` '''
+    return ''.join(volunteer if c in needle else c for c in haystack)
 
 
+def rep_whitelist(needle: Sequence,
+                  haystack: Sequence,
+                  volunteer: Sequence = '') -> Sequence:
+    ''' return a sequence with all `needles` in `haystack` saved and all other characters replaced with `volunteers` '''
+    return ''.join(volunteer if c not in needle else c for c in haystack)
+
+
+@dataclass
+class FakeLog:
+    def fakelog(self, *args, line_color: str = 'MAIN'):
+        fmt = eval(f"color.{line_color}")
+        args = ''.join(args)
+        print(f"{fmt}{args}{color.RESET}")
+
+    def info(self, *args):
+        ''' placeholder for logging function... '''
+        self.fakelog(*args, line_color='BLUE')
+
+    def error(self, *args):
+        ''' placeholder for logging function ... '''
+        self.fakelog(*args, line_color='WARN')
+
+    def logf(self, fstring: str = ''):
+        ''' log fstring value '''
+        try:
+            fstring = str(fstring)
+            evl: Sequence = replace_all(':=/#', fstring, '_')
+            fmt: str = f"{fstring} | {eval(evl)}"
+            self.fakelog(fmt, line_color='RAIN')
+        except Exception as e:
+            self.error(f'ERROR: {fstring=} | {type(fstring)=} |  {e.args[0]}')
+
+
+log = FakeLog()
+
+if True:  # !------------------------ CLI display utilities
+
+    def hr(s: str = "-", n: int = 50, print_it: bool = True):
+        """ 'hard return' (yes, a dashed line) """
+        if not print_it:
+            return s * n
+        else:
+            print(s * n)
+
+    def s80(s: str = "=", n: int = 79, print_it: bool = True):
+        """ string80 - a 79 character repeating string """
+        return hr(s=s, n=n, print_it=print_it)
+
+    def br(n: int = 1, print_it: bool = True):
+        """ yes, a newline inspired by <BR /> 
+
+            n: int = number of blank lines
+
+            set retval=True to return instead of print."""
+        return hr(s=' ', n=n, print_it=print_it)
+
+    def vprint(var_name: str, print_it: bool = True):
+        fmt = f"{var_name}"
+        if print_it:
+            print(fmt)
+        else:
+            return fmt
+
+
+@dataclass
 class Terminal:  # !------------------------ Terminal Class
+    _SUPPORTS_COLOR: bool = False
+    _SIZE: Tuple[int, int] = None
+    _stream: TextIOWrapper = stdout
     DEFAULT_TERMINAL_SIZE: NamedTuple = (80, 24)
 
-    # !------------------------------ initialize
-
-    def __init__(self, stream: TextIOWrapper = stdout):
-        super().__init__()
-        self._stream: TextIOWrapper = stream
-        self._SUPPORTS_COLOR = self._get_supports_color()
-        self._size: Tuple[int, int] = self._get_terminal_size()
-
     # !------------------------------ properties
-    @property
-    def cols(self):
-        return self._size[0]  # if self._IS_A_TTY else 0
 
     @property
-    def rows(self):
-        return self._size[1]  # if self._IS_A_TTY else 0
-
-    @property
-    def size(self):
-        return self._size
-
-    @property
-    def SUPPORTS_COLOR(self):
+    def SUPPORTS_COLOR(self) -> bool:
         if not self._SUPPORTS_COLOR:
             self._SUPPORTS_COLOR = self._get_supports_color()
         return self._SUPPORTS_COLOR
 
-    # !------------------------------ methods
+    @property
+    def SIZE(self) -> Tuple[int, int]:
+        if not self._SIZE:
+            self._SIZE = self._get_terminal_size()
+        return self._SIZE
+
+    @property
+    def cols(self) -> int:
+        return self.SIZE[0]
+
+    @property
+    def rows(self) -> int:
+        return self.SIZE[1]
+
+
+# !------------------------------ methods
 
     def __str__(self) -> str:
         return f"Terminal object (Supports color? {self.SUPPORTS_COLOR})"
@@ -54,7 +126,7 @@ class Terminal:  # !------------------------ Terminal Class
                 _repr_list.append(f"  {p}: {eval(f)}")
         return NL.join(_repr_list)
 
-    def _ioctl_get_win_size(self, fd: int) -> (Tuple[int, int]):
+    def _ioctl_get_win_size(self, fd: int) -> (Tuple[int, int], Exception):
         """ Return Tuple 'cr' - columns, rows of tty """
         try:
             from fcntl import ioctl
@@ -62,79 +134,83 @@ class Terminal:  # !------------------------ Terminal Class
             from termios import TIOCGWINSZ
 
             retval = unpack("hh", ioctl(fd, TIOCGWINSZ, "1234"))
-            info(f"_ioctl_get_win_size returns: {retval=}")
+            log.info(f"_ioctl_get_win_size returns: {retval=}")
             return int(retval[1]), int(retval[0])
         except Exception as e:
             return e
 
     def _get_terminal_size(self) -> Tuple[int, int]:
-        """ Return terminal size as a tuple(COLS, ROWS).
+        """ Return terminal SIZE as a tuple(COLS, ROWS).
 
-                Attempts to locate a valid terminal size using various fallback methods.
+                Attempts to locate a valid terminal SIZE using various fallback methods.
 
-                Default is 80 columns x 24 lines (rows).
-
-                (uses `dbprint()` for debug output)
+                Default is 80 columns x 24 rows.
 
                 Reference: https://stackoverflow.com/questions/566746/how-to-get-linux-console-window-width-in-python
                 """
-        import os
+        # import os
         import sys
-        from shutil import get_terminal_size as SH_SIZE
 
         cr: Tuple[int, int] = None
 
         try:
+            print(1 / 0)
             cr = (self._ioctl_get_win_size(0) or self._ioctl_get_win_size(1)
                   or self._ioctl_get_win_size(2))
             if cr:
-                info(f"cr from 'or' ioctl's: {cr}")
+                log.info(f"cr from 'or' ioctl's: {cr}")
                 return cr
-        except:
-            pass
-        info(f"no cr from 'or' ioctl's")
+        except Exception as e:
+            log.error(e)
+        log.info(f"no cr from 'or' ioctl's")
 
         try:
-            fd = os.open(os.ctermid(), os.O_RDONLY)
+            from os import (close as _close, open as _open, ctermid, O_RDONLY)
+            fd = _open(ctermid(), O_RDONLY)
             cr = self._ioctl_get_win_size(fd)
-            os.close(fd)
+            _close(fd)
+            with _open(ctermid(), O_RDONLY) as fd:
+                cr = self._ioctl_get_win_size(fd)
+                log.info(f"cr from cterm(): {cr}")
             if cr:
-                info(f"cr from cterm(): {cr}")
+                log.info(f"cr from cterm(): {cr}")
                 return cr
-        except:
-            pass
-        info(f"no cr from cterm()")
+        except Exception as e:
+            log.error(e)
+        log.info(f"no cr from cterm()")
 
         try:
             if ENV.get("LINES") and ENV.get("COLUMNS"):
                 cr = (ENV.get("LINES"), ENV.get("COLUMNS"))
             if cr:
-                info(f"env.get returns {cr}")
+                log.info(f"env.get returns {cr}")
                 return cr
-        except:
-            pass
-        info(f"no return from env.get")
+        except Exception as e:
+            log.error(e)
+        log.info(f"no return from env.get")
 
         try:
             # 'fallback' also sets default if nothing else has worked
-            cr = SH_SIZE(fallback=Terminal.DEFAULT_TERMINAL_SIZE)
+            from shutil import get_terminal_size as _SH_SIZE
+            cr = _SH_SIZE(fallback=Terminal.DEFAULT_TERMINAL_SIZE)
             if cr:
-                info(
+                log.info(
                     f"shutil.get_terminal_size returns ({cr.columns},{cr.lines})"
                 )
-                return cr.columns, cr.lines
-        except:
-            pass
-        info("no return from shutil.get_terminal_size")
-        info(f"using {Terminal.DEFAULT_TERMINAL_SIZE} for cr")
+                return (cr.columns, cr.lines)
+        except Exception as e:
+            log.error(e)
+        log.info("no return from shutil.get_terminal_size")
+        log.info(f"using {Terminal.DEFAULT_TERMINAL_SIZE} for cr")
 
         return Terminal.DEFAULT_TERMINAL_SIZE[
             0], Terminal.DEFAULT_TERMINAL_SIZE[1]
 
     def _get_supports_color(self) -> bool:
         # generic script level stderr output characteristics
-        self._IS_A_TTY: bool = self._stream.isatty() and hasattr(
-            self._stream, "isatty")
+        self._STREAM_ISATTY = self._stream.isatty()
+        self._HASATTR_ISATTY = hasattr(self._stream, "isatty")
+        self._IS_A_TTY: bool = self._STREAM_ISATTY and self._HASATTR_ISATTY
         self._IS_PPC: bool = PLATFORM == "Pocket PC"
         self._IS_WIN32: bool = PLATFORM == "win32"
         self._IS_ANSICON: bool = "ANSICON" in ENV
@@ -144,40 +220,73 @@ class Terminal:  # !------------------------ Terminal Class
         return self._IS_A_TTY or self._IS_EDGE_TTY
 
     def _show_debug_info(self):
-        print("---------------------------------------")
+        hr(s='=')
         print("Terminal Properties:")
-        print("---------------------------------------")
-        print(f"  {self._IS_A_TTY=}")
-        print(f"  {self._IS_PPC=}")
-        print(f"  {self._IS_WIN32=}")
-        print(f"  {self._IS_ANSICON=}")
-        print(f"  {self._IS_WIN_COLOR=}")
-        print(f"  {self._IS_EDGE_CASE=}")
-        print(f"  {self._IS_EDGE_TTY=}")
-        print(f"  {self._stream.isatty()=}")
-        print(f"  {hasattr(self._stream, 'isatty')=}")
-        print(f"  {self._stream.isatty()=}")
+        hr()
+        constants = {k: eval(f'term.{k}') for k in dir(term) if k.isupper()}
+        for k, v in constants.items():
+            print(k, v)
         print("---------------------------------------")
 
     def out(self, *args, sep=" ", end=NL, flush=False):
-        print(*args, sep=sep, end=end, flush=False, file=self.stream)
+        print(*args, sep=sep, end=end, flush=flush, file=self._stream)
 
+term = Terminal()
+SUPPORTS_COLOR: bool = term.SUPPORTS_COLOR
+
+
+# some basic colors ..
+class BasicColors:
+    MAIN: str = "\x1B[38;5;229m" * SUPPORTS_COLOR
+    WARN: str = "\x1B[38;5;203m" * SUPPORTS_COLOR
+    BLUE: str = "\x1B[38;5;38m" * SUPPORTS_COLOR
+    GO: str = "\x1B[38;5;28m" * SUPPORTS_COLOR
+    CHERRY: str = "\x1B[38;5;124m" * SUPPORTS_COLOR
+    CANARY: str = "\x1B[38;5;226m" * SUPPORTS_COLOR
+    ATTN: str = "\x1B[38;5;178m" * SUPPORTS_COLOR
+    RAIN: str = "\x1B[38;5;93m" * SUPPORTS_COLOR
+    WHITE: str = "\x1B[37m" * SUPPORTS_COLOR
+    RESET: str = "\x1B[0m" * SUPPORTS_COLOR
+
+
+color = BasicColors()
+
+
+@dataclass
+class LogColors:
+    LC_50: str = color.WARN
+    LC_40: str = color.ATTN
+    LC_30: str = color.CANARY
+    LC_20: str = color.BLUE
+    LC_10: str = color.GO
+
+
+print(LogColors)
 
 if __name__ == "__main__":
+    from pprint import pprint
 
     def _test_terminal_():
-        term = Terminal()
 
-        print(term._stream)
-        print(term._size)
-        print(term.size)
-        # COLS, ROWS = term.size
-        print(f"{PLATFORM=}")
-        # print(f"Terminal size is set to ({term.cols}, {term.rows})")
-        term._show_debug_info()
-
-        print(term.SUPPORTS_COLOR)
-
-        # print(f"{SUPPORTS_COLOR=}")
+        hr()
+        print(f"{color.BLUE}{PLATFORM=}{color.RESET}")
+        hr()
+        # constants = {k: eval(f'term.{k}') for k in dir(term) if k.isupper()}
+        # pprint(constants)
+        # methods = {k: eval(f'term.{k}') for k in dir(term) if k.islower()}
+        # pprint(methods)
+        log.logf('term')
+        # print(f"{CHERRY}{term=}{RESET}")
+        hr()
+        log.logf(term._show_debug_info())
+        # print(f"{term._stream=}")
+        # print(f"{term._SIZE=}")
+        # print(f"{term.SIZE=}")
+        hr()
+        log.logf("term.SUPPORTS_COLOR")
+        log.logf("SUPPORTS_COLOR")
+        # COLS, ROWS = term.SIZE
+        # print(f"Terminal SIZE is set to ({term.cols}, {term.rows})")
+        # term._show_debug_info()
 
     _test_terminal_()

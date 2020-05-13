@@ -1,6 +1,14 @@
 from autosys import NL, stderr, stdout
 from typing import List
 
+try:
+    _debug_
+except:
+    _debug_: bool = True
+
+_DEBUG_COLOR: str = "\x1B[38;5;178m"  # private ansi CLI color code
+_RESET: str = "\x1B[0m"  # private ansi CLI reset code
+
 
 def arg_str(*data, arg_sep: str = "", **kwargs):
     """ Return string from an iterable of variously typed arguments. Each item is converted separately so
@@ -42,9 +50,12 @@ def dbprint(*db_args, sep=" ", end=NL, file=stderr, flush=False):
     if _debug_:
         # PREFIX    args    SUFFIX   Newline
         print(
-            f"{_DB_PREFIX}{arg_str(*db_args)}{_DB_SUFFIX}",
+            f"{_DEBUG_COLOR}{arg_str(*db_args)}{_RESET}",
             sep="",
             end=end,
             file=file,
             flush=flush,
         )
+
+
+dbprint('This stuff is a test...')

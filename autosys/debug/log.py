@@ -23,8 +23,7 @@ if True:  # !------------------------ Imports
     from autosys.defaults import *
     from autosys._version import *
 
-    __all__ = [                             # objects exported for 'import *'
-        'arg_str',
+    __all__ = [  # objects exported for 'import *'
         'ARGS',
         'br',
         'db_column_ruler',
@@ -68,12 +67,12 @@ if True:  # !------------------------ CONSTANTS
     # more reliable - https://docs.python.org/3.9/library/platform.html
 
     class LogSystem():
-
         def __init__():
             pass
-            
+
 
 if True:  # !------------------------ Logging Utilities
+
     def info(*args):
         logging.info(*args)
 
@@ -99,7 +98,7 @@ if True:  # !------------------------ Logging Utilities
                 if isinstance(result, Exception):
                     log_error(f'Function <{func}> caught an error: {e}.')
             finally:
-                del(e)
+                del (e)
 
     def verbose(v: int, *args, **kwargs):
         """ Print based on '_verbose_' allowed verbosity level.
@@ -118,7 +117,9 @@ if True:  # !------------------------ Logging Utilities
                 kwargs["file"] = "sys.stderr"
                 print(*args, **kwargs)
 
+
 if True:  # !------------------------ Script Tests
+
     def _tests_():
         """ Debug Tests for script. """
 
@@ -133,11 +134,10 @@ def _main_():  # !------------------------ Script Main
         _tests_()
 
 
-
 if __name__ == "__main__":
-    _debug_: bool = True                    # True => use Debug features
-    _verbose_: int = 0                      # Verbosity level => 0 - 4
-    _log_flag_: bool = _debug_ and True     # True => log to file if _debug_
+    _debug_: bool = True  # True => use Debug features
+    _verbose_: int = 0  # Verbosity level => 0 - 4
+    _log_flag_: bool = _debug_ and True  # True => log to file if _debug_
     # argv.append('version')  # ! test
     # argv.append('help')  # ! test
     term = Terminal()
@@ -147,7 +147,6 @@ if __name__ == "__main__":
         if 'help' in ARGS or 'debug' in ARGS:
             _debug_ = True
         _main_()
-
 
 """ Error alternates:
 

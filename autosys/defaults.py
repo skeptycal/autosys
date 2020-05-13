@@ -16,9 +16,12 @@
 import logging
 from os import environ as ENV, linesep as NL
 from pathlib import Path
-from platform import platform
-from sys import stdout, stderr, argv, path as PYTHON_PATH
-from typing import Any, Dict, Iterable, List, NamedTuple, Sequence, Tuple
+from platform import (platform, system as WHICH_OS, \
+    python_implementation as WHICH_PY)
+from sys import (stdout, stderr, argv, path as PYTHON_PATH, \
+    version_info, maxsize)
+from typing import (Any, Dict, Iterable, List, NamedTuple, \
+    Sequence, Tuple)
 
 # package and version data
 from autosys._version import *
@@ -29,13 +32,11 @@ DEFAULT_LOG_FILE_NAME: str = "log_autosys_private.log"
 
 # sys.maxsize is more reliable than platform
 # Ref: https://docs.python.org/3.9/library/platform.html
-IS_64BITS: bool = sys.maxsize > 2**32
+IS_64BITS: bool = maxsize > 2**32
 
 # is python 3 or above
-PY3 = sys.version_info.major >= 3
-PLATFORM: str = platform.platform()
-WHICH_PY: str = platform.python_implementation()
-WHICH_OS: str = platform.system()
+PY3 = version_info.major >= 3
+PLATFORM = platform()
 """ ---------------------------------------------------------------------------
     *Goals for dependency imports:
 
