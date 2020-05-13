@@ -26,10 +26,8 @@
         `AutoSys` is licensed under the `MIT License
             `<https://opensource.org/licenses/MIT>`
     """
-from ._version import *
-from .defaults import *
-# from autosys.defaults import _debug_, _verbose_, _log_flag_
-
+from autosys._version import *
+from autosys.defaults import *
 """ <aside>            NewLine, A Bit of Lore
 
     Newline is a control character or sequence of control characters in a

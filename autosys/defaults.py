@@ -61,10 +61,10 @@ if True:  # !------------------------ Package Imports
         import sys
         import logging
 
-        try:
-            import ujson as json  # use faster version if available
-        except ImportError:
-            import json  # type: ignore
+        # try:
+        #     import ujson as json  # use faster version if available
+        # except ImportError:
+        #     import json  # type: ignore
 
     if True:  # !------------------------ Specific Imports
         from dataclasses import dataclass, field, is_dataclass, asdict, make_dataclass
@@ -73,7 +73,6 @@ if True:  # !------------------------ Package Imports
         from pprint import pprint, pformat
         from sys import stdout, stderr, argv, path as PYTHON_PATH
         from functools import wraps  # This convenience func preserves name and docstring
-        from locale import getpreferredencoding
         from sys import stdout, stderr, argv
 
         # from time import sleep
@@ -84,7 +83,7 @@ if True:  # !------------------------ Package Imports
         from autosys._version import *
 
         # basic cli colors
-        from autosys.data.colors import BASE_COLORS
+        from autosys.cli.colors import BASE_COLORS
 
 if True:  # !------------------------ Module CONSTANTS
     _debug_: bool = True  # True => use Debug features
@@ -92,54 +91,18 @@ if True:  # !------------------------ Module CONSTANTS
     _log_flag_: bool = _debug_ and True  # True => log to file if _debug_
 
 if True:  # !------------------------ Common CONSTANTSs
-    try:
-        DEFAULT_ENCODING = getpreferredencoding(do_setlocale=True) or "utf-8"
-    except:
-        DEFAULT_ENCODING: str = "utf-8"
+
     DEFAULT_LOG_FILE_NAME: str = "log_autosys_private.log"
 
     # sys.maxsize is more reliable than platform
     # Ref: https://docs.python.org/3.9/library/platform.html
-    IS_64BITS: bool = sys.maxsize > 2 ** 32
+    IS_64BITS: bool = sys.maxsize > 2**32
 
     # is python 3 or above
     PY3 = sys.version_info.major >= 3
     PLATFORM: str = platform.platform()
     WHICH_PY: str = platform.python_implementation()
     WHICH_OS: str = platform.system()
-
-if True:  # !------------------------ General Utilities
-    _EXPORT_BLACKLIST: str = ["arepl_store", "howdoi", "help"]
-    _EXPORT_WHITELIST: str = ["_debug_", "_log_flag_", "_verbose_"]
-
-    def LOG_PATH(f=DEFAULT_LOG_FILE_NAME) -> Path:
-        return Path().cwd().resolve() / f
-
-    SCRIPT_PATH: str = argv[0]  # path to this script
-    ARGS: List[str] = argv[1:]  # CLI arguments
-
-    def export(fn):
-        """ Decorator to export functions and classes. """
-        mod = sys.modules[fn.__module__]
-        if hasattr(mod, "__all__"):
-            mod.__all__.append(fn.__name__)
-        else:
-            mod.__all__ = [fn.__name__]
-        return fn
-
-    def filter_list(d=dir(), prefix="_", whitelist=[], blacklist=[]) -> List:
-        """ Filter a list with prefix to exclude, whitelist, and blacklist. """
-        return [
-            x
-            for x in sorted(d)
-            if x in whitelist or (not x.startswith(prefix) and x not in blacklist)
-        ]
-
-    def all_export(
-        d=dir(), prefix="_", whitelist=_EXPORT_WHITELIST, blacklist=_EXPORT_BLACKLIST
-    ) -> List:
-        """ Return a list of all exports not starting with `_` """
-        return filter_list(d=d, prefix=prefix, whitelist=whitelist, blacklist=blacklist)
 
 
 if True:  # !------------------------ Class and Method Utilities
@@ -150,11 +113,10 @@ if True:  # !------------------------ Class and Method Utilities
         raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
     # generic test class for `add_method`
-    A = type("A", (object,), dict(a=1))
+    A = type("A", (object, ), dict(a=1))
 
     def add_method(cls):
         """ Decorator to add method to class 'cls' """
-
         def decorator(func):
             @wraps(func)
             def wrapper(self, *args, **kwargs):
@@ -304,13 +266,15 @@ if True:  # !------------------------ Dataclass Utilities
     #                 )
     #                 self.toggle
 
-
 if True:  # !------------------------ Script Tests
+
     def _tests_(args):
         """
         Run Debug Tests for script if _debug_ = True.
         """
-        print("=================================================================")
+        print(
+            "================================================================="
+        )
         # plat2 = Plat()
         # print(plat2)
 
@@ -334,7 +298,6 @@ if True:  # !------------------------ Script Tests
 
 if __name__ == "__main__":  # if script is loaded directly from CLI
     _main_()
-
 
 # class PythonConfig:
 #     """

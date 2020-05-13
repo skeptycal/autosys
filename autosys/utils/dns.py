@@ -1,26 +1,30 @@
 #!/usr/bin/env python3
 # !---------------------------------------------- Imports
 if True:  # ! -- System Imports
+    import platform
     import requests
+    from subprocess import check_output
     import sys
 
 if True:  # ! -- Specific System Imports
-    from base64 import b64decode, b64encode
-    from pathlib import Path
-    from typing import Dict, List
-    try:
-        import ujson as json
-    except:
-        import json
+    # from base64 import b64decode, b64encode
+    # from pathlib import Path
+    # from typing import Dict, List
+    # try:
+    #     import ujson as json
+    # except:
+    #     import json
+    pass
 if True:  # ! -- Package Imports
     from autosys.utils import dbprint, read, NL
 
 
-class DNS_Error(Exception):
+class DnsError(Exception):
     pass
 
 
 def is_valid_ipv4_address(address):
+    import socket
     try:
         socket.inet_pton(socket.AF_INET, address)
     except AttributeError:  # no inet_pton here, sorry
@@ -50,7 +54,7 @@ def get_unix_dns_ips():
 
 
 def get_windows_dns_ips():
-    output = subprocess.check_output(["ipconfig", "-all"])
+    output = check_output(["ipconfig", "-all"])
     ipconfig_all_list = output.split('\n')
 
     dns_ips = []
@@ -62,8 +66,9 @@ def get_windows_dns_ips():
                 continue
             dns_ips.append(first_ip)
             # get all other dns server ips if they exist
-            k = i+1
-            while k < len(ipconfig_all_list) and ":" not in ipconfig_all_list[k]:
+            k = i + 1
+            while k < len(
+                    ipconfig_all_list) and ":" not in ipconfig_all_list[k]:
                 ip = ipconfig_all_list[k].strip()
                 if is_valid_ipv4_address(ip):
                     dns_ips.append(ip)
@@ -81,19 +86,12 @@ def main():
     elif platform.system() == 'Linux':
         dns_ips = get_unix_dns_ips()
     else:
-        if _debug_:
-            dbprint(f"unsupported platform: {platform.system()}")
-        else:
-            raise DNS_Error(f"unsupported platform: {platform.system()}")
-
-    dbprint(dns_ips)
+        raise DnsError(f"unsupported platform: {platform.system()}")
     return dns_ips[0]  # return 1st dns entry
 
 
 if __name__ == "__main__":
     main()
-    requests
-
 """ Tested with default macbookpro settings:
 
 wifi 2g HughesNet ['192.168.0.1', '192.168.0.1']

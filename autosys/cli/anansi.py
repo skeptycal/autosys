@@ -30,7 +30,6 @@
     Based on ANSI standard ECMA-48:
     http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-048.pdf
     '''
-
 '''               Anansi, A Bit of Lore
 
     # - named after Anansi, the trickster, of West African and Caribbean
@@ -42,21 +41,14 @@
     #   the Leopard, and the Fairy.
     '''
 
-if True:  # !------------------------ config
-    import re
+# from autosys.cli import *
 
-    from functools import lru_cache
-
-    from autosys._version import __version__ as VERSION
-    from autosys.debug import db_column_ruler, dbprint
-    from autosys.defaults import *
-
-    _debug_: bool = True             # True => use Debug features
 if True:  # !------------------------ ANSI Class
+
     class Ansi(str):  # ? just object? maybe some more functionality?
         """ ANSI color magic 🦄  """
 
-    # !------------------------ ANSI color sets
+        # !------------------------ ANSI color sets
         # - some favorites
         MAIN: str = "\x1B[38;5;229m"
         WARN: str = "\x1B[38;5;203m"
@@ -125,27 +117,27 @@ if True:  # !------------------------ ANSI Class
         BBRIGHTMAGENTA: str = "\x1B[45;1m"
         BBRIGHTCYAN: str = "\x1B[46;1m"
         BBRIGHTWHITE: str = "\x1B[47;1m"
-    # !------------------------ ASCII general constants
+        # !------------------------ ASCII general constants
         # Newline constants
-        NL:     str = NL                       # - system specific Newline
+        NL: str = NL  # - system specific Newline
         # - Linefeed = Linux / macOS Newline
-        LF:     str = chr(10)
-        CR:     str = chr(14)                       # - Carriage Return
-        CRLF:   str = CR + LF                       # - CR+LF = Windows Newline
+        LF: str = chr(10)
+        CR: str = chr(14)  # - Carriage Return
+        CRLF: str = CR + LF  # - CR+LF = Windows Newline
 
         # Other ASCII constants
-        NUL:    str = '\x00'                        # - NUL character
-        BEL:    str = '\x07'                        # - audible or visual indicator
-        BS:     str = '\x08'                        # - Backspace character
-        TAB:    str = '\x09'                        # - Horizontal Tab character
-        VT:     str = '\x0B'                        # - Vertical tab
+        NUL: str = '\x00'  # - NUL character
+        BEL: str = '\x07'  # - audible or visual indicator
+        BS: str = '\x08'  # - Backspace character
+        TAB: str = '\x09'  # - Horizontal Tab character
+        VT: str = '\x0B'  # - Vertical tab
         # - Form Feed (or clear screen)
-        FF:     str = '\x0C'
-        ESC:    str = '\x1B'                        # - Escape
-    # !------------------------ ANSI formatting constants
+        FF: str = '\x0C'
+        ESC: str = '\x1B'  # - Escape
+        # !------------------------ ANSI formatting constants
         # - ANSI ECMA-48 Control Sequence Introducer
         CSI: str = f'{ESC}['
-        ANSI_SEP: str = ';'                         # - ANSI ECMA-48 default separator
+        ANSI_SEP: str = ';'  # - ANSI ECMA-48 default separator
 
         # - {n} - format string for basic 7 bit ansi escape codes
         FMT_CSI: str = f'{CSI}{{}}m'
@@ -166,9 +158,9 @@ if True:  # !------------------------ ANSI Class
         # - format string for 256 color codes
         FMT_CSI_8BIT: str = f'{CSI}{{}}8;5;{{}}m'
         # - format string for 8 bit foreground
-        FMT_8BIT_FG:  str = f'{CSI}38;5;{{}}m'
+        FMT_8BIT_FG: str = f'{CSI}38;5;{{}}m'
         # - format string for 8 bit background
-        FMT_8BIT_BG:  str = f'{CSI}48;5;{{}}m'
+        FMT_8BIT_BG: str = f'{CSI}48;5;{{}}m'
 
         # ESC[ 38;2;⟨r⟩;⟨g⟩;⟨b⟩ m Select RGB foreground color
         # ESC[ 48;2;⟨r⟩;⟨g⟩;⟨b⟩ m Select RGB background color
@@ -176,9 +168,9 @@ if True:  # !------------------------ ANSI Class
         CSI_24BITFG: str = f"{CSI}[38;2;{{}};{{}};{{}}m"
         # - use R;G;B to select background colors
         CSI_24BITBG: str = f"{CSI}[48;2;{{}};{{}};{{}}m"
-        SUFFIX: str = 'm'              # - suffix for ansi codes
-    # !------------------------ ANSI regex constants
-        RE_CSI = r"\x1B\["                          # - regex string for CSI
+        SUFFIX: str = 'm'  # - suffix for ansi codes
+        # !------------------------ ANSI regex constants
+        RE_CSI = r"\x1B\["  # - regex string for CSI
 
         # 7 bit C1 ANSI sequences
         ANSI_ESCAPE_7BIT = re.compile(r'''
@@ -208,14 +200,16 @@ if True:  # !------------------------ ANSI Class
         def escape_ansi(self, needle: str):
             return self.ANSI_ESCAPE.sub('', needle)
     # !------------------------ ANSI default constants
-        DEFAULT_FG_CODE:        str = '229'
-        DEFAULT_BG_CODE:        str = '0'
-        DEFAULT_EFFECT_CODE:    str = '0'
-        DEFAULT_FG:             str = FMT_8BIT_FG.format(DEFAULT_FG_CODE)
-        DEFAULT_BG:             str = FMT_8BIT_BG.format(DEFAULT_BG_CODE)
-        DEFAULT_ANSI_TEXT:      str = f"{DEFAULT_EFFECT_CODE}{DEFAULT_FG}{DEFAULT_BG}"
-        FG_DEFAULT:             str = f"{DEFAULT_EFFECT_CODE}{DEFAULT_BG}{{}}"
-    # !------------------------ ANSI class setup
+
+        DEFAULT_FG_CODE: str = '229'
+        DEFAULT_BG_CODE: str = '0'
+        DEFAULT_EFFECT_CODE: str = '0'
+        DEFAULT_FG: str = FMT_8BIT_FG.format(DEFAULT_FG_CODE)
+        DEFAULT_BG: str = FMT_8BIT_BG.format(DEFAULT_BG_CODE)
+        DEFAULT_ANSI_TEXT: str = f"{DEFAULT_EFFECT_CODE}{DEFAULT_FG}{DEFAULT_BG}"
+        FG_DEFAULT: str = f"{DEFAULT_EFFECT_CODE}{DEFAULT_BG}{{}}"
+
+        # !------------------------ ANSI class setup
 
         def __init__(self):
             super().__init__()
@@ -223,10 +217,10 @@ if True:  # !------------------------ ANSI Class
 
         def _add_dynamic_method(self, name, value):
             """ Add dynamic method to class. """
-
             def key_method(self, value=value):
                 """ Dynamic method that returns <value>. """
                 return value
+
             try:
                 setattr(self.__class__, name, value)
             except Exception:
@@ -246,8 +240,8 @@ if True:  # !------------------------ ANSI Class
                 if i == 232:
                     s = 'GREY'
                 self._add_dynamic_method(f'{s}{i}', self.FMT_8BIT_FG.format(i))
-                self._add_dynamic_method(
-                    f'BG_{s}{i}', self.FMT_8BIT_BG.format(i))
+                self._add_dynamic_method(f'BG_{s}{i}',
+                                         self.FMT_8BIT_BG.format(i))
 
         # def __iter__(self):
         #     yield from dataclasses.astuple(self)
@@ -274,12 +268,12 @@ if True:  # !------------------------ ANSI Class
                 dbprint(e)
             return self
     # !------------------------ encode ANSI color codes
+
         @lru_cache()
         def encode_color_str(self,
                              fg=DEFAULT_FG_CODE,
                              bg=DEFAULT_BG_CODE,
-                             ef=DEFAULT_EFFECT_CODE
-                             ) -> str:
+                             ef=DEFAULT_EFFECT_CODE) -> str:
             if SUPPORTS_COLOR:
                 return f'{self.ef(ef)}{self.bg(bg)}{self.fg(fg)}'
             else:
@@ -289,8 +283,7 @@ if True:  # !------------------------ ANSI Class
         def encode_color_tuple(self,
                                fg=DEFAULT_FG_CODE,
                                bg=DEFAULT_BG_CODE,
-                               ef=DEFAULT_EFFECT_CODE
-                               ) -> Tuple[str, ]:
+                               ef=DEFAULT_EFFECT_CODE) -> Tuple[str, ]:
             return tuple(self.effect(ef), self.bg(bg), self.fg(fg))
 
         @lru_cache()
@@ -378,9 +371,11 @@ if True:  # !------------------------ ANSI Class
                     if i % 8 == 0:
                         print()
                 return 0
+
         # @staticmethod
         # def set_code(self, s: str, file=stdout):
         #     print(s, file=file)
+
     # !------------------------ ANSI cursor controls
 
         def move_to(self, L: int, C: int):
@@ -459,7 +454,10 @@ if True:  # !------------------------ ANSI Class
             if SUPPORTS_COLOR:
                 print(f"\x1Bu")
 
-        def loading(self, delay: float = 0.1, message: str = 'Loading ...', percent: bool = True):
+        def loading(self,
+                    delay: float = 0.1,
+                    message: str = 'Loading ...',
+                    percent: bool = True):
             """ ### Terminal progress Indicator
 
                 # Usage:
@@ -536,8 +534,6 @@ if __name__ == "__main__":
     _debug_ = True
 
     _main_()
-
-
 """ # ########################################## TODO: Ideas and additions:
 
     1. integrate into <str> class so it works well with others ...
@@ -558,8 +554,6 @@ if __name__ == "__main__":
 
     6. Add VSCssssssssssssssssssssode integration
     """
-
-
 ''' # ########################################## References:
 
     General:

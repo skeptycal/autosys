@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
-
 """
 Initial Basic Tests for Autosys package.
 For more information: https://docs.python-guide.org/writing/tests/
 """
 import sys
-sfrom autosys import *
+from autosys import *
 
 
 def test_stdout():
@@ -46,7 +45,9 @@ def test_env_import():
 
 def test_nl_constant():
     if PLATFORM().startswith('win'):
-
+        # windows
+        assert autosys.NL == r'\r\n'
+    else:
         #  linux, macOS:
         assert ord(autosys.NL) == 10
 

@@ -8,7 +8,14 @@
     `AutoSys` is licensed under the `MIT License
         `<https://opensource.org/licenses/MIT>`
     """
-from autosys.data.colors._css4 import CSS4_COLORS
-from autosys.data.colors._matplotlib import BASE_COLORS
-from autosys.data.colors._tableau_colors import TABLEAU_COLORS
-from autosys.data.colors._xkcd_colors import XKCD_COLORS
+from ._css4 import CSS4_COLORS
+from ._matplotlib import BASE_COLORS
+from ._tableau_colors import TABLEAU_COLORS
+from ._xkcd_colors import XKCD_COLORS
+
+__all__ = [
+    'CSS4_COLORS',
+    'BASE_COLORS',
+    'TABLEAU_COLORS',
+    'XKCD_COLORS',
+]

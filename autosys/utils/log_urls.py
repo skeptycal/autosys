@@ -17,15 +17,16 @@ if True:  # !------------------------ Imports
     from subprocess import CalledProcessError
     from typing import List, Tuple
 
-    from autosys import (NL, ARGS, __version__ as VERSION,
-                         __title__ as APP_NAME)
+    from autosys import (NL, ARGS, __version__ as VERSION, __title__ as
+                         APP_NAME)
 
-    from autosys.cli.debug import br, hr, dbprint
+    from autosys.debug import br, hr, dbprint
 
-    _debug_: bool = True                    # True => use Debug features
+    _debug_: bool = True  # True => use Debug features
     __all__: List[str] = []
 
 if OS().startswith('Darwin'):  # !------------------------ Classes
+
     class MacOS():
         """
         Provides an interface to interact with macOS.
@@ -50,15 +51,20 @@ if OS().startswith('Darwin'):  # !------------------------ Classes
             self.py3 = int(self.py_vers[0]) > 2
 
         def clipboard_copy(self, data: str):
-            subprocess.run("pbcopy", universal_newlines=True,
-                           capture_output=True, input=data)
+            subprocess.run("pbcopy",
+                           universal_newlines=True,
+                           capture_output=True,
+                           input=data)
 
         def osascript(self, applescript: str = OSA_GET_CHROME_ACTIVE_URL):
             """ Return result of applesript. """
-            args = [item for x in [("-e", l.strip())
-                                   for l in applescript.split('\n') if l.strip() != ''] for item in x]
-            proc = subprocess.Popen(
-                ["osascript"] + args, stdout=subprocess.PIPE)
+            args = [
+                item for x in [("-e", l.strip())
+                               for l in applescript.split('\n')
+                               if l.strip() != ''] for item in x
+            ]
+            proc = subprocess.Popen(["osascript"] + args,
+                                    stdout=subprocess.PIPE)
             progname = proc.stdout.read().strip()
             # sys.stdout.write(str(progname))
 
@@ -93,8 +99,8 @@ if OS().startswith('Darwin'):  # !------------------------ Classes
     # objects exported for 'import *'
     __all__.extend(['MacOS', 'm'])
 
-
 if True:  # !------------------------ Script Tests
+
     def _tests_():
         """ Debug Tests for script. """
         pass
@@ -122,8 +128,6 @@ if __name__ == "__main__":
         if 'help' in ARGS or 'debug' in ARGS:
             _debug_ = True
         _main_()
-
-
 """
 
     . $(which ssm)

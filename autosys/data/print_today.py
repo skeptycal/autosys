@@ -6,17 +6,16 @@ from datetime import time
 from datetime import datetime
 
 from autosys.cli.debug import br, hr, dbprint
+
 # Days start at 0 for monday
-days = ["monday", "tuesday", "wednesday",
-        "thursday", "friday", "saturday", "sunday"]
+days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 
 
 class int_restricted(int):
     pass
 
 
-class DT():
-
+class DT(datetime):
     def __init__(self):
         self.dt = datetime.now()
 
