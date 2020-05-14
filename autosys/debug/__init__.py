@@ -13,6 +13,7 @@ if True:  # !------------------------ config
     import logging
     from pathlib import Path
     from typing import List
+    from autosys.cli import terminal
 
     _debug_: bool = True  # True => use Debug features
     _verbose_: int = 0  # Verbosity level => 0 - 4
