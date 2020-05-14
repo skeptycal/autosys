@@ -7,7 +7,7 @@ from dataclasses import dataclass
 
 from autosys.debug.dbprint import *
 
-# PLATFORM = platform()
+PLATFORM = platform()
 DEFAULT_COLOR = 'MAIN'
 
 
@@ -25,30 +25,40 @@ def rep_whitelist(needle: Sequence,
     return ''.join(volunteer if c not in needle else c for c in haystack)
 
 
+def make_safe_id(haystack: Sequence, volunteer: Sequence = '_') -> Sequence:
+    ''' return a string that has only alphanumeric and _ characters.
+    
+        others are replaced with `volunteer` (default `_`) '''
+    return ''.join(volunteer if not c.isidentifier() else c for c in haystack)
+
+
 @dataclass
 class FakeLog:
-    def fakelog(self, *args, line_color: str = 'MAIN'):
+    def _fakelog(self, *args, line_color: str = 'MAIN'):
+        args = arg_str(*args)
         fmt = eval(f"color.{line_color}")
-        args = ''.join(args)
         print(f"{fmt}{args}{color.RESET}")
 
     def info(self, *args):
         ''' placeholder for logging function... '''
-        self.fakelog(*args, line_color='BLUE')
+        self._fakelog(*args, line_color='BLUE')
 
     def error(self, *args):
         ''' placeholder for logging function ... '''
-        self.fakelog(*args, line_color='WARN')
+        self._fakelog(*args, line_color='WARN')
 
-    def logf(self, fstring: str = ''):
-        ''' log fstring value '''
+    def var(self, my_var: str = ''):
+        ''' log value of a variable. 
+        
+            my_var is translated to a safe version before processing.'''
         try:
-            fstring = str(fstring)
-            evl: Sequence = replace_all(':=/#', fstring, '_')
-            fmt: str = f"{fstring} | {eval(evl)}"
-            self.fakelog(fmt, line_color='RAIN')
+            my_var = str(my_var)
+            evl: Sequence = replace_all(':=/!#;\\', my_var, '_')
+            # evl: Sequence = make_safe_id(my_var)
+            fmt: str = f"{my_var} | {eval(evl)}"
+            self._fakelog(fmt, line_color='RAIN')
         except Exception as e:
-            self.error(f'ERROR: {fstring=} | {type(fstring)=} |  {e.args[0]}')
+            self.error(f'ERROR: {my_var=} | {type(my_var)=} |  {e.args[0]}')
 
 
 log = FakeLog()
@@ -260,8 +270,11 @@ class LogColors:
     LC_20: str = color.BLUE
     LC_10: str = color.GO
 
+    def str(self):
+        print(self.LC_50, f'{self.LC_50}color')
 
-print(LogColors)
+
+lc = LogColors()
 
 if __name__ == "__main__":
     from pprint import pprint
@@ -269,24 +282,19 @@ if __name__ == "__main__":
     def _test_terminal_():
 
         hr()
-        print(f"{color.BLUE}{PLATFORM=}{color.RESET}")
+        log.var('PLATFORM')
+        log.var('term')
+        log.var("term.SUPPORTS_COLOR")
+        log.var("SUPPORTS_COLOR")
+        log.var('term._stream')
+        log.var("term._SIZE")
+        log.var("term.SIZE")
+        log.info(f"Terminal SIZE is set to ({term.cols}, {term.rows})")
         hr()
-        # constants = {k: eval(f'term.{k}') for k in dir(term) if k.isupper()}
-        # pprint(constants)
-        # methods = {k: eval(f'term.{k}') for k in dir(term) if k.islower()}
-        # pprint(methods)
-        log.logf('term')
-        # print(f"{CHERRY}{term=}{RESET}")
-        hr()
-        log.logf(term._show_debug_info())
-        # print(f"{term._stream=}")
-        # print(f"{term._SIZE=}")
-        # print(f"{term.SIZE=}")
-        hr()
-        log.logf("term.SUPPORTS_COLOR")
-        log.logf("SUPPORTS_COLOR")
-        # COLS, ROWS = term.SIZE
-        # print(f"Terminal SIZE is set to ({term.cols}, {term.rows})")
+        print(str(lc))
+        print(lc.str())
+        print(dir(lc))
+
         # term._show_debug_info()
 
     _test_terminal_()
