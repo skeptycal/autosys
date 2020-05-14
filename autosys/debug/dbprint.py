@@ -58,4 +58,5 @@ def dbprint(*db_args, sep=" ", end=NL, file=stderr, flush=False):
         )
 
 
-dbprint('This stuff is a test...')
+if __name__ == '__main__':
+    dbprint('This stuff is a test...')
