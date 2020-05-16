@@ -21,8 +21,7 @@ __author__: str = "Michael Treanor".title()
 __author_email__: str = "skeptycal@gmail.com".lower()
 
 
-def _get_copyright_date(start_year: int = 0, \
-                        _author: str = __author__) -> str:
+def _get_copyright_date(start_year: int = 0, _author: str = __author__) -> str:
     from datetime import date
 
     current_year = date.today().year
@@ -35,24 +34,31 @@ def _get_copyright_date(start_year: int = 0, \
     if start_year != current_year:
         year_fmt = f"{start_year}-{year_fmt}"
 
-    return f'Copyright (c) {year_fmt} {_author}'
+    return f"Copyright (c) {year_fmt} {_author}"
 
 
 __copyright__: str = _get_copyright_date(2018).title()
 __python_requires__: str = ">=3.8"
 
 __all__ = [
-    '__version_info__', '__version__', '__license__', '__title__',
-    '__author__', '__author_email__', '__copyright__', '__python_requires__'
+    "__version_info__",
+    "__version__",
+    "__license__",
+    "__title__",
+    "__author__",
+    "__author_email__",
+    "__copyright__",
+    "__python_requires__",
 ]
 
 if _debug_:
     from datetime import date
     from pprint import pprint
+
     # day = f'{date:%A}'
     # print(f'--- Today is some {day} in {current_year}, by the way.')
-    _intro = f'{__title__.title()} setup and version information:'
-    _hr = '=' * len(_intro)
+    _intro = f"{__title__.title()} setup and version information:"
+    _hr = "=" * len(_intro)
     print(_intro)
     print(_hr)
     _meta_data = {k: eval(k) for k in __all__}

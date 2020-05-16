@@ -12,8 +12,9 @@
 if True:  # !------------------------ config
     import logging
     from pathlib import Path
-    from typing import List
+    from typing import List, Dict
     from autosys.cli import terminal
+
 
     _debug_: bool = True  # True => use Debug features
     _verbose_: int = 0  # Verbosity level => 0 - 4
@@ -24,26 +25,9 @@ if True:  # !------------------------ config
 
 if True:  # !------------------------ String Utilities
 
-    def isutf8(f):
-        # TODO - create a function version of `isutf8 -li *`
-        pass
 
-    def read(filename: str, ignore_errors: bool = not _debug_):
-        """ Returns the text of `filename`.
 
-            filename: str       - name of file to read and return
-            ignore_errors: bool - ignore all errors and return None instead
-            """
-        dbprint(f"function `read` with args {filename=} and {ignore_errors=}.")
-        try:
-            file_path = Path(__file__).resolve().parents[0] / filename
-            dbprint(f"read from: {file_path}")  # debug
-            with open(file_path, encoding=DEFAULT_ENCODING) as f:
-                return f.read()
-        except (OSError, NameError, TypeError) as e:
-            if not ignore_errors:
-                return e
-        return None
+
 
 
 if True:  # !------------------------ CLI display utilities

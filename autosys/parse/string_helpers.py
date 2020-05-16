@@ -11,6 +11,10 @@ from typing import Sequence
 
 # TODO profile and compare with RE and C functions
 
+def isutf8(f):
+    # TODO - create a function version of `isutf8 -li *`
+    pass
+
 # Reference: these 'string' versions without RE are from this link:
 # https://stackoverflow.com/a/48350803
 def replace_all(
@@ -29,7 +33,7 @@ def rep_whitelist(
 
 def make_safe_id(haystack: Sequence, volunteer: Sequence = "_") -> Sequence:
     """ return a string that  only alphanumeric and _ characters.
-    
+
         others are replaced with `volunteer` (default `_`) """
     return "".join(volunteer if not c.isidentifier() else c for c in haystack)
 
