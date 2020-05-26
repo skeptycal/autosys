@@ -4,9 +4,7 @@
 from __future__ import absolute_import
 
 if True:  # stdlib imports
-    import ast  # safer eval ...
     import os  # basic OS features
-    import pprint  # pretty printing
     import sys  # basic system features
     from pathlib import Path  # path features
     from os import linesep as NL, sep as PATHSEP
@@ -50,9 +48,9 @@ class SetupAttrs:
         setup(**s.setup)
         ```
         `Print(s)` will pretty print the attributes.
-        
+
         The following data are imported from ./<package_name>/_version.py
-        
+
             __version__: str = "x.x.x"
             __license__: str = "MIT"
             __title__: str = "xxxxx"

@@ -13,14 +13,6 @@
 from typing import Dict, List
 from dataclasses import dataclass
 
-__version_info__ = (0, 4, 4)
-
-__version__ = ".".join(map(str, __version_info__))
-__license__: str = "MIT"
-__title__: str = "autosys"
-__author__: str = "Michael Treanor"
-__author_email__: str = "skeptycal@gmail.com"
-
 from datetime import date as _date
 from pprint import pprint
 
@@ -29,26 +21,26 @@ from pprint import pprint
 def kv(k, d):
     fmt = f"{d}.{k}()"
     try:
-        return eval(f'{fmt}')
+        return eval(f"{fmt}")
     except Exception as e:
-        print(f'Error: {e.args[0]:<10.15}. {fmt}')
+        print(f"Error: {e.args[0]:<10.15}. {fmt}")
 
     fmt = f"{d}.{k}"
     try:
         return eval(fmt)
     except Exception as e:
-        print(f'Error: {e.args[0]:<10.15}. {fmt}')
+        print(f"Error: {e.args[0]:<10.15}. {fmt}")
 
-    return 'error'
+    return "error"
 
 
-class ApiSpy():
+class ApiSpy:
     src: Dict
     blacklist: List
     whitelist: List
-    ''' Get, create, use, evaluate, and document api functionality
+    """ Get, create, use, evaluate, and document api functionality
 
-        produce a list of outputs from various functions in a module 
+        produce a list of outputs from various functions in a module
         this is basically an automated:
         - an api front end for python modules
         - module tester
@@ -69,10 +61,11 @@ class ApiSpy():
         - try calling f()
         - try calling f
         - take a list of inputs to use for f(x) and zip up a dict
-        '''
+        """
+
     def __init__(self, d):
         pass
-        """ 
+        """
         - create a list of functionality
         - identify usual suspects to blacklist
         - default blacklist is starting point
@@ -81,12 +74,12 @@ class ApiSpy():
         """
 
 
-_date_dict = {x: kv(x, '_date') for x in dir(_date) if not x.startswith('_')}
+_date_dict = {x: kv(x, "_date") for x in dir(_date) if not x.startswith("_")}
 
 # print(_date_dict)
 
 for k, v in _date_dict.items():
-    print(f'{k}: {v}\n')
+    print(f"{k}: {v}\n")
 
 
 class Now(_date):
@@ -104,46 +97,15 @@ class Now(_date):
 
 def what_year_is_it():
     from datetime import date
+
     return str(date.today().year)
 
 
-def _get_copyright_date(start_year: str = '', _author: str = __author__):
-    from datetime import datetime as _dt
-    from datetime import date
-
-    date = date.today()
-    print(
-        f'--- Today is {date:%A}, by the way. If you are working on this code again and the day is Tuesday, you win a cookie.'
-    )
-
-    print(what_year_is_it())
-    print(what_year_is_it())
-    _year: str = str(_dt.now().year)
-
-    if not start_year:
-        start_year = _year
-    print(f"{_year=} - {type(_year)}")
-    print(f"{start_year=} - {type(start_year)}")
-
-    year_fmt: str = f"{_year}"
-    if start_year != _year:
-        year_fmt = f"{start_year}-{year_fmt}"
-
-    return f'Copyright (c) {year_fmt} {_author}'
-
-
-__copyright__: str = _get_copyright_date(2018)
-__python_requires__: str = ">=3.8"
-
-__all__ = [
-    '__version_info__', '__version__', '__license__', '__title__',
-    '__author__', '__author_email__', '__copyright__', '__python_requires__'
-]
-
 if True:
     from pprint import pprint
-    _intro = f'{__title__.title()} setup and version information:'
-    _hr = '=' * len(_intro)
+
+    _intro = f"{__title__.title()} setup and version information:"
+    _hr = "=" * len(_intro)
     print(_intro)
     print(_hr)
     _fd = {k: eval(k) for k in __all__}
@@ -152,12 +114,5 @@ if True:
     #     print(f"{f} - {eval(f)}")
     #     print('-' * 50)
     print()
-    print(f"{__version_info__=}")
-    print(f"{__version__=}")
-    print(f"{__license__=}")
-    print(f"{__title__=}")
-    print(f"{__author__=}")
-    print(f"{__author_email__=}")
-    print(f"{__copyright__=}")
-    print(f"{__python_requires__=}")
+
     print(_hr)

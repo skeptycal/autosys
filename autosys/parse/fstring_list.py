@@ -162,7 +162,7 @@ class NpChart:
     padding: int = 1
     pad: str = " "
     align: NpAlign = NpAlign.left
-    
+
 
 
 def np_row(
@@ -170,20 +170,20 @@ def np_row(
     size: int = 4,
     padding: int = 1,
     pad: str = " ",
-    color_key: Tuple = (True,True, True, True)
+    color_key: Tuple = (True,True, True, True),
     align: NpAlign = NpAlign.left,
 ):
-    """ Format a row of data for cli output. 
+    """ Format a row of data for cli output.
 
-        param       description                             default  
+        param       description                             default
         ===========================================================
-        a -         any iterable data set                   
+        a -         any iterable data set
         size -      space allowed for each data point       4
         padding -   space between each data point           1
         pad -       character used for padding              ' '
         alt_color - should it alternate colors?             False
         align -     alignment of data in cells              '<'
-    
+
         color_tuple - options for coloring the chart
             color: bool = True,
             alt_rows: bool = True,

@@ -15,19 +15,12 @@ if True:  # !------------------------ config
     from typing import List, Dict
     from autosys.cli import terminal
 
-
     _debug_: bool = True  # True => use Debug features
     _verbose_: int = 0  # Verbosity level => 0 - 4
     _log_flag_: bool = _debug_ and True  # True => log to file
 
     DEBUG_COLOR: str = "\x1B[38;5;178m"  # private ansi CLI color code
     RESET: str = "\x1B[0m"  # private ansi CLI reset code
-
-if True:  # !------------------------ String Utilities
-
-
-
-
 
 
 if True:  # !------------------------ CLI display utilities

@@ -13,15 +13,9 @@
 
 if True:  # !------------------------ config
     import re
-
-    from functools import lru_cache
-
-    from autosys._version import __version__ as VERSION
-    from autosys.debug import db_column_ruler, dbprint
-    from autosys.defaults import *
-
-    from autosys.cli import anansi, ascii_codes, colors
-    _debug_: bool = True  # True => use Debug features
+    from sys import stderr, stdout
+    from platform import platform as PLATFORM
+    from os import environ as ENV
 
     # generic script level stderr output characteristics
     _IS_A_TTY: bool = stderr.isatty() and hasattr(stderr, "isatty")
