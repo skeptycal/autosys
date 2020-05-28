@@ -17,4 +17,14 @@ from tempfile import NamedTemporaryFile
 from locale import getpreferredencoding
 from typing import Dict, Final, List, Tuple
 from io import TextIOWrapper
-from logging import Logger
+from logging import Logger as _Logger
+
+print(dir(_Logger))
+
+
+class Logger(_Logger):
+    def fmt_info(self):
+        pass
+
+
+log = Logger(__file__)

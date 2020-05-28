@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """ AutoSys Defaults (defaults.py) - common resources for all `autosys` modules
-    
+
     Part of the `AutoSys` package - utilities for macOS apps
     copyright (c) 2019 Michael Treanor
     https://www.github.com/skeptycal/autosys
@@ -11,28 +11,26 @@
         `<https://opensource.org/licenses/MIT>`
     """
 
-#* ------------------------------------------- Common Imports
+# * ------------------------------------------- Common Imports
 
-import logging
-from os import environ as ENV, linesep as NL
+from os import linesep as NL, sep as PATHSEP, environ as ENV
 from pathlib import Path
-from platform import (platform, system as WHICH_OS, \
-    python_implementation as WHICH_PY)
-from sys import (stdout, stderr, argv, path as PYTHON_PATH, \
-    version_info, maxsize)
-from typing import (Any, Dict, Iterable, List, NamedTuple, \
-    Sequence, Tuple)
+from platform import platform, system as WHICH_OS, python_implementation as WHICH_PY
+from pprint import pformat
+from sys import stdout, stderr, argv, path as PYTHON_PATH, version_info, maxsize
+from typing import Any, Dict, Final, Iterable, List, NamedTuple, Sequence, Tuple
+import logging
 
 # package and version data
 from autosys._version import *
 
-#* ------------------------------------------- Common Constants
+# * ------------------------------------------- Common Constants
 
 DEFAULT_LOG_FILE_NAME: str = "log_autosys_private.log"
 
 # sys.maxsize is more reliable than platform
 # Ref: https://docs.python.org/3.9/library/platform.html
-IS_64BITS: bool = maxsize > 2**32
+IS_64BITS: bool = maxsize > 2 ** 32
 
 # is python 3 or above
 PY3 = version_info.major >= 3
@@ -43,20 +41,20 @@ PLATFORM = platform()
         1. Only import what is needed
             - avoid importing everything all the time
             - use what is needed for the code
-            
+
         2. Clearly show dependencies at the top of the module
             - standard library imports can be centralized in __init__.py
-            
+
         3. Defer import until later (specific cases)
             - this should be avoided since it hides `import` statements all
                 over the code base
-            - make a comment in the `imports` section to clarify 
-            
-        4. Use absolute imports 
-            - they can become very long 
+            - make a comment in the `imports` section to clarify
+
+        4. Use absolute imports
+            - they can become very long
             - code folding in VSCode with 'if True:' blocks is my hacky fix
 
-    *Reference: imports - best practices    
+    *Reference: imports - best practices
         - https://stackoverflow.com/a/37126790
         "1. Errors importing modules with circular imports"
 
@@ -67,11 +65,11 @@ PLATFORM = platform()
         import a                   # (4) Implicit relative import (deprecated, python 2 only)
         from . import a            # (5) Explicit relative import
         ```
-        
-        Unfortunately, only the 1st and 4th options actually work when you have circular dependencies (the rest all raise ImportError or AttributeError). In general, you shouldn't be using the 4th syntax, since it only works in python2 and runs the risk of clashing with other 3rd party modules. 
-        
+
+        Unfortunately, only the 1st and 4th options actually work when you have circular dependencies (the rest all raise ImportError or AttributeError). In general, you shouldn't be using the 4th syntax, since it only works in python2 and runs the risk of clashing with other 3rd party modules.
+
         *So really, only the first syntax is guaranteed to work.*
-        
+
         The ImportError and AttributeError issues only occur in python 2. In python 3 the import machinery has been rewritten and all of these import statements (with the exception of 4) will work, even with circular dependencies. While the solutions in this section may help refactoring python 3 code, they are mainly intended for people using python 2.
 
     ---------------------------------------------------------------------------

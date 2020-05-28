@@ -4,6 +4,8 @@
 """
 Creates twitter credentials json file from user authentication data.
 
+#! Keep this file *PRIVATE* and do not submit it to source control!
+
 Keys and info can be obtained from the twitter developer site:
 https://developer.twitter.com/en (English Version, others available)
 

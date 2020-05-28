@@ -1,0 +1,205 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+""" scrape.py - web scraping utilities for python
+    (reference: https://realpython.com/python-web-scraping-practical-introduction/)
+
+        copyright (c) 2019 Michael Treanor
+        https://www.github.com/skeptycal/autosys
+        https://www.twitter.com/skeptycal
+    """
+
+if True:  # ! -- System Imports
+    import sys
+    from dataclasses import dataclass
+    from pprint import pprint
+    from contextlib import closing
+    from collections import deque
+    from typing import Any, Deque, Dict, List, Tuple
+
+if True:  # ! -- Third Party Imports
+    from requests import get
+    from requests.exceptions import RequestException
+    from bs4 import BeautifulSoup
+
+    try:
+        import lxml
+
+        DEFAULT_PARSER = "lxml"
+    except:
+        DEFAULT_PARSER = "html.parser"
+
+    # from autosys import *
+
+
+# !---------------------------------------------- Custom Types
+
+
+class ScrapeError(Exception):
+    """ An error occurred while attempting to scrape data from a webpage. """
+
+    pass
+
+
+class ScrapeRulesError(Exception):
+    """ An error occurred while applying rules to web scraping activities. """
+
+    pass
+
+
+class ScrapeSetError(Exception):
+    """ An error occurred while managing the web scraping document set. """
+
+    pass
+
+
+@dataclass()
+class ConfigDefaults:
+    _debug: bool = False
+    _log: bool = False and _debug
+    _fuzzy: bool = True
+
+
+@dataclass(frozen=True)
+class ScrapeRules(List[Any]):
+    """ A list of functions, regex matches, or other checks to perform
+        that keep the web scraper from doing anything unwanted. """
+
+    triggers: List[Any] = []
+
+
+@dataclass()
+class WebDocument:
+    """ Manages a List of additional url information for webpages.
+        - Places the url in a data structure with additional optional fields
+        - Allows automated recording of data during the web scraping process.
+        - Any method that begins with '__wd_auto_' runs on url access
+        - Add additional temporary methods with decorators
+        - Add additional permanent methods with subclassing
+        - Each method can be toggled on or off individually
+        - Performance information for each addon is recorded
+        - Gathers data that would otherwise be lost.
+        - the input and output can remain a simple url.
+        - each url may have multiple access and generate an audit trail
+
+        Examples of optional fields. Add others by subclassing.
+        - date and time of web access
+        - author and contributor names and info
+        - info required for citations
+        - ping and download times
+        - current user / machine / os / user-agent / environment
+        - DNS server and proxy information
+        - redirections encountered
+        - additional unplanned data packets (is data encapsulated?)
+        - complete status information (instead of just 200==success)
+        - location of further resources (nonlocal links / images)
+        - generate a list of further resources as a script
+        """
+
+    url: str
+
+
+@dataclass
+class ScrapeDocument(WebDocument):
+    scrape_rules: List[Any] = []
+
+
+@dataclass()
+class ScrapeDocumentSet:
+    url_list: List[str] = []
+    config: ConfigDefaults = ConfigDefaults()
+    DEFAULT_URL_HISTORY: int = 10000
+    _url_set: Deque = deque(url_list, maxlen=DEFAULT_URL_HISTORY)
+    optional_fields: List[Any] = WD_AUTO_STANDARD_FIELDS
+    scrape_rules_list: List[Any] = DEFAULT_SCRAPE_RULES
+
+    def __append__(self, url):
+        self._url_set.__append__(
+            ScrapeDocument(url=url, scrape_rules=self.scrape_rules_list)
+        )
+
+
+def is_html_response(resp):
+    """
+    Returns True if the response seems to be HTML, False otherwise.
+    """
+    content_type = resp.headers["Content-Type"].lower()
+    return (
+        resp.status_code == 200
+        and content_type is not None
+        and content_type.find("html") > -1
+    )
+
+
+def simple_get(url):
+    """
+    Attempts to get the content at `url` by making an HTTP GET request.
+    If the content-type of response is some kind of HTML/XML, return the
+    text content, otherwise return None.
+    """
+    try:
+        with closing(get(url, stream=True)) as resp:
+            if is_html_response(resp):
+                return resp.content
+            else:
+                return None
+
+    except RequestException as e:
+        log_error("Error during requests to {0} : {1}".format(url, str(e)))
+        return None
+
+
+def log_error(e):
+    """
+    It is always a good idea to log errors.
+    This function just prints them, but you can
+    make it do anything.
+    """
+    print(e)
+
+
+def get_p_tags(html):
+    for p in html.select("p"):
+        yield p.text
+
+
+def soup(url):
+    return BeautifulSoup(simple_get(url), DEFAULT_PARSER)
+
+
+# !---------------------------------------------- Script Tests
+def __tests__(args) -> int:
+    """ Run Debug Tests for script if _debug_ = True. """
+
+    print(f"{DEFAULT_PARSER=}")
+    url = "https://realpython.com/blog/"
+    raw_html = simple_get(url)
+    html = soup(url)
+    pprint(html)
+    return 0
+
+
+def __main__(args) -> int:
+    """ CLI script main entry point. """
+
+    #! script testing
+    if _debug_:
+        __tests__(args)
+    return 0
+
+
+if __name__ == "__main__":  # if script is loaded directly from CLI
+    __main__(sys.argv[1:])
+
+
+""" Notes
+    from tutorial ... moved out of __test__()
+
+    raw_html = simple_get("https://realpython.com/blog/")
+    print(len(raw_html))
+
+    no_html = simple_get("https://realpython.com/blog/nope-not-gonna-find-it")
+
+    print(no_html is None)
+
+    # raw_html = open("contrived.html").read()
+    """
