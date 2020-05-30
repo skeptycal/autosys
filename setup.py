@@ -12,7 +12,7 @@ if True:  # stdlib imports
 
 if True:  # setup tools
     from setuptools import setup, find_packages
-    from autosys._version import *
+    from autosys.autosys._version import *
 
 _debug_: bool = False
 

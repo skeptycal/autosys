@@ -1,6 +1,6 @@
 # from typing import Dict, Final, Tuple
-from text_utils.datetime import *
-from text_utils.datetime import _check_date_fields, _check_tzinfo_arg
+from autosys.text_utils.datetime import *
+from autosys.text_utils.datetime import _check_date_fields, _check_tzinfo_arg
 
 
 class NowAndThen:

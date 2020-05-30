@@ -10,77 +10,139 @@
     `AutoSys` is licensed under the `MIT License
         `<https://opensource.org/licenses/MIT>`
     """
-from dataclasses import dataclass
-from typing import Dict, Final, List, Sequence, Tuple
+from dataclasses import dataclass, field, Field
+from typing import Dict, Final, List, Sequence, Set, Tuple
+from os import linesep as NL
 import sys
+import json
 
 from autosys.text_utils.nowandthen import now
 
+copyright_symbol: str = "©"  # could be (c)
 _debug_: bool = True
-__version__ = "0.4.4"
-__title__ = "AutoSys"
+
+
+def my_class(func):
+    return str(type(func)).split(".")[-1][:-2]
 
 
 @dataclass
 class MyVersion:
-    start_year: int
-    __title__: str
-    __version__: str = __version__
-    __author__: str = "Michael Treanor"
-    __author_email__: str = "skeptycal@gmail.com"
-    __license__: str = "MIT"
-    __python_requires__: str = ">=3.8"
-    __copyright__: str = ""
+    name: str
+    _start_year: int = now.year
+    version: str = field(default="0.0.1", metadata="__version__")
+    author: str = field(default="Michael Treanor", metadata="__author__")
+    author_email: str = field(
+        default="skeptycal@gmail.com", metadata="__author_email__"
+    )
+    _license: str = field(default="MIT", metadata="__license__")
+    python_requires: str = field(default=">=3.8", metadata="__python_requires__")
+    _copyright: str = ""
 
     def __post_init(self):
-        __copyright__ = now.get_copyright_date(
-            start_year=self.start_year, _author=self.__author__
-        ).title()
+        if not self.name:
+            raise ValueError("Project must have a name.")
         # * >>--------> add other necessary fields here
         for field in __dict__:
             ## add property
             pass
 
     @property
-    def title(self) -> str:
-        self.__title__
-
-    @property
-    def author(self) -> str:
-        self.__author__.title()
-
-    @property
-    def author_email(self) -> str:
-        self.__author_email__.lower()
+    def version_info(self) -> Tuple[int, int, int]:
+        return self.version.split(".")
 
     @property
     def license(self) -> str:
-        self.__license__.upper()
-
-    @property
-    def python_requires(self) -> str:
-        self.__python_requires__
-
-    @property
-    def __version_info__(self, version: str) -> Tuple[int, int, int]:
-        return self.__version__.split(".")
+        return self._license.upper()
 
     @property
     def copyright(self) -> str:
-        if not self.__copyright__:
-            self.__copyright__ = now.get_copyright_date(
-                start_year=self.start_year, _author=self.__author__
-            )
-        return self.__copyright__
+        if not self._copyright:
+            self._copyright = self._get_copyright_date()
+        return self._copyright
 
-    def __all__(self, extras=["now"]) -> List[str]:
+    def to_dict(self) -> Dict[str, str]:
+        """ Returns a dictionary of properties.
+
+        e.g.
+            ===================================
+            to_dict =
+            {'_start_year': 2018,
+            '__title__': 'AutoSys',
+            '__version__': '0.4.4',
+            'author': 'Michael Treanor',
+            '__author_email__': 'skeptycal@gmail.com',
+            '_license': 'MIT',
+            '__python_requires__': '>=3.8',
+            '__copyright__': 'Copyright (c) 2018-2020 Michael Treanor'}
+            ===================================
+
+        """
+        return {k: v for k, v in self.__dict__.items() if not k.startswith("_")}
+
+    def table_list(self, table_rows: List[str], border_char: str = "-") -> str:
+        """ Returns a table version of a list.
+
+            - table_rows  = list of rows
+            - border_char = string used for border
+
+            e.g.
+                print(table_list(my_rows, border_char = "˚`†´"))
+            """
+        tmp: List[str] = []
+        longest_string: int = len(max(table_rows, key=len))
+        border: str = border_char * (longest_string // len(border_char))
+        tmp.append(border)
+        tmp.append(f"{self._my_class} data for '{self.name}':")
+        tmp.append(border)
+        tmp.extend(table_rows)
+        tmp.append(border)
+        return NL.join(tmp)
+
+    def thats_all(self, border_char="-") -> str:
+        return {k: v for k, v in vars(self).items()}
+
+    def pretty_dict(self, border_char="-") -> str:
+        """ Returns a pretty version of dictionary.
+
+            - border_char = string used for border
+
+            e.g.
+                print(self.pretty(border_char = "˚`†´"))
+        """
+        return self.table_list(
+            [f"{k:<20.20}: {v}" for k, v in self.to_dict().items()],
+            border_char=border_char,
+        )
+
+    def to_json(self, sort_keys=True, indent=2):
+        return json.dumps(version.to_dict(), indent=indent, sort_keys=sort_keys)
+
+    def _get_copyright_date(self) -> str:
+        """ Return a correct formatted copyright string. """
+        year = now.year
+        tmp: str = ""
+        try:
+            self._start_year = int(self._start_year)
+            # include start year if it is in [1900..now]?
+            tmp = f"{self._start_year}-" if 1900 < self._start_year < year else ""
+        except:
+            self._start_year = year
+
+        return f"Copyright {copyright_symbol} {tmp}{year} {self.author}"
+
+    @property
+    def _my_class(self):
+        return my_class(self)
+
+    def _export_all(self) -> List[str]:
         """ Returns an '__all__' list.
 
             Add methods or properties that are not in self.__dict__ that you want to export using the 'extras' parameter.
 
             e.g.
                 [
-                    "__author__",
+                    "author",
                     "__author_email__",
                     "__copyright__",
                     "__license__",
@@ -90,63 +152,31 @@ class MyVersion:
                     "__version_info__",
                     "now",
                 ] """
-        tmp: List[str] = [x for x in self.__dict__]
-        if extras:  # only Sequences will be added
-            if isinstance(extras, str):  # append strings ...
-                tmp.append(extras)
-            elif isinstance(extras, Sequence):  # extend others
-                tmp.extend((extras))
-        return tmp
 
-    def to_dict(self):
-        """ Returns a dictionary of properties.
-
-        e.g.
-            ===================================
-            to_dict =
-            {'start_year': 2018,
-            '__title__': 'AutoSys',
-            '__version__': '0.4.4',
-            '__author__': 'Michael Treanor',
-            '__author_email__': 'skeptycal@gmail.com',
-            '__license__': 'MIT',
-            '__python_requires__': '>=3.8',
-            '__copyright__': 'Copyright (c) 2018-2020 Michael Treanor'}
-            ===================================
-
-        """
-        return {arg: self.__getattribute__(f"{arg}") for arg in self.__dict__}
+        return sorted([x for x in dir(self) if not x.startswith("_")])
 
 
-version = MyVersion(start_year=2018, __title__=__title__)
+version = MyVersion(_start_year=2019, name="AutoSys", version="0.4.4")
 
+__all__ = version._export_all()
 if _debug_:
-    from datetime import datetime
-    from pprint import pprint
+    import json
 
-    _intro = f"{version.title } setup and version information:"
-    _hr = "=" * len(_intro)
+    _intro = f"{version.name} version {version.version} setup information"
+    _hr = "=" * 60
     print(_intro)
-
-    print()
     print(version.copyright)
     print()
     print(_hr)
-    for arg in version.__dict__:
-        x = f"version.{arg}"
-        print(f"  version.{arg:<25.25} = {eval(f'version.{arg}')}")
-
-    print(_hr)
-    print("__all__ = ")
-    print(version.__all__())
-    print(_hr)
-    print("to_dict = ")
-    print(version.to_dict())
-    print(_hr)
-    #    _meta_data = {k: eval(k) for k in __all__}
-    #    pprint(_meta_data)
-    # for f in _fields:
-    #     print(f"{f} - {eval(f)}")
-    #     print('-' * 50)
+    print("__all__ = \n", version._export_all())
     print()
+    print(version.thats_all())
+    print(_hr)
+    print("dictionary created from 'version.to_dict()'")
+    print(_hr)
+    print(version.to_dict())
+    print()
+    print(version.pretty_dict())
+    print("to_json = ")
+    print(version.to_json())
     print(_hr)
