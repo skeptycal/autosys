@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+
 """ scrape.py - web scraping utilities for python
     (reference: https://realpython.com/python-web-scraping-practical-introduction/)
 
@@ -10,10 +12,12 @@
 
 if True:  # ! -- System Imports
     import sys
-    from dataclasses import dataclass
-    from pprint import pprint
-    from contextlib import closing
     from collections import deque
+    from contextlib import closing
+    from dataclasses import dataclass
+    from os import linesep as NL, environ as ENV
+    from pprint import pprint
+    from sys import argv, stdout, stderr
     from typing import Any, Deque, Dict, List, Tuple
 
 if True:  # ! -- Third Party Imports
@@ -22,41 +26,16 @@ if True:  # ! -- Third Party Imports
     from bs4 import BeautifulSoup
 
     try:
-        import lxml
+        import lxml as parser
 
         DEFAULT_PARSER = "lxml"
     except:
         DEFAULT_PARSER = "html.parser"
 
-    # from autosys import *
+    from autosys.web.web_basics import *
 
 
 # !---------------------------------------------- Custom Types
-
-
-class ScrapeError(Exception):
-    """ An error occurred while attempting to scrape data from a webpage. """
-
-    pass
-
-
-class ScrapeRulesError(Exception):
-    """ An error occurred while applying rules to web scraping activities. """
-
-    pass
-
-
-class ScrapeSetError(Exception):
-    """ An error occurred while managing the web scraping document set. """
-
-    pass
-
-
-@dataclass()
-class ConfigDefaults:
-    _debug: bool = False
-    _log: bool = False and _debug
-    _fuzzy: bool = True
 
 
 @dataclass(frozen=True)
@@ -116,54 +95,6 @@ class ScrapeDocumentSet:
         self._url_set.__append__(
             ScrapeDocument(url=url, scrape_rules=self.scrape_rules_list)
         )
-
-
-def is_html_response(resp):
-    """
-    Returns True if the response seems to be HTML, False otherwise.
-    """
-    content_type = resp.headers["Content-Type"].lower()
-    return (
-        resp.status_code == 200
-        and content_type is not None
-        and content_type.find("html") > -1
-    )
-
-
-def simple_get(url):
-    """
-    Attempts to get the content at `url` by making an HTTP GET request.
-    If the content-type of response is some kind of HTML/XML, return the
-    text content, otherwise return None.
-    """
-    try:
-        with closing(get(url, stream=True)) as resp:
-            if is_html_response(resp):
-                return resp.content
-            else:
-                return None
-
-    except RequestException as e:
-        log_error("Error during requests to {0} : {1}".format(url, str(e)))
-        return None
-
-
-def log_error(e):
-    """
-    It is always a good idea to log errors.
-    This function just prints them, but you can
-    make it do anything.
-    """
-    print(e)
-
-
-def get_p_tags(html):
-    for p in html.select("p"):
-        yield p.text
-
-
-def soup(url):
-    return BeautifulSoup(simple_get(url), DEFAULT_PARSER)
 
 
 # !---------------------------------------------- Script Tests

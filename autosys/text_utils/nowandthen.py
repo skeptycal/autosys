@@ -1,87 +1,33 @@
 # from typing import Dict, Final, Tuple
-from autosys.text_utils.datetime import *
-from autosys.text_utils.datetime import _check_date_fields, _check_tzinfo_arg
+from text_utils.datetime import *
+from text_utils.datetime import _check_date_fields, _check_tzinfo_arg
 
 
-class NowAndThen(datetime):
+class NowAndThen:
     """ Wrapper for datetime to allow easy access to common functionality. """
 
-    def __init__(self):
-        pass
+    @property
+    def now(self):
+        return datetime.today()
 
-    def __new__(
-        cls,
-        year=None,
-        month=None,
-        day=None,
-        hour=0,
-        minute=0,
-        second=0,
-        microsecond=0,
-        tzinfo=None,
-        *,
-        fold=0,
-    ):
-        if (
-            isinstance(year, (bytes, str))
-            and len(year) == 10
-            and 1 <= ord(year[2:3]) & 0x7F <= 12
-        ):
-            # Pickle support
-            if isinstance(year, str):
-                try:
-                    year = bytes(year, "latin1")
-                except UnicodeEncodeError:
-                    # More informative error message.
-                    raise ValueError(
-                        "Failed to encode latin1 string when unpickling "
-                        "a datetime object. "
-                        "pickle.load(data, encoding='latin1') is assumed."
-                    )
-            self = object.__new__(cls)
-            self.__setstate(year, month)
-            self._hashcode = -1
-            return self
-        year, month, day = _check_date_fields(year, month, day)
-        hour, minute, second, microsecond, fold = _check_time_fields(
-            hour, minute, second, microsecond, fold
-        )
-        _check_tzinfo_arg(tzinfo)
-        self = object.__new__(cls)
-        self._year = year
-        self._month = month
-        self._day = day
-        self._hour = hour
-        self._minute = minute
-        self._second = second
-        self._microsecond = microsecond
-        self._tzinfo = tzinfo
-        self._hashcode = -1
-        self._fold = fold
-        return self
+    @property
+    def year(self):
+        """ Return current year. """
+        return self.now.year
 
-    # @property
-    # def year(self):
-    #     """ Return current year. """
-    #     return datetime.today().year
+    @property
+    def week(self):
+        """ Return current month number. """
+        return self.now.month
 
-    # @property
-    # def now(self):
-    #     return datetime.today()
+    @property
+    def weekday(self):
+        """ Return the current weekday. """
+        return self.now.strftime("%A")
 
-    # @property
-    # def week(self):
-    #     """ Return current month number. """
-    #     return datetime.today().month
-
-    # @property
-    # def weekday(self):
-    #     """ Return the current weekday. """
-    #     return datetime.today().strftime("%A")
-
-    # def fmt(self, s: str):
-    #     """ Return formatted datetime strings. """
-    #     return datetime.today().strftime(s)
+    def fmt(self, s: str):
+        """ Return formatted datetime strings. """
+        return self.now.strftime(s)
 
     # def __getattribute__(self, name):
 
@@ -116,7 +62,4 @@ class NowAndThen(datetime):
             return f"Copyright {symbol} {self.year} {_author}"
 
 
-now = NowAndThen
-
-if __name__ == "__main__":
-    print(now().year)
+now = NowAndThen()

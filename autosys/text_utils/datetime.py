@@ -41,9 +41,9 @@ if True:  # TODO -- done (MT) - imports
     import sys
 
     # TODO -- MT -- print test output if _debug_ == True
-    from autosys.debug import dbprint
+    #    from autosys.debug import dbprint
 
-    _debug_: bool = True
+    _debug_: bool = False
 
 if True:  # TODO -- done (MT) - minor changes only
 
@@ -80,8 +80,18 @@ _DAYS_BEFORE_MONTH.extend(
     [sum(_DAYS_IN_MONTH[1 : -(12 - i)]) for i in range(len(_DAYS_IN_MONTH) - 1)]
 )
 
-dbprint(_DAYS_IN_MONTH)
-dbprint(_DAYS_BEFORE_MONTH)
+if _debug_:
+    print("-- Tests --")
+    print()
+    print("days in month")
+    print()
+    print(f"old: [-1, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]")
+    print(f"new: {_DAYS_IN_MONTH}")
+    print()
+    print("days before month")
+    print("old: [-1, 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]")
+    print(f"new: {_DAYS_BEFORE_MONTH}")
+
 
 """
 

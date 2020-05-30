@@ -10,64 +10,143 @@
     `AutoSys` is licensed under the `MIT License
         `<https://opensource.org/licenses/MIT>`
     """
+from dataclasses import dataclass
+from typing import Dict, Final, List, Sequence, Tuple
+import sys
 
-from typing import Dict, Final, List, Tuple
-from autosys.text_utils.nowandthen import *
+from autosys.text_utils.nowandthen import now
 
 _debug_: bool = True
-
-PROJECT_AUTHOR: Final[str] = "Michael Treanor"
-PROJECT_START_YEAR: Final[int] = 2018
-
-
-__author__: Final[str] = PROJECT_AUTHOR.title()
-__version_info__: Final[Tuple[int, int, int]] = (0, 4, 4)
-__version__: Final[str] = ".".join(map(str, __version_info__))
-__license__: Final[str] = "MIT".upper()
-__title__: Final[str] = "AutoSys".title()
-__author_email__: Final[str] = "skeptycal@gmail.com".lower()
-__copyright__: Final[str] = now.get_copyright_date(PROJECT_START_YEAR).title()
-__python_requires__: Final[str] = ">=3.8"
+__version__ = "0.4.4"
+__title__ = "AutoSys"
 
 
-__all__: List[str] = [
-    "__version_info__",
-    "__version__",
-    "__license__",
-    "__title__",
-    "__author__",
-    "__author_email__",
-    "__copyright__",
-    "__python_requires__",
-    "now",
-]
+@dataclass
+class MyVersion:
+    start_year: int
+    __title__: str
+    __version__: str = __version__
+    __author__: str = "Michael Treanor"
+    __author_email__: str = "skeptycal@gmail.com"
+    __license__: str = "MIT"
+    __python_requires__: str = ">=3.8"
+    __copyright__: str = ""
 
-_meta_data: Final[Dict] = {k: eval(k) for k in __all__}
+    def __post_init(self):
+        __copyright__ = now.get_copyright_date(
+            start_year=self.start_year, _author=self.__author__
+        ).title()
+        # * >>--------> add other necessary fields here
+        for field in __dict__:
+            ## add property
+            pass
+
+    @property
+    def title(self) -> str:
+        self.__title__
+
+    @property
+    def author(self) -> str:
+        self.__author__.title()
+
+    @property
+    def author_email(self) -> str:
+        self.__author_email__.lower()
+
+    @property
+    def license(self) -> str:
+        self.__license__.upper()
+
+    @property
+    def python_requires(self) -> str:
+        self.__python_requires__
+
+    @property
+    def __version_info__(self, version: str) -> Tuple[int, int, int]:
+        return self.__version__.split(".")
+
+    @property
+    def copyright(self) -> str:
+        if not self.__copyright__:
+            self.__copyright__ = now.get_copyright_date(
+                start_year=self.start_year, _author=self.__author__
+            )
+        return self.__copyright__
+
+    def __all__(self, extras=["now"]) -> List[str]:
+        """ Returns an '__all__' list.
+
+            Add methods or properties that are not in self.__dict__ that you want to export using the 'extras' parameter.
+
+            e.g.
+                [
+                    "__author__",
+                    "__author_email__",
+                    "__copyright__",
+                    "__license__",
+                    "__python_requires__",
+                    "__title__",
+                    "__version__",
+                    "__version_info__",
+                    "now",
+                ] """
+        tmp: List[str] = [x for x in self.__dict__]
+        if extras:  # only Sequences will be added
+            if isinstance(extras, str):  # append strings ...
+                tmp.append(extras)
+            elif isinstance(extras, Sequence):  # extend others
+                tmp.extend((extras))
+        return tmp
+
+    def to_dict(self):
+        """ Returns a dictionary of properties.
+
+        e.g.
+            ===================================
+            to_dict =
+            {'start_year': 2018,
+            '__title__': 'AutoSys',
+            '__version__': '0.4.4',
+            '__author__': 'Michael Treanor',
+            '__author_email__': 'skeptycal@gmail.com',
+            '__license__': 'MIT',
+            '__python_requires__': '>=3.8',
+            '__copyright__': 'Copyright (c) 2018-2020 Michael Treanor'}
+            ===================================
+
+        """
+        return {arg: self.__getattribute__(f"{arg}") for arg in self.__dict__}
+
+
+version = MyVersion(start_year=2018, __title__=__title__)
 
 if _debug_:
     from datetime import datetime
     from pprint import pprint
 
-    print(f"")
-    print(f"--- Today is some {now.weekday} in {now.year}, by the way.")
-
-    _intro = f"{__title__.title()} setup and version information:"
+    _intro = f"{version.title } setup and version information:"
     _hr = "=" * len(_intro)
     print(_intro)
+
+    print()
+    print(version.copyright)
+    print()
     print(_hr)
-    _meta_data = {k: eval(k) for k in __all__}
-    pprint(_meta_data)
+    for arg in version.__dict__:
+        x = f"version.{arg}"
+        print(f"  version.{arg:<25.25} = {eval(f'version.{arg}')}")
+
+    print(_hr)
+    print("__all__ = ")
+    print(version.__all__())
+    print(_hr)
+    print("to_dict = ")
+    print(version.to_dict())
+    print(_hr)
+    #    _meta_data = {k: eval(k) for k in __all__}
+    #    pprint(_meta_data)
     # for f in _fields:
     #     print(f"{f} - {eval(f)}")
     #     print('-' * 50)
     print()
-    print(_hr)
-    print(f"{__version_info__=}")
-    print(f"{__version__=}")
-    print(f"{__license__=}")
-    print(f"{__title__=}")
-    print(f"{__author__=}")
-    print(f"{__author_email__=}")
-    print(f"{__copyright__=}")
-    print(f"{__python_requires__=}")
     print(_hr)

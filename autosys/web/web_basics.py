@@ -1,49 +1,69 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" google.py - google search CLI utility
+from __future__ import absolute_import
 
-    #TODO - Features
-        - set defaults in $HOME/googlepy.json (using APPDIRS to find cross platform dirs)
-        - search google ... e.g. google 'chemistry pi bonds' gathers the top 10 - 20 hits that are not ads
-        - check for spam ...
-        - format links for CLI 
-        - search content of links for information (Lexile score, complexity, number of links, number of high quality links, tracebacks, )
-        
+""" web_basics.py - basic web scraping tools
 
-        copyright (c) 2019 Michael Treanor
-        https://www.github.com/skeptycal/autosys
-        https://www.twitter.com/skeptycal
+    copyright (c) 2019 Michael Treanor
+    https://www.github.com/skeptycal/autosys
+    https://www.twitter.com/skeptycal
     """
 
-if True:  # ! -- System Imports
-    import sys
-    from pprint import pprint
-    from contextlib import closing
+import sys
+from collections import deque
+from contextlib import closing
+from dataclasses import dataclass
+from logging import Logger
+from os import linesep as NL, environ as ENV
+from pprint import PrettyPrinter
+from sys import argv, stdout, stderr
+from typing import Any, Deque, Dict, List, Tuple
 
-if True:  # ! -- Third Party Imports
-    from requests import get
-    from requests.exceptions import RequestException
-    from bs4 import BeautifulSoup
+from requests import get
+from requests.exceptions import RequestException
+from bs4 import BeautifulSoup
 
-    try:
-        import lxml
+try:
+    import lxml as parser
 
-        DEFAULT_PARSER = "lxml"
-    except:
-        DEFAULT_PARSER = "html.parser"
+    DEFAULT_PARSER = "lxml"
+except:
+    DEFAULT_PARSER = "html.parser"
+
+# from autosys import *
 
 
 # !---------------------------------------------- Common CONSTANTS
-_debug_: bool = False  # execute dev debugging tasks
+_debug_: bool = True
 _fuzzy_: bool = True
 
 DEFAULT_URL_HISTORY: int = 1000
 
+log_web = Logger(__file__)
+pp_web = PrettyPrinter(indent=2, width=79, depth=5, stream=stdout, compact=False)
+
 # !---------------------------------------------- Custom Types
 
 
-class ScrapeError(Exception):
-    pass
+class WebPageError(Exception):
+    """ An error occured while handling your web document request. """
+
+    this = None
+
+
+class ScrapeRulesError(Exception):
+    """ An error occurred while applying rules to web scraping activities. """
+
+
+class ScrapeSetError(Exception):
+    """ An error occurred while managing the web scraping document set. """
+
+
+@dataclass()
+class ConfigDefaults:
+    _debug: bool = False
+    _log: bool = False and _debug
+    _fuzzy: bool = True
 
 
 def simple_get(url):
@@ -106,17 +126,24 @@ def __tests__(args) -> int:
     return 0
 
 
-def __main__(args) -> int:
+def __main__(args=argv[1:]) -> int:
     """ CLI script main entry point. """
+    try:
+        print("before")
+        # raise WebPageError("test it")
+        print("after")
+    except:
+        log_web.error()
+        print("log")
 
     #! script testing
     if _debug_:
         __tests__(args)
-    return 0
 
 
 if __name__ == "__main__":  # if script is loaded directly from CLI
-    __main__(sys.argv[1:])
+    print("hello world")
+    __main__()
 
 
 """ Notes

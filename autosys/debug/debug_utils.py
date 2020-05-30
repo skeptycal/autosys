@@ -1,3 +1,30 @@
+if True:  # !------------------------ config
+    import logging
+    from pathlib import Path
+    from typing import List, Dict
+    from autosys.cli import terminal
+
+    _debug_: bool = True  # True => use Debug features
+    _verbose_: int = 0  # Verbosity level => 0 - 4
+    _log_flag_: bool = _debug_ and True  # True => log to file
+
+    DEBUG_COLOR: str = "\x1B[38;5;178m"  # private ansi CLI color code
+    RESET: str = "\x1B[0m"  # private ansi CLI reset code
+
+
+if True:  # !------------------------ CLI display utilities
+
+    def db_column_ruler(n: int = 5, cols: int = 79):
+        """ Print a column ruler of width 'col'. """
+        # dbprint('column ruler col: ', col)
+        col = cols // n
+        dbprint(f'__width:{col:>d}{s80("_", (col - 1) * 10 - 1)}', sep="")
+        dbprint("".join([f"         {i}" for i in range(1, col)]))
+        dbprint("")
+        dbprint(f"1234567890" * (col))
+        dbprint(s80("=", col * 10))
+
+
 # if True:  # !------------------------ Debug Utilities
 
 #     def v_name(**var):
