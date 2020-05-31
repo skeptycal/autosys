@@ -11,7 +11,7 @@
         `<https://opensource.org/licenses/MIT>`
     """
 from dataclasses import dataclass, field, Field
-from typing import Dict, Final, List, Sequence, Set, Tuple
+from typing import Any, Dict, Final, List, Sequence, Set, Tuple
 from os import linesep as NL
 import sys
 import json
@@ -26,17 +26,92 @@ def my_class(func):
     return str(type(func)).split(".")[-1][:-2]
 
 
+class ASCII_BORDERS:
+    """ Sets of border characters for drawing ascii tables.
+
+    """
+
+    single: tuple = (191, 192, 193, 194, 195, 196, 197)
+
+
+class PrettyDict(dict):
+    def table_dict(
+        self, table_rows: Dict[str, Any], border_char: str = "-", divider: bool = True
+    ) -> str:
+        """ Returns a table version of a dictionary.
+
+            - table_rows  = dictionary of rows
+            - border_char = string used for border
+
+            e.g.
+                print(table_dict(my_dict, border_char = "˚`†´", divider = True))
+            """
+        result: List[str] = []
+        longest_string: int = len(max(table_rows, key=len))
+        border: str = border_char * (longest_string // len(border_char))
+        result.append(border)
+        result.append(f"{self._my_class} data for '{self.name}':")
+        result.append(border)
+        result.extend(table_rows)
+        result.append(border)
+        return NL.join(result)
+
+    def table_list(
+        self, table_rows: List[str], border_set: ASCII_BORDERS = ASCII_BORDERS.single
+    ) -> str:
+        """ Returns a table version of a list.
+
+            - table_rows  = list of rows
+            - border_char = string used for border
+
+            e.g.
+                print(table_list(my_rows, border_char = "˚`†´"))
+            """
+        result: List[str] = []
+        longest_string: int = len(max(table_rows, key=len))
+        border: str = border_char * (longest_string // len(border_char))
+        result.append(border)
+        result.append(f"{self._my_class} data for '{self.name}':")
+        result.append(border)
+        result.extend(table_rows)
+        result.append(border)
+        return NL.join(result)
+
+    def to_dict(self, include_dunders: bool = False) -> Dict[str, str]:
+        """ Returns a formatted dictionary view . """
+        if include_dunders:
+            return {k: v for k, v in self.items()}
+        return {k: v for k, v in self.items() if not k.startswith("_")}
+
+    def thats_all(self, border_char="-") -> str:
+        return {k: v for k, v in vars(self).items()}
+
+    def pretty_dict(self, border_char="-") -> str:
+        """ Returns a pretty version of dictionary.
+
+            - border_char = string used for border
+
+            e.g.
+                print(self.pretty(border_char = "˚`†´"))
+        """
+        return self.table_list(
+            [f"{k:<20.20}: {v}" for k, v in self.to_dict().items()],
+            border_char=border_char,
+        )
+
+    def to_json(self, sort_keys=True, indent=2):
+        return json.dumps(version.to_dict(), indent=indent, sort_keys=sort_keys)
+
+
 @dataclass
 class MyVersion:
     name: str
     _start_year: int = now.year
-    version: str = field(default="0.0.1", metadata="__version__")
-    author: str = field(default="Michael Treanor", metadata="__author__")
-    author_email: str = field(
-        default="skeptycal@gmail.com", metadata="__author_email__"
-    )
-    _license: str = field(default="MIT", metadata="__license__")
-    python_requires: str = field(default=">=3.8", metadata="__python_requires__")
+    version: str = field(default="0.0.1")
+    author: str = field(default="Michael Treanor")
+    author_email: str = field(default="skeptycal@gmail.com")
+    _license: str = field(default="MIT")
+    python_requires: str = field(default=">=3.8")
     _copyright: str = ""
 
     def __post_init(self):
@@ -60,63 +135,6 @@ class MyVersion:
         if not self._copyright:
             self._copyright = self._get_copyright_date()
         return self._copyright
-
-    def to_dict(self) -> Dict[str, str]:
-        """ Returns a dictionary of properties.
-
-        e.g.
-            ===================================
-            to_dict =
-            {'_start_year': 2018,
-            '__title__': 'AutoSys',
-            '__version__': '0.4.4',
-            'author': 'Michael Treanor',
-            '__author_email__': 'skeptycal@gmail.com',
-            '_license': 'MIT',
-            '__python_requires__': '>=3.8',
-            '__copyright__': 'Copyright (c) 2018-2020 Michael Treanor'}
-            ===================================
-
-        """
-        return {k: v for k, v in self.__dict__.items() if not k.startswith("_")}
-
-    def table_list(self, table_rows: List[str], border_char: str = "-") -> str:
-        """ Returns a table version of a list.
-
-            - table_rows  = list of rows
-            - border_char = string used for border
-
-            e.g.
-                print(table_list(my_rows, border_char = "˚`†´"))
-            """
-        tmp: List[str] = []
-        longest_string: int = len(max(table_rows, key=len))
-        border: str = border_char * (longest_string // len(border_char))
-        tmp.append(border)
-        tmp.append(f"{self._my_class} data for '{self.name}':")
-        tmp.append(border)
-        tmp.extend(table_rows)
-        tmp.append(border)
-        return NL.join(tmp)
-
-    def thats_all(self, border_char="-") -> str:
-        return {k: v for k, v in vars(self).items()}
-
-    def pretty_dict(self, border_char="-") -> str:
-        """ Returns a pretty version of dictionary.
-
-            - border_char = string used for border
-
-            e.g.
-                print(self.pretty(border_char = "˚`†´"))
-        """
-        return self.table_list(
-            [f"{k:<20.20}: {v}" for k, v in self.to_dict().items()],
-            border_char=border_char,
-        )
-
-    def to_json(self, sort_keys=True, indent=2):
-        return json.dumps(version.to_dict(), indent=indent, sort_keys=sort_keys)
 
     def _get_copyright_date(self) -> str:
         """ Return a correct formatted copyright string. """
@@ -167,16 +185,22 @@ if _debug_:
     print(_intro)
     print(version.copyright)
     print()
+    print(ASCII_BORDERS.single)
+    print([chr(x) for x in ASCII_BORDERS.single])
+    for i in range(32, 255):
+        print(f"{i}: {chr(i)}")
+    print()
+    print()
     print(_hr)
     print("__all__ = \n", version._export_all())
     print()
-    print(version.thats_all())
+    # print(version.thats_all())
     print(_hr)
     print("dictionary created from 'version.to_dict()'")
     print(_hr)
-    print(version.to_dict())
+    # print(version.to_dict())
     print()
-    print(version.pretty_dict())
+    # print(version.pretty_dict())
     print("to_json = ")
-    print(version.to_json())
+    # print(version.to_json())
     print(_hr)

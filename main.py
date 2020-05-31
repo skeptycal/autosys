@@ -9,5 +9,4 @@
         `<https://opensource.org/licenses/MIT>`
     """
 
-import autosys.autosys._version
-import autosys.autosys.defaults
+import autosys
