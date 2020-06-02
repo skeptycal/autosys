@@ -3,7 +3,7 @@ from enum import IntEnum, unique
 
 @unique
 class ErrC(IntEnum):  # !------------------------ ErrC Class
-    """ #### C-style error messages. 
+    """ #### C-style error messages.
         Enum where members are also unique ints.
 
         - Reference: Advanced Bash-Scripting Guide
@@ -24,31 +24,31 @@ class ErrC(IntEnum):  # !------------------------ ErrC Class
         - How can I use an enum class in python in a useful way?
         """
 
-    EX_OK = (0, )  # successful termination
-    EX_ERROR = (1, )  # catchall for general errors
-    EX_SHELLERR = (2, )  # misuse of shell builtins; missing keyword
-    EX_USAGE = (64, )  # command line usage error
-    EX_DATAERR = (65, )  # data format error
-    EX_NOINPUT = (66, )  # cannot open input
-    EX_NOUSER = (67, )  # addressee unknown
-    EX_NOHOST = (68, )  # host name unknown
-    EX_UNAVAILABL = (69, )  # service unavailable
-    EX_SOFTWARE = (70, )  # internal software error
-    EX_OSERR = (71, )  # system error (e.g., cant fork)
-    EX_OSFILE = (72, )  # critical OS file missing
-    EX_CANTCREAT = (73, )  # cant create (user) output file
-    EX_IOERR = (74, )  # input/output error
-    EX_TEMPFAIL = (75, )  # temp failure; user is invited to retry
-    EX_PROTOCOL = (76, )  # remote error in protocol
-    EX_NOPERM = (77, )  # permission denied
-    EX_CONFIG = (78, )  # configuration error
+    EX_OK = (0,)  # successful termination
+    EX_ERROR = (1,)  # catchall for general errors
+    EX_SHELLERR = (2,)  # misuse of shell builtins; missing keyword
+    EX_USAGE = (64,)  # command line usage error
+    EX_DATAERR = (65,)  # data format error
+    EX_NOINPUT = (66,)  # cannot open input
+    EX_NOUSER = (67,)  # addressee unknown
+    EX_NOHOST = (68,)  # host name unknown
+    EX_UNAVAILABL = (69,)  # service unavailable
+    EX_SOFTWARE = (70,)  # internal software error
+    EX_OSERR = (71,)  # system error (e.g., cant fork)
+    EX_OSFILE = (72,)  # critical OS file missing
+    EX_CANTCREAT = (73,)  # cant create (user) output file
+    EX_IOERR = (74,)  # input/output error
+    EX_TEMPFAIL = (75,)  # temp failure; user is invited to retry
+    EX_PROTOCOL = (76,)  # remote error in protocol
+    EX_NOPERM = (77,)  # permission denied
+    EX_CONFIG = (78,)  # configuration error
 
     # Linux / Unix codes
-    EX_CANTEXECUTE = (126, )  # command invoked cannot execute
-    EX_NOTFOUND = (127, )  # command not found; possible $PATH error
-    EX_BADARG = (128, )  # invalid argument
-    EX_FATALARG = (129, )  # fatal error
-    EX_CTRL_C = (130, )  # script terminated by Control-C
+    EX_CANTEXECUTE = (126,)  # command invoked cannot execute
+    EX_NOTFOUND = (127,)  # command not found; possible $PATH error
+    EX_BADARG = (128,)  # invalid argument
+    EX_FATALARG = (129,)  # fatal error
+    EX_CTRL_C = (130,)  # script terminated by Control-C
 
 
 err = ErrC
@@ -73,9 +73,7 @@ class Error(Exception):
         for kwarg in self.kwargs:
             if kwarg == "errno":
                 self.errno = self.kwargs[kwarg]
-                self.errmsg = [
-                    msg for num, msg in ErrC.items() if num == self.errno
-                ]
+                self.errmsg = [msg for num, msg in ErrC.items() if num == self.errno]
                 # dbprint(self.errno, ' ', self.errmsg)
             if kwarg == "message":
                 self.message = self.kwargs[kwarg]

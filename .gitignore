@@ -1,5 +1,8 @@
 # Project-specific files
-TODO.md 
+TODO.md
+**/package-py
+**/py_template
+**/data
 
 # dev files
 .coveragerc
@@ -46,14 +49,13 @@ pytest.ini
 medium_token
 
 # temp, scratch, bak, etc
-**/*/bak/
+**/*bak*
 **/*/temp/
 **/*/tmp/
 *bak*
-*temp*
-*tmp*
 
 # security
+*token*
 *history*
 config.py
 config.json

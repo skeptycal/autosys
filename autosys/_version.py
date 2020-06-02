@@ -11,54 +11,39 @@
         `<https://opensource.org/licenses/MIT>`
     """
 from dataclasses import dataclass, field, Field
-from typing import Any, Dict, Final, List, Sequence, Set, Tuple
+from io import TextIOWrapper
 from os import linesep as NL
-import sys
+from pathlib import Path
+from tempfile import NamedTemporaryFile, mkstemp
+from typing import Any, Dict, Final, List, Sequence, Set, Tuple
 import json
+import sys
 
 from autosys.text_utils.nowandthen import now
 
-copyright_symbol: str = "©"  # could be (c)
-_debug_: bool = True
+_debug_: Final[bool] = True
+copyright_symbol: Final[str] = "©"  # could be (c)
+temp_file: TextIOWrapper = NamedTemporaryFile(
+    mode="x+t", encoding="utf-8", prefix="versionxxxxxx", suffix="bak"
+)
+
+VERSION_TAG: Final[str] = "# @version"
+
+
+def dunder_it(x: str) -> str:
+    return f"__{x.lstrip('_').rstrip('_')}__"
 
 
 def my_class(func):
     return str(type(func)).split(".")[-1][:-2]
 
 
-class ASCII_BORDERS:
-    """ Sets of border characters for drawing ascii tables.
-
-    """
-
-    single: tuple = (191, 192, 193, 194, 195, 196, 197)
-
-
 class PrettyDict(dict):
-    def table_dict(
-        self, table_rows: Dict[str, Any], border_char: str = "-", divider: bool = True
-    ) -> str:
-        """ Returns a table version of a dictionary.
+    @property
+    def _my_class(self):
+        return myclass(self)
 
-            - table_rows  = dictionary of rows
-            - border_char = string used for border
-
-            e.g.
-                print(table_dict(my_dict, border_char = "˚`†´", divider = True))
-            """
-        result: List[str] = []
-        longest_string: int = len(max(table_rows, key=len))
-        border: str = border_char * (longest_string // len(border_char))
-        result.append(border)
-        result.append(f"{self._my_class} data for '{self.name}':")
-        result.append(border)
-        result.extend(table_rows)
-        result.append(border)
-        return NL.join(result)
-
-    def table_list(
-        self, table_rows: List[str], border_set: ASCII_BORDERS = ASCII_BORDERS.single
-    ) -> str:
+    def table_list(self, table_rows: List[str], border_char: str = "-") -> str:
         """ Returns a table version of a list.
 
             - table_rows  = list of rows
@@ -71,11 +56,25 @@ class PrettyDict(dict):
         longest_string: int = len(max(table_rows, key=len))
         border: str = border_char * (longest_string // len(border_char))
         result.append(border)
-        result.append(f"{self._my_class} data for '{self.name}':")
+        result.append(f"{my_class(self)} data for '{self.name}':")
         result.append(border)
         result.extend(table_rows)
         result.append(border)
         return NL.join(result)
+
+    def table_dict(self, table_rows: Dict[Any, Any], border_char: str = "-") -> str:
+        """ Returns a table version of a dictionary.
+
+            - table_rows  = dictionary of rows
+            - border_char = string used for border
+
+            e.g.
+                print(table_dict(my_dict, border_char = "˚`†´", divider = True))
+            """
+        return self.table_list(
+            [f"{k:<15.15}: {v:<35.35}" for k, v in table_rows.items()],
+            border_char=border_char,
+        )
 
     def to_dict(self, include_dunders: bool = False) -> Dict[str, str]:
         """ Returns a formatted dictionary view . """
@@ -104,7 +103,7 @@ class PrettyDict(dict):
 
 
 @dataclass
-class MyVersion:
+class MyVersion(PrettyDict):
     name: str
     _start_year: int = now.year
     version: str = field(default="0.0.1")
@@ -156,11 +155,9 @@ class MyVersion:
     def _export_all(self) -> List[str]:
         """ Returns an '__all__' list.
 
-            Add methods or properties that are not in self.__dict__ that you want to export using the 'extras' parameter.
-
             e.g.
                 [
-                    "author",
+                    "__author__",
                     "__author_email__",
                     "__copyright__",
                     "__license__",
@@ -168,15 +165,61 @@ class MyVersion:
                     "__title__",
                     "__version__",
                     "__version_info__",
-                    "now",
                 ] """
 
-        return sorted([x for x in dir(self) if not x.startswith("_")])
+        return [dunder_it(x) for x in vars(self).keys()]
 
+    def update_version_file(self):
+        for original in files:
+            with NamedTemporaryFile(mode="wt", prefix=__file__,) as temp_file:
+                with open(
+                    file=original, mode="rt", encoding=self.DEFAULT_ENCODING
+                ) as fd:
+                    data = fd.readlines()
+
+                # process lines
+
+                with open(file=f""):
+                    pass
+
+                Path(temp_filename).replace(original_filename)
+
+    def set_exports(self):
+        """ Update script with project metadata. """
+        tmp: List[str] = []
+        with open(Path(__file__).resolve(), mode="+") as fp:
+            lines = fp.readlines()
+        with open(temp_file, mode="w") as temp_file:
+            for line in lines:
+                tmp.append(line)
+            if line.startswith(VERSION_TAG):
+                tmp.append(self.write_version)  # TODO make this
+        temp_file.writelines(tmp)
+
+
+"""
+def mkstemp(suffix: Optional[AnyStr]=..., prefix: Optional[AnyStr]=..., dir: Optional[_DirT[AnyStr]]=..., text: bool=...)
+User-callable function to create and return a unique temporary file. The return value is a pair (fd, name) where fd is the file descriptor returned by os.open, and name is the filename.
+
+If 'suffix' is not None, the file name will end with that suffix, otherwise there will be no suffix.
+
+If 'prefix' is not None, the file name will begin with that prefix, otherwise a default prefix is used.
+
+If 'dir' is not None, the file will be created in that directory, otherwise a default directory is used.
+
+If 'text' is specified and true, the file is opened in text mode. Else (the default) the file is opened in binary mode. On some operating systems, this makes no difference.
+
+If any of 'suffix', 'prefix' and 'dir' are not None, they must be the same type. If they are bytes, the returned name will be bytes; str otherwise.
+
+The file is readable and writable only by the creating user ID. If the operating system uses permission bits to indicate whether a file is executable, the file is executable by no one. The file descriptor is not inherited by children of this process.
+
+Caller is responsible for deleting the file when done with it.
+"""
 
 version = MyVersion(_start_year=2019, name="AutoSys", version="0.4.4")
 
-__all__ = version._export_all()
+# @version
+
 if _debug_:
     import json
 
@@ -185,22 +228,19 @@ if _debug_:
     print(_intro)
     print(version.copyright)
     print()
-    print(ASCII_BORDERS.single)
-    print([chr(x) for x in ASCII_BORDERS.single])
-    for i in range(32, 255):
-        print(f"{i}: {chr(i)}")
-    print()
+    print(__file__)
     print()
     print(_hr)
-    print("__all__ = \n", version._export_all())
+    print("__all__ = ")
+    print(version._export_all())
     print()
     # print(version.thats_all())
     print(_hr)
     print("dictionary created from 'version.to_dict()'")
     print(_hr)
-    # print(version.to_dict())
+    print(version.to_dict())
     print()
     # print(version.pretty_dict())
     print("to_json = ")
-    # print(version.to_json())
+    print(version.to_json())
     print(_hr)

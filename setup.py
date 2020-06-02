@@ -1,192 +1,141 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+""" `AutoSys` package
+        copyright (c) 2018 Michael Treanor
+        https://www.github.com/skeptycal/autosys
+        https://www.twitter.com/skeptycal
 
-from __future__ import absolute_import
-
-if True:  # stdlib imports
-    import os  # basic OS features
-    import sys  # basic system features
-    from pathlib import Path  # path features
-    from os import linesep as NL, sep as PATHSEP
-    from typing import Dict, List  # >= 3.6 type hints support
-
-if True:  # setup tools
-    from setuptools import setup, find_packages
-    from autosys.autosys._version import *
-
-_debug_: bool = False
-
-
-def readme(filename: str = "README.md"):
-    """ Returns the text of the README file. The default file is `README.md`.
-
-    `readme(filename: str = 'README.md')-> str`
-
-    Example:
-
-    ```
-    long_description=readme()
-    ```
+    `AutoSys` is licensed under the `MIT License
+        `<https://opensource.org/licenses/MIT>`
     """
-    readme_path = Path(__file__).resolve().parents[0] / filename
-
-    with open(readme_path, encoding="utf-8") as f:
-        return f.read()
 
 
-class SetupAttrs:
-    """ A wrapper for a dictionary of setup attributes.
-
-        Example:
-
-        ```
-        from setuptools import setup, find_packages
-
-        s = SetupAttrs()
-        print(s) # pretty print attributes
-
-        setup(**s.setup)
-        ```
-        `Print(s)` will pretty print the attributes.
-
-        The following data are imported from ./<package_name>/_version.py
-
-            __version__: str = "x.x.x"
-            __license__: str = "MIT"
-            __title__: str = "xxxxx"
-            __author__: str = "xxxxx xxxxx"
-            __copyright__: str = f"Copyright (c) xxxx xxxxx xxxxx"
-            __author_email__: str = "xxx@xxx.com"
-            __python_requires__: str = ">=x.x"
-        """
-
-    # ? ---------------------- SetupAttrs Attributes
-    _dict: Dict = {}
-
-    def __init__(self):
-        self._version = __version__
-        self._license = __license__
-        self._title = __title__
-        self._copyright = __copyright__
-        self._author = __author__
-        self._author_email = __author_email__
-        self._python_requires = __python_requires__
-        self.load_dict()
-
-    def load_dict(self):
-        self._dict = {
-            "name": self._title,
-            "version": self._version,
-            "description": "System utilities for Python on macOS",
-            "long_description": readme(),
-            "long_description_content_type": "text/markdown",
-            "license": self._license,
-            "author": self._author,
-            "author_email": self._author_email,
-            "maintainer": self._author,
-            "maintainer_email": self._author_email,
-            "url": f"https://skeptycal.github.io/{__title__}/",
-            "python_requires": self._python_requires,
-            # 'cmdclass': '',
-            # 'command_options': '',
-            # 'command_packages': '',
-            # 'data_files': '',
-            # 'distclass': '',
-            "download_url": f"https://www.github.com/skeptycal/{__title__}/",
-            # 'ext_modules': '',
-            # 'ext_package' : '',
-            # 'fullname' : '',
-            # 'headers': '',
-            # 'include_dirs': '',
-            # 'include_package_data': '',
-            # 'libraries': '',
-            # 'obsoletes': '',
-            # 'options': '',
-            # 'package_data': '',
-            # 'package_dir' : {'': __title__},
-            # 'package_dir': '',
-            # 'packages': '',
-            "packages": find_packages(),
-            # 'password' : '',
-            # 'platforms': '',
-            # 'provides': '',
-            # 'py_modules': '',
-            # 'requires': '',
-            # 'script_args': '',
-            # 'script_name' : '',
-            # 'scripts': '',
-            "zip_safe": False,
-            "keywords": "application macOS dev cache utilities cli python text console log debug test testing",
-            "package_data": {
-                # If any package contains txt, rst, md files, include them:
-                "": ["*.txt", "*.rst", "*.md", "*.ini", "*.png", "*.jpg"]
-            },
-            "project_urls": {
-                "Website": f"https://skeptycal.github.io/{__title__}/",
-                "Documentation": f"https://skeptycal.github.io/{__title__}/docs",
-                "Source Code": f"https://www.github.com/skeptycal/{__title__}/",
-            },
-            "classifiers": [
-                "Development Status :: 4 - Beta",
-                "Environment :: Console",
-                "Environment :: MacOS X",
-                "Intended Audience :: Developers",
-                "License :: OSI Approved :: MIT License",
-                "Natural Language :: English",
-                "Operating System :: MacOS",
-                "Programming Language :: Cython",
-                "Programming Language :: Python",
-                "Programming Language :: Python :: 3.8",
-                "Programming Language :: Python :: Implementation :: CPython",
-                "Programming Language :: Python :: Implementation :: PyPy",
-                "Topic :: Software Development :: Libraries :: Python Modules",
-                "Topic :: Software Development :: Testing",
-                "Topic :: Utilities",
-            ],
-        }
-
-    # ? ---------------------- SetupAttrs Properties
-    @property
-    def setup(self):
-        return self._dict
-
-    @property
-    def version(self):
-        return self._version
-
-    @property
-    def author(self):
-        return self._author
-
-    @property
-    def email(self):
-        return self._author_email
-
-    @property
-    def title(self):
-        return self._title
-
-    @property
-    def license(self):
-        return self._license
-
-    # ? ---------------------- SetupAttrs Methods
-    def __getitem__(self, name: str):
-        return self._dict[name]
-
-    def get(self, name: str):
-        return self.__getitem__(name)
-
-    def __str__(self):
-        return pprint.pformat(self._dict, depth=5, compact=False)
+import os
+import re
+from setuptools import setup, find_packages
 
 
-s = SetupAttrs()
+from autosys.utils.readme import readme
 
-if _debug_:
-    print(f"Debug mode: setup for `{s['name']}` version {s['version']}")
-    print()
-    print(s.license)
-    print(s)
-else:
-    setup(**s.setup)
+
+def version(path: str = "VERSION.txt") -> str:
+    with open(path, "r") as file:
+        # this is a string like __version__ = 'x.x.x'
+        RE_VERSION = r'^__version__\s?=\s?[\'"]([^\'"]*)[\'"]'
+        return re.match(RE_VERSION, file.read(), re.MULTILINE)[0].split("'")[1]
+
+
+"""
+def readme(file_name: str = "README.md") -> str:
+    with open(file_name, "rb") as file:
+        return file.read().decode("utf-8")
+"""
+
+
+def name():
+    return "autosys"
+
+
+print(version())
+if True:
+    setup(
+        name=name(),
+        version=version(),
+        description="System utilities for Python on macOS",
+        python_requires=">=3.8",
+        packages=find_packages(),
+        py_modules=["autosys"],
+        license="MIT license",
+        long_description=readme(),
+        long_description_content_type="text/markdown",
+        # long_description_content_type="text/x-rst",
+        author="Michael Treanor",
+        author_email="skeptycal@gmail.com",
+        maintainer="Michael Treanor",
+        maintainer_email="skeptycal@gmail.com",
+        keywords=[
+            "application",
+            "macOS",
+            "dev",
+            "devops",
+            "cache",
+            "utilities",
+            "cli",
+            "python",
+            "cython",
+            "text",
+            "console",
+            "log",
+            "debug",
+            "test",
+            "testing",
+            "logging",
+            "logger",
+        ],
+        url=f"https://skeptycal.github.io/{name}/",
+        download_url=f"https://github.com/skeptycal/{name}/archive/{version}.tar.gz",
+        zip_safe=False,
+        package_data={
+            # If any package contains these files, include them:
+            "": [
+                "*.txt",
+                "*.rst",
+                "*.md",
+                "*.ini",
+                "*.png",
+                "*.jpg",
+                "__init__.pyi",
+                "py.typed",
+            ]
+        },
+        project_urls={
+            "Website": f"https://skeptycal.github.io/{name}/",
+            "Documentation": f"https://skeptycal.github.io/{name}/docs",
+            "Source Code": f"https://www.github.com/skeptycal/{name}/",
+            "Changelog": "https://github.com/skeptycal/{name}/blob/master/CHANGELOG.md",
+        },
+        install_requires=[
+            "colorama>=0.3.4 ; sys_platform=='win32'",
+            "aiocontextvars>=0.2.0 ; python_version<'3.7'",
+            "win32-setctime>=1.0.0 ; sys_platform=='win32'",
+        ],
+        extras_require={
+            "dev": [
+                "black>=19.3b0 ; python_version>='3.8'",
+                "codecov>=2.0.15",
+                "colorama>=0.3.4",
+                "flake8>=3.7.7",
+                "isort>=4.3.20",
+                "tox>=3.9.0",
+                "tox-travis>=0.12",
+                "pytest>=4.6.2",
+                "pytest-cov>=2.7.1",
+                "Sphinx>=2.2.1",
+                "sphinx-autobuild>=0.7.1",
+                "sphinx-rtd-theme>=0.4.3",
+            ]
+        },
+        classifiers=[
+            "Development Status :: 4 - Beta",
+            "License :: OSI Approved :: MIT License",
+            "Environment :: Console",
+            "Environment :: MacOS X",
+            "Intended Audience :: Developers",
+            "Natural Language :: English",
+            "Operating System :: MacOS",
+            "Operating System :: OS Independent",
+            "Programming Language :: Cython",
+            "Programming Language :: Python",
+            "Programming Language :: Python :: 3 :: Only",
+            "Programming Language :: Python :: 3",
+            # These are the Python versions tested; it may work on others
+            "Programming Language :: Python :: 3.8",
+            "Programming Language :: Python :: 3.9",
+            "Programming Language :: Python :: 3.10",
+            "Programming Language :: Python :: Implementation :: CPython",
+            "Programming Language :: Python :: Implementation :: PyPy",
+            "Topic :: Software Development :: Libraries :: Python Modules",
+            "Topic :: Software Development :: Testing",
+            "Topic :: Utilities",
+        ],
+    )

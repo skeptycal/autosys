@@ -24,7 +24,6 @@ class FileSet(list):
     input_list: List[str]
     temp_file: TextIOWrapper
     log: Logger
-    DEFAULT_ENCODING: Final[str] = getpreferredencoding(do_setlocale=True) or "utf-8"
 
     def __init__(self, *args):
         self.input_list = args
