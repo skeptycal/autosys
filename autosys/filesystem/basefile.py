@@ -11,12 +11,6 @@ import os
 import shutil
 
 
-class BaseFileError(IOError):
-    """ There was a problem initializing the file object. """
-
-    pass
-
-
 @dataclass
 class BaseFile:
     file_name: str
@@ -81,10 +75,15 @@ class TextFile(BaseFile):
             return sum(True for line in f)
 
 
-_test_file = (
-    "/Users/skeptycal/Documents/coding/python/autosys/autosys/tests/test_basefile.txt"
-)
-test_file = BaseFile(_test_file)
-print(test_file.stat)
-print(os.stat(test_file.path))
-print(test_file.stat == os.stat(test_file.path))
+class BaseFileError(IOError):
+    """ There was a problem initializing the file object. """
+
+    pass
+
+
+if False:
+    _test_file = "/Users/skeptycal/Documents/coding/python/autosys/autosys/tests/test_basefile.txt"
+    test_file = BaseFile(_test_file)
+    print(test_file.stat)
+    print(os.stat(test_file.path))
+    print(test_file.stat == os.stat(test_file.path))
