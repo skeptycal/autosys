@@ -14,8 +14,16 @@ string_types = str
 template = "\x1b[{0}m{1}\x1b[0m"
 
 # ANSI color names. There is also a "default"
-COLORS = ("black", "red", "green", "yellow", "blue", "magenta", "cyan",
-          "white")
+COLORS = (
+    "black",
+    "red",
+    "green",
+    "yellow",
+    "blue",
+    "magenta",
+    "cyan",
+    "white",
+)
 
 # ANSI style names
 STYLES = (

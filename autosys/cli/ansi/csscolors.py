@@ -177,7 +177,7 @@ def parse_rgb(s: str):
     match = re.match("#([a-f0-9]{6})$", s)
     if match:
         core = match.group(1)
-        return tuple(int(core[i: i + 2], 16) for i in range(0, 6, 2))
+        return tuple(int(core[i : i + 2], 16) for i in range(0, 6, 2))
 
     # 3-digit hex
     match = re.match("#([a-f0-9]{3})$", s)

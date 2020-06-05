@@ -14,7 +14,10 @@ from typing import List
 from autosys.as_constants import DEFAULT
 
 
-def create_test_file(filename: str = "testfile.txt", encoding: str = as_constants.DEFAULT_ENCODING) -> str:
+def create_test_file(
+    filename: str = "testfile.txt",
+    encoding: str = as_constants.DEFAULT_ENCODING,
+) -> str:
     """ Create test file and return resolved Purepath """
     p = pathlib.Path(filename)
     p = p.resolve()

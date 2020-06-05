@@ -15,10 +15,30 @@
 
 from os import linesep as NL, sep as PATHSEP, environ as ENV
 from pathlib import Path
-from platform import platform, system as WHICH_OS, python_implementation as WHICH_PY
+from platform import (
+    platform,
+    system as WHICH_OS,
+    python_implementation as WHICH_PY,
+)
 from pprint import pformat
-from sys import stdout, stderr, argv, path as PYTHON_PATH, version_info, maxsize
-from typing import Any, Dict, Final, Iterable, List, NamedTuple, Sequence, Tuple
+from sys import (
+    stdout,
+    stderr,
+    argv,
+    path as PYTHON_PATH,
+    version_info,
+    maxsize,
+)
+from typing import (
+    Any,
+    Dict,
+    Final,
+    Iterable,
+    List,
+    NamedTuple,
+    Sequence,
+    Tuple,
+)
 import logging
 
 # package and version data

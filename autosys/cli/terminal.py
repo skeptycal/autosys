@@ -178,14 +178,19 @@ class Terminal:  # !------------------------ Terminal Class
 
             cr = _SH_SIZE(fallback=Terminal.DEFAULT_TERMINAL_SIZE)
             if cr:
-                log.info(f"shutil.get_terminal_size returns ({cr.columns},{cr.lines})")
+                log.info(
+                    f"shutil.get_terminal_size returns ({cr.columns},{cr.lines})"
+                )
                 return (cr.columns, cr.lines)
         except Exception as e:
             log.error(e)
         log.info("no return from shutil.get_terminal_size")
         log.info(f"using {Terminal.DEFAULT_TERMINAL_SIZE} for cr")
 
-        return Terminal.DEFAULT_TERMINAL_SIZE[0], Terminal.DEFAULT_TERMINAL_SIZE[1]
+        return (
+            Terminal.DEFAULT_TERMINAL_SIZE[0],
+            Terminal.DEFAULT_TERMINAL_SIZE[1],
+        )
 
     def _get_supports_color(self) -> bool:
         # generic script level stderr output characteristics

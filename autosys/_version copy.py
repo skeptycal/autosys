@@ -28,7 +28,10 @@ def my_class(func):
 
 class PrettyDict(dict):
     def table_dict(
-        self, table_rows: Dict[str, Any], border_char: str = "-", divider: bool = True
+        self,
+        table_rows: Dict[str, Any],
+        border_char: str = "-",
+        divider: bool = True,
     ) -> str:
         """ Returns a table version of a dictionary.
 
@@ -48,7 +51,9 @@ class PrettyDict(dict):
         result.append(border)
         return NL.join(result)
 
-    def table_list(self, table_rows: List[str], border_char: str = "-",) -> str:
+    def table_list(
+        self, table_rows: List[str], border_char: str = "-",
+    ) -> str:
         """ Returns a table version of a list.
 
             - table_rows  = list of rows
@@ -90,7 +95,9 @@ class PrettyDict(dict):
         )
 
     def to_json(self, sort_keys=True, indent=2):
-        return json.dumps(version.to_dict(), indent=indent, sort_keys=sort_keys)
+        return json.dumps(
+            version.to_dict(), indent=indent, sort_keys=sort_keys
+        )
 
 
 @dataclass
@@ -133,7 +140,11 @@ class MyVersion:
         try:
             self._start_year = int(self._start_year)
             # include start year if it is in [1900..now]?
-            tmp = f"{self._start_year}-" if 1900 < self._start_year < year else ""
+            tmp = (
+                f"{self._start_year}-"
+                if 1900 < self._start_year < year
+                else ""
+            )
         except:
             self._start_year = year
 

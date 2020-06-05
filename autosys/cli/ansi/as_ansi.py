@@ -7,6 +7,7 @@
 
 import os
 import textwrap
+
 # import autosys.as_constants
 from autosys.as_system import py_shell
 from autosys.as_constants import PY_ENV
@@ -21,7 +22,7 @@ if py_shell() in ["ipython", "ipython-notebook"]:
 
 
 def test_styles(bg, fg):
-    for style in (None, ) + STYLES:
+    for style in (None,) + STYLES:
         cname = fg or "default"
         # renamed None color to default to avoid confusion wiht normal style
         if cname.startswith("bright"):

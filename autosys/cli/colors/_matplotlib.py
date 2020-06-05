@@ -26,12 +26,12 @@
 
 # matplotlib 'single letter colors' called BASE_COLORS
 BASE_COLORS = {
-    'b': (0, 0, 1),        # blue
-    'g': (0, 0.5, 0),      # green
-    'r': (1, 0, 0),        # red
-    'c': (0, 0.75, 0.75),  # cyan
-    'm': (0.75, 0, 0.75),  # magenta
-    'y': (0.75, 0.75, 0),  # yellow
-    'k': (0, 0, 0),        # black
-    'w': (1, 1, 1),        # white
+    "b": (0, 0, 1),  # blue
+    "g": (0, 0.5, 0),  # green
+    "r": (1, 0, 0),  # red
+    "c": (0, 0.75, 0.75),  # cyan
+    "m": (0.75, 0, 0.75),  # magenta
+    "y": (0.75, 0.75, 0),  # yellow
+    "k": (0, 0, 0),  # black
+    "w": (1, 1, 1),  # white
 }

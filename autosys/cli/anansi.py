@@ -165,7 +165,9 @@ if True:  # !------------------------ imports
                 if i == 232:
                     s = "GREY"
                 self._add_dynamic_method(f"{s}{i}", self.FMT_8BIT_FG.format(i))
-                self._add_dynamic_method(f"BG_{s}{i}", self.FMT_8BIT_BG.format(i))
+                self._add_dynamic_method(
+                    f"BG_{s}{i}", self.FMT_8BIT_BG.format(i)
+                )
 
         # def __iter__(self):
         #     yield from dataclasses.astuple(self)
@@ -196,7 +198,10 @@ if True:  # !------------------------ imports
 
         @lru_cache()
         def encode_color_str(
-            self, fg=DEFAULT_FG_CODE, bg=DEFAULT_BG_CODE, ef=DEFAULT_EFFECT_CODE
+            self,
+            fg=DEFAULT_FG_CODE,
+            bg=DEFAULT_BG_CODE,
+            ef=DEFAULT_EFFECT_CODE,
         ) -> str:
             if SUPPORTS_COLOR:
                 return f"{self.ef(ef)}{self.bg(bg)}{self.fg(fg)}"
@@ -205,7 +210,10 @@ if True:  # !------------------------ imports
 
         @lru_cache()
         def encode_color_tuple(
-            self, fg=DEFAULT_FG_CODE, bg=DEFAULT_BG_CODE, ef=DEFAULT_EFFECT_CODE
+            self,
+            fg=DEFAULT_FG_CODE,
+            bg=DEFAULT_BG_CODE,
+            ef=DEFAULT_EFFECT_CODE,
         ) -> Tuple[
             str,
         ]:
@@ -380,7 +388,10 @@ if True:  # !------------------------ imports
                 print(f"\x1Bu")
 
         def loading(
-            self, delay: float = 0.1, message: str = "Loading ...", percent: bool = True
+            self,
+            delay: float = 0.1,
+            message: str = "Loading ...",
+            percent: bool = True,
         ):
             """ ### Terminal progress Indicator
 
