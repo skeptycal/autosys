@@ -9,4 +9,5 @@
 class Gradient_Dict(dict):
     """ A dictionary designed for efficient retrieval in large structures.
         Uses a gradient index allowing faster searching for keys. """
+
     pass

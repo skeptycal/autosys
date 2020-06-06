@@ -16,7 +16,7 @@ file_list_xxx = [
     "/usr/local/lib/libnpth.la",
     "/usr/local/lib/libntbtls.la",
     "/usr/local/lib/libpathplan.la",
-    "/usr/local/lib/libxdot.la"
+    "/usr/local/lib/libxdot.la",
 ]
 
 
@@ -29,9 +29,9 @@ def del_file_list(file_list):
 
 
 def main():
-    '''
+    """
     CLI script main entry point.
-    '''
+    """
     del_file_list(file_list=file_list)
 
 

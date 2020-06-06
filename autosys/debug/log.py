@@ -94,7 +94,9 @@ if True:  # !------------------------ Logging Utilities
             try:
                 result = func()
             except IOError as e:
-                log_error(f"logex caused an error while reporting <{func}>: {e}.")
+                log_error(
+                    f"logex caused an error while reporting <{func}>: {e}."
+                )
             else:
                 if isinstance(result, Exception):
                     log_error(f"Function <{func}> caught an error: {e}.")

@@ -154,7 +154,9 @@ def time_iter_check1(n: int = 10000, var: object = None):
 
 
 @timeit
-def time_iter_check2(n: int = 10000, var: object = None, i: int = 10) -> List[float]:
+def time_iter_check2(
+    n: int = 10000, var: object = None, i: int = 10
+) -> List[float]:
     if not var:
         var = "*" * 2000
 
@@ -166,7 +168,9 @@ def time_iter_check2(n: int = 10000, var: object = None, i: int = 10) -> List[fl
             result = False
 
 
-def time_iter_check(n: int = 10000, var: object = None, i: int = 10) -> List[float]:
+def time_iter_check(
+    n: int = 10000, var: object = None, i: int = 10
+) -> List[float]:
     results = []
     for _ in range(i):
         results.append(time_iter_check1(n, var))

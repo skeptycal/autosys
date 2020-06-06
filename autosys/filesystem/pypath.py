@@ -16,7 +16,7 @@ import pathlib
 from autosys.debug import dbprint, db_column_ruler
 
 # !---------------------------------------------- CONSTANTS
-_debug_: bool = True              # True => use Debug features
+_debug_: bool = True  # True => use Debug features
 SCRIPT_PATH: str = pathlib.Path(__file__).resolve().parents[0].as_posix()
 PARENT_PATH: str = pathlib.Path(__file__).resolve().parents[1].as_posix()
 
@@ -32,12 +32,12 @@ def set_script_in_sys_path():
     if SCRIPT_PATH not in sys.path:
         sys.path.insert(0, SCRIPT_PATH)
         try:  # skip debug output if not available
-            dbprint(f'SCRIPT_PATH *NOT* in sys.path.')
+            dbprint(f"SCRIPT_PATH *NOT* in sys.path.")
         except:
             pass
     else:
         try:  # skip debug output if not available
-            dbprint(f'SCRIPT_PATH *IS* in sys.path.')
+            dbprint(f"SCRIPT_PATH *IS* in sys.path.")
         except:
             pass
 
@@ -49,11 +49,12 @@ def _tests_():
     db_column_ruler(8)
     br()
 
-    dbprint(f'Rows: {ROWS} x Columns:{COLS}')
+    dbprint(f"Rows: {ROWS} x Columns:{COLS}")
     br()
 
     dbprint(
-        f"Python version (sys.version_info): {sys.version_info.major}.{sys.version_info.minor}")
+        f"Python version (sys.version_info): {sys.version_info.major}.{sys.version_info.minor}"
+    )
     dbprint("Script version (__version__):     ", __version__)
     br()
 
@@ -64,9 +65,9 @@ def _tests_():
 
 
 def main():
-    '''
+    """
     CLI script main entry point.
-    '''
+    """
     set_script_in_sys_path()
     if _debug_:
         _tests_()

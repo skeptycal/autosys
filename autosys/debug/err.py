@@ -76,7 +76,10 @@ class CLI:
         ],
         "help": ["Display command information.", ["help", "-h", "--help"],],
         "test": ["Run test scripts.", ["test", "-t", "--test"],],
-        "version": ["Display version information.", ["version", "-v", "--version"],],
+        "version": [
+            "Display version information.",
+            ["version", "-v", "--version"],
+        ],
     }
 
     # FLAGS_ARGS are autofilled with keys from DEFAULT_ARGS

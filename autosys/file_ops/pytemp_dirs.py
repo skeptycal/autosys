@@ -11,6 +11,7 @@ import enum
 import os
 import sys
 import tempfile
+
 # from io import StringIO
 # from pathlib import Path
 
@@ -22,27 +23,28 @@ _debug_: bool = True  # Turn on extra debug info display
 
 _NAME: str = os.path.basename(__file__)
 _HERE: str = os.path.dirname(__file__)
-_TMP_PREFIX: str = f"_{_NAME}_".replace('.', '_').strip().lower()
-_TMP_SUFFIX: str = '.log'
+_TMP_PREFIX: str = f"_{_NAME}_".replace(".", "_").strip().lower()
+_TMP_SUFFIX: str = ".log"
 
 
-class TempFile():
+class TempFile:
     TMP = tempfile.TemporaryFile()  # e.g. with TMP as f:
     TMP_NAMED = tempfile.NamedTemporaryFile()  # e.g. with TMP_NAMED as f:
-    TMP_HERE = tempfile.NamedTemporaryFile(prefix=_TMP_PREFIX,
-                                           suffix=_TMP_SUFFIX,
-                                           dir=_HERE)
-    TMP_SPOOL = tempfile.SpooledTemporaryFile(max_size=1024,
-                                              prefix=_TMP_PREFIX,
-                                              suffix=_TMP_SUFFIX,
-                                              dir=_HERE)
-    TMP_DIR = tempfile.TemporaryDirectory(prefix=_TMP_PREFIX, suffix=_TMP_SUFFIX)
+    TMP_HERE = tempfile.NamedTemporaryFile(
+        prefix=_TMP_PREFIX, suffix=_TMP_SUFFIX, dir=_HERE
+    )
+    TMP_SPOOL = tempfile.SpooledTemporaryFile(
+        max_size=1024, prefix=_TMP_PREFIX, suffix=_TMP_SUFFIX, dir=_HERE
+    )
+    TMP_DIR = tempfile.TemporaryDirectory(
+        prefix=_TMP_PREFIX, suffix=_TMP_SUFFIX
+    )
 
-    def __init__(self, temp_type: str = 'TMP'):
+    def __init__(self, temp_type: str = "TMP"):
         super().__init__()
 
 
-def tmp_file(temp_type: str = 'TMP'):
+def tmp_file(temp_type: str = "TMP"):
     try:
         return TempFile(f"{temp_type}")
     except Exception as e:
@@ -54,7 +56,7 @@ def temp_it(func):
     pass
 
 
-__all__ = ['TMP', 'TMP_NAMED', 'TMP_HERE']
+__all__ = ["TMP", "TMP_NAMED", "TMP_HERE"]
 
 # !------------------------------------- Dev and Debugging
 
@@ -72,7 +74,7 @@ def _test_():
     print()
 
     script_name: str = os.path.basename(__file__)
-    print(f'{script_name} is in DEBUG MODE.')
+    print(f"{script_name} is in DEBUG MODE.")
     print(TempFile.TMP)
     print(TempFile.TMP_HERE)
     print(TempFile.TMP_NAMED)
@@ -94,13 +96,14 @@ def _test_():
 
     print("\n --------------- done ...")
 
+
 # !------------------------------------- main entry point
 
 
 def _main_():
-    '''
+    """
     CLI script main entry point.
-    '''
+    """
     if _debug_:
         _test_()  # CLI testing - only runs if _DEBUG_ = True
 

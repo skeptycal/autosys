@@ -73,6 +73,7 @@
 # !------------------------------------- Imports
 if True:  # pathlib.py "basic imports"
     import datetime
+
     # import fnmatch
     # import functools
     # import io
@@ -91,6 +92,7 @@ if True:  # pathlib.py "basic imports"
 if True:  # pathlib.py "Internals" - private api
     # it is NOT recommended that these be directly manipulated
     import file_ops.pathlib as pl
+
     Path = pl.Path
     IS_WIN = pl.IS_WIN
     # supports_symlinks = True
@@ -122,6 +124,7 @@ if True:  # basic imports
     from io import TextIOWrapper
     from sys import argv
     from typing import Any, Generator, List, Sequence
+
     # from typing import *
 
 if True:  # other modules from autosys.py
@@ -129,6 +132,7 @@ if True:  # other modules from autosys.py
     import parsing
     import dev
     from cli.terminal import COLS, ROWS
+
     # from dev.debug import dbprint
     from parsing.string_utils import br
 
@@ -178,19 +182,19 @@ class File(Path):
 
         Utilities for ease of use and clarity.
         """
-# !----------------------------- class setup
+
+    # !----------------------------- class setup
     _flavour = _windows_flavour if IS_WIN else _posix_flavour
     _path: Path = None
-    _folder: str = ''
-    _filename: str = ''
-    _basename: str = ''
+    _folder: str = ""
+    _filename: str = ""
+    _basename: str = ""
     _parents: _PathParents = []
     _size: int = 0
     _atime: date = None
 
-    _RE_PATTERN_PATH_VALID: str = r'[^A-Za-z0-9_\-\\]'
-    _RE_PATH_VALID: re.Pattern = \
-        re.compile(_RE_PATTERN_PATH_VALID)
+    _RE_PATTERN_PATH_VALID: str = r"[^A-Za-z0-9_\-\\]"
+    _RE_PATH_VALID: re.Pattern = re.compile(_RE_PATTERN_PATH_VALID)
 
     def __init__(self, filename):
         self._flavour = _windows_flavour if IS_WIN else _posix_flavour
@@ -220,7 +224,7 @@ class File(Path):
         return (self.size == other.size) and (self.stat())
         # return super().__eq__(other)
 
-    def get_file_contents(self, path: str = '*', recursive=False, test=False):
+    def get_file_contents(self, path: str = "*", recursive=False, test=False):
         """ Return a List containing the contents of files listed in
             path. Wildcards are allowed.
 
@@ -242,15 +246,19 @@ class File(Path):
             if not p.exists():
                 return None
             elif recursive:
-                return [_.read_text() for _ in p.rglob(path) if Path(_).is_file()]
+                return [
+                    _.read_text() for _ in p.rglob(path) if Path(_).is_file()
+                ]
             else:
-                return [_.read_text() for _ in p.glob(path) if Path(_).is_file()]
+                return [
+                    _.read_text() for _ in p.glob(path) if Path(_).is_file()
+                ]
 
         if test and _debug_:
             _test_()
         return _return_
 
-# !----------------------------- properties
+    # !----------------------------- properties
     # properties are generated on demand in these methods instead of
     # in <self.__init__>. This reduces cumbersome processing and
     # memory usage for items that are rarely used.
@@ -320,22 +328,21 @@ class File(Path):
     def methods(self):
         """ List methods of the <file> class. """
         for prop in self.__dir__():
-            if prop[0] != '_':
+            if prop[0] != "_":
                 yield prop
 
 
-class DirTree():
-
+class DirTree:
     def __init__(self):
         first = File(Path.cwd)
         super().__init__()
 
 
 class DisplayablePath(object):
-    DISPLAY_FILENAME_PREFIX_MIDDLE = '├──'
-    DISPLAY_FILENAME_PREFIX_LAST = '└──'
-    DISPLAY_PARENT_PREFIX_MIDDLE = '    '
-    DISPLAY_PARENT_PREFIX_LAST = '│   '
+    DISPLAY_FILENAME_PREFIX_MIDDLE = "├──"
+    DISPLAY_FILENAME_PREFIX_LAST = "└──"
+    DISPLAY_PARENT_PREFIX_MIDDLE = "    "
+    DISPLAY_PARENT_PREFIX_LAST = "│   "
 
     def __init__(self, path, parent_path, is_last):
         self.path = Path(str(path))
@@ -349,7 +356,7 @@ class DisplayablePath(object):
     @property
     def displayname(self):
         if self.path.is_dir():
-            return self.path.name + '/'
+            return self.path.name + "/"
         return self.path.name
 
     @classmethod
@@ -360,18 +367,20 @@ class DisplayablePath(object):
         displayable_root = cls(root, parent, is_last)
         yield displayable_root
 
-        children = sorted(list(path
-                               for path in root.iterdir()
-                               if criteria(path)),
-                          key=lambda s: str(s).lower())
+        children = sorted(
+            list(path for path in root.iterdir() if criteria(path)),
+            key=lambda s: str(s).lower(),
+        )
         count = 1
         for path in children:
             is_last = count == len(children)
             if path.is_dir():
-                yield from cls.make_tree(path,
-                                         parent=displayable_root,
-                                         is_last=is_last,
-                                         criteria=criteria)
+                yield from cls.make_tree(
+                    path,
+                    parent=displayable_root,
+                    is_last=is_last,
+                    criteria=criteria,
+                )
             else:
                 yield cls(path, displayable_root, is_last)
             count += 1
@@ -383,32 +392,35 @@ class DisplayablePath(object):
     @property
     def displayname(self):
         if self.path.is_dir():
-            return self.path.name + '/'
+            return self.path.name + "/"
         return self.path.name
 
     def displayable(self):
         if self.parent is None:
             return self.displayname
 
-        _filename_prefix = (self.DISPLAY_FILENAME_PREFIX_LAST
-                            if self.is_last
-                            else self.DISPLAY_FILENAME_PREFIX_MIDDLE)
+        _filename_prefix = (
+            self.DISPLAY_FILENAME_PREFIX_LAST
+            if self.is_last
+            else self.DISPLAY_FILENAME_PREFIX_MIDDLE
+        )
 
-        parts = ['{!s} {!s}'.format(_filename_prefix,
-                                    self.displayname)]
+        parts = ["{!s} {!s}".format(_filename_prefix, self.displayname)]
 
         parent = self.parent
         while parent and parent.parent is not None:
-            parts.append(self.DISPLAY_PARENT_PREFIX_MIDDLE
-                         if parent.is_last
-                         else self.DISPLAY_PARENT_PREFIX_LAST)
+            parts.append(
+                self.DISPLAY_PARENT_PREFIX_MIDDLE
+                if parent.is_last
+                else self.DISPLAY_PARENT_PREFIX_LAST
+            )
             parent = parent.parent
 
-        return ''.join(reversed(parts))
+        return "".join(reversed(parts))
 
 
 def _test_():
-    f = File('test')
+    f = File("test")
     print(f"{f=}")
     print(f"{f.__class__=}")
     br()
@@ -433,21 +445,21 @@ def _test_():
     br()
     print("methods in <File>")
     for s in f.__dir__():
-        print('  ', s)
+        print("  ", s)
     br()
     # for s in f.get_lines():
     #     print(s, end="")
 
 
 def _main_():
-    '''
+    """
     CLI script main entry point.
-    '''
+    """
     _debug_ = True
     if len(argv) > 1:
         filenames = argv[1:]
     else:
-        filenames = ['testfile.txt']
+        filenames = ["testfile.txt"]
 
     for filename in filenames:
         f = File(filename)
@@ -553,43 +565,43 @@ if __name__ == "__main__":  # if script is loaded directly from CLI
 #                 break
 # !----------------------------- file activity
 
-    # @logit
-    # def get_lines(self, n: int = 0,
-    #               tail: bool = False) -> Generator[str, None, None]:
-    #     """ Yield the lines in a text file.
+# @logit
+# def get_lines(self, n: int = 0,
+#               tail: bool = False) -> Generator[str, None, None]:
+#     """ Yield the lines in a text file.
 
-    #         n           -- number of lines (default 0 = all)
-    #         tail        -- return the lines backwards (default = False)
-    #         """
-    #     if self.isfile:
-    #         with open(self._file) as f:
-    #             lines = reversed(f.readlines()) if tail else f.readlines()
-    #             for line in lines:
-    #                 yield line
+#         n           -- number of lines (default 0 = all)
+#         tail        -- return the lines backwards (default = False)
+#         """
+#     if self.isfile:
+#         with open(self._file) as f:
+#             lines = reversed(f.readlines()) if tail else f.readlines()
+#             for line in lines:
+#                 yield line
 
-    # def as_text(self) -> str:
-    #     with open(self._file, mode='r') as f:
-    #         return f.read()
+# def as_text(self) -> str:
+#     with open(self._file, mode='r') as f:
+#         return f.read()
 
-    # def as_bytes(self) -> bytes:
-    #     with open(self._file, mode='rb') as f:
-    #         return f.read()
+# def as_bytes(self) -> bytes:
+#     with open(self._file, mode='rb') as f:
+#         return f.read()
 
 
 ###########################################################
 
-    # @classmethod
-    # def __new__(cls, *args):
-    #     """Construct a PurePath from one or several strings and or existing
-    #     PurePath objects.  The strings and path objects are combined so as
-    #     to yield a canonicalized path, which is incorporated into the
-    #     new PurePath object.
-    #     """
-    #     if cls is Path:
-    #         if IS_WIN:
-    #             cls = WindowsPath
-    #             cls._flavour = _WindowsFlavour
-    #         else:
-    #             cls = PosixPath
-    #             cls._flavour = _PosixFlavour
-    #     return cls.__class__
+# @classmethod
+# def __new__(cls, *args):
+#     """Construct a PurePath from one or several strings and or existing
+#     PurePath objects.  The strings and path objects are combined so as
+#     to yield a canonicalized path, which is incorporated into the
+#     new PurePath object.
+#     """
+#     if cls is Path:
+#         if IS_WIN:
+#             cls = WindowsPath
+#             cls._flavour = _WindowsFlavour
+#         else:
+#             cls = PosixPath
+#             cls._flavour = _PosixFlavour
+#     return cls.__class__

@@ -43,7 +43,9 @@ class TextMessagingError(Exception):
 
 
 class TextMessaging:
-    def __init__(self, number=DEFAULT_CELL_NUMBER, script_path=DEFAULT_SCRIPT_PATH):
+    def __init__(
+        self, number=DEFAULT_CELL_NUMBER, script_path=DEFAULT_SCRIPT_PATH
+    ):
         self.number = number
         self.script_path = script_path
 
@@ -61,7 +63,9 @@ class TextMessaging:
             db_print("result: ", result)
             return result
 
-    def test_text(self, message: str = "A python program just sent you a message ..."):
+    def test_text(
+        self, message: str = "A python program just sent you a message ..."
+    ):
         """ Send a test message using <text> """
         db_print(f"{message=}")
         result = self.text(message=message, verbose=True)

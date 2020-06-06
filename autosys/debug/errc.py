@@ -73,7 +73,9 @@ class Error(Exception):
         for kwarg in self.kwargs:
             if kwarg == "errno":
                 self.errno = self.kwargs[kwarg]
-                self.errmsg = [msg for num, msg in ErrC.items() if num == self.errno]
+                self.errmsg = [
+                    msg for num, msg in ErrC.items() if num == self.errno
+                ]
                 # dbprint(self.errno, ' ', self.errmsg)
             if kwarg == "message":
                 self.message = self.kwargs[kwarg]
