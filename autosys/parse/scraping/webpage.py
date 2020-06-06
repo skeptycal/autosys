@@ -24,7 +24,15 @@ if True:  # standard library specifics
     from io import TextIOWrapper
     from sys import argv
     from time import perf_counter_ns as _timer
-    from typing import Any, Generator, List, Sequence, Dict, MutableSequence, Tuple
+    from typing import (
+        Any,
+        Generator,
+        List,
+        Sequence,
+        Dict,
+        MutableSequence,
+        Tuple,
+    )
 
 if True:  # outside requirements
     from requests import get
@@ -34,12 +42,13 @@ if True:  # outside requirements
     from bs4.element import ResultSet
 
 
-DEFAULT_PARSER = 'lxml'
-DEFAULT_ENCODING = 'utf-8'
+DEFAULT_PARSER = "lxml"
+DEFAULT_ENCODING = "utf-8"
 
 
 class WebPageError(TypeError):
     """  # Exception raised for errors in the WebPage class. """
+
     pass
 
 
@@ -47,10 +56,12 @@ def is_good_response(resp):
     """
     Returns True if the response seems to be HTML, False otherwise.
     """
-    content_type = resp.headers['Content-Type'].lower()
-    return (resp.status_code == 200
-            and content_type is not None
-            and content_type.find('html') > -1)
+    content_type = resp.headers["Content-Type"].lower()
+    return (
+        resp.status_code == 200
+        and content_type is not None
+        and content_type.find("html") > -1
+    )
 
 
 def log_error(e):
@@ -75,11 +86,11 @@ def simple_get(url):
                 return None
 
     except RequestException as e:
-        log_error('Error during requests to {0} : {1}'.format(url, str(e)))
+        log_error("Error during requests to {0} : {1}".format(url, str(e)))
         return None
 
 
-class WebPage():
+class WebPage:
     """ A local representation of a webpage. This object is able to analyze
         itself, share data, and perform its duties unsupervised.
 
@@ -88,6 +99,7 @@ class WebPage():
         url: the source of the original page. Use the <refresh> command to get
         an updated version.
         """
+
     # >>> r = requests.get('https://api.github.com/user',
     import requests
 
@@ -111,13 +123,13 @@ class WebPage():
             raise StopIteration
 
         # if self.n <= self.max:
-            # result = 2 ** self.n
-            # self.n += 1
+        # result = 2 ** self.n
+        # self.n += 1
         #     return result
         # else:
         #     raise StopIteration
 
-# ------------------------------------------ properties
+    # ------------------------------------------ properties
     @property
     def soup(self):
         # return BeautifulSoup()
@@ -132,15 +144,15 @@ class WebPage():
 
     @property
     def links(self):
-        yield (t for t in self.soup.findAll('a', href=True))
+        yield (t for t in self.soup.findAll("a", href=True))
 
     @property
     def images(self):
-        yield (t for t in self.soup.findAll('img'))
+        yield (t for t in self.soup.findAll("img"))
 
     @property
     def text(self) -> str:
-        return self.resp.text if self.resp.text else ''
+        return self.resp.text if self.resp.text else ""
 
     @property
     def status(self) -> int:
@@ -151,10 +163,9 @@ class WebPage():
         try:
             return datetime.fromtimestamp(self._timestamp).isoformat()
         except:
-            return ''
+            return ""
 
-
-# ------------------------------------------ properties
+    # ------------------------------------------ properties
 
     def get_url_content(self, url: str) -> str:
         """ Return decoded contents from <url> using default parameters. """
@@ -164,9 +175,14 @@ class WebPage():
         if self.last_status == 200:
             return self.text
         else:
-            return ''
+            return ""
 
-    def tag_find(self, tag_name: str, attrs_pass: Dict, parser_pass: str = DEFAULT_PARSER) -> List:
+    def tag_find(
+        self,
+        tag_name: str,
+        attrs_pass: Dict,
+        parser_pass: str = DEFAULT_PARSER,
+    ) -> List:
         """ Find matching tags from url. """
         return self.soup.findAll(name=tag_name, attrs=attrs_pass)
 
@@ -175,17 +191,35 @@ class WebPage():
             self.tags = Counter(self.text)
             return self.tags
 
-    def to_markdown(self): pass
+    def to_markdown(self):
+        pass
 
-    def to_json(self): return json.dumps(self.text)
+    def to_json(self):
+        return json.dumps(self.text)
 
-    def stats(self): pass
+    def stats(self):
+        pass
 
-    def tags(self, name=None, attrs={}, recursive=True, text=None, limit=None, **kwargs):
-        return self.soup.findAll(name=name, attrs=attrs, recursive=recursive, text=text, limit=limit, **kwargs)
+    def tags(
+        self,
+        name=None,
+        attrs={},
+        recursive=True,
+        text=None,
+        limit=None,
+        **kwargs,
+    ):
+        return self.soup.findAll(
+            name=name,
+            attrs=attrs,
+            recursive=recursive,
+            text=text,
+            limit=limit,
+            **kwargs,
+        )
 
     def __str__(self):
-        return self.resp.url if self.resp.url else ''
+        return self.resp.url if self.resp.url else ""
 
     def __repr__(self):
         return f"response = {self.resp.status_code} for {len(self.resp.content)} bytes from {self.url}."
@@ -216,15 +250,17 @@ class WebPage():
             r = self
         try:
             requests.Response.headers
-            content_type = r.headers['Content-Type'].lower()
-            return (r.status_code == 200
-                    and content_type is not None
-                    and content_type.find('html') > -1)
+            content_type = r.headers["Content-Type"].lower()
+            return (
+                r.status_code == 200
+                and content_type is not None
+                and content_type.find("html") > -1
+            )
         except:
             return False
 
     # @time_it
-    def _get(self, url: str = '', html: bool = True) -> (Response, Exception):
+    def _get(self, url: str = "", html: bool = True) -> (Response, Exception):
         """ Return the response an HTTP GET request to url.
 
             The default url is <self.url>, but outside url's can be tested as needed by setting <url>.
@@ -247,22 +283,26 @@ class WebPage():
                     return None
 
         except RequestException as e:
-            log_error('Error during requests to {0} : {1}'.format(
-                self.url, str(e)))
+            log_error(
+                "Error during requests to {0} : {1}".format(self.url, str(e))
+            )
             return None
 
 
 class WebPageDeque(deque):
     """ Stores and maintains a set of web pages. """
+
     DEFAULT_WEBPAGESET_SIZE = 2000  # maximum number of pages
     # TODO this should be 'maximum size' ... not count
     # ... and class should check it's own size
 
-    def __init__(self, iterable: MutableSequence,
-                 maxlen: int = 0,
-                 check_links: bool = True,
-                 image_storage: str = '',
-                 ):
+    def __init__(
+        self,
+        iterable: MutableSequence,
+        maxlen: int = 0,
+        check_links: bool = True,
+        image_storage: str = "",
+    ):
         if maxlen < 1:
             maxlen = DEFAULT_WEBPAGESET_SIZE
         self.maxlen = maxlen
@@ -271,7 +311,7 @@ class WebPageDeque(deque):
         self.image_storage = image_storage
         super().__init__(iterable, maxlen)
 
-    def count(self, needle=r'<a.*>'):
+    def count(self, needle=r"<a.*>"):
         """ count tags, emails, ... whatever from the entire set """
         pass
 
@@ -289,7 +329,8 @@ class WebPageDeque(deque):
             else:
                 raise (WebPageError)
 
-    def size_check(self): print(self.__sizeof__())
+    def size_check(self):
+        print(self.__sizeof__())
 
 
 sample_urls = [
@@ -356,20 +397,20 @@ def _test_(url):
 
 
 def _main_():
-    '''
+    """
     CLI script main entry point.
-    '''
-    url = 'https://realpython.com/blog/'
+    """
+    url = "https://realpython.com/blog/"
 
     _test_(url)
 
     print(simple_get(url=url))
 
-    w = WebPage('https://realpython.com/blog/')
+    w = WebPage("https://realpython.com/blog/")
 
     print(w.text)
 
-    url = 'https://realpython.com/blog/nope-not-gonna-find-it'
+    url = "https://realpython.com/blog/nope-not-gonna-find-it"
 
     print(WebPage(url))
 

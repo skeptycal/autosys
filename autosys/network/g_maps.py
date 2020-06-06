@@ -30,12 +30,19 @@ zoom = 10
 
 # get method of requests module
 # return response object
-r = requests.get(url + "center =" + center + "&zoom =" +
-                 str(zoom) + "&size = 400x400&key =" +
-                 api_key + "sensor = false")
+r = requests.get(
+    url
+    + "center ="
+    + center
+    + "&zoom ="
+    + str(zoom)
+    + "&size = 400x400&key ="
+    + api_key
+    + "sensor = false"
+)
 
 # wb mode is stand for write binary mode
-f = open('address of the file location ', 'wb')
+f = open("address of the file location ", "wb")
 
 # r.content gives content,
 # in this case gives image

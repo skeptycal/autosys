@@ -17,7 +17,7 @@ import sys
 NL: str = os.linesep
 
 
-def arg_str(*args, sep=' ') -> str:
+def arg_str(*args, sep=" ") -> str:
     """ Return one string created from *args sequence.
 
         sep - string used in between joined elements.
@@ -26,13 +26,16 @@ def arg_str(*args, sep=' ') -> str:
         it is ignored and silently logged as an error
         """
     from typing import Any, List
+
     _: List[Any] = []
     for arg in args:
         try:  # convert args to strings
             _.append(str(arg))
         except:
             try:
-                dbprint(f'An argument could not be converted to a string for display - {arg}')
+                dbprint(
+                    f"An argument could not be converted to a string for display - {arg}"
+                )
             except:
                 pass  # skip debug output if not available
             pass  # skip args that cannot be converted to strings
@@ -47,7 +50,7 @@ def br(n: int = 1) -> int:
         return int 0 for success else 1
         """
     try:
-        print(NL*n, end='', sep='')
+        print(NL * n, end="", sep="")
         return 0
     except:
         return 1
@@ -61,13 +64,13 @@ def brerr(n: int = 1) -> int:
         return int 0 for success else 1
         """
     try:
-        print('\n'*n, end='', sep='', file=sys.stderr)
+        print("\n" * n, end="", sep="", file=sys.stderr)
         return 0
     except:
         return 1
 
 
-def hr(s: str = '-', n: int = 79) -> str:
+def hr(s: str = "-", n: int = 79) -> str:
     """ Print a string duplicated <n> times.
 
         This can act as a page break. Yes, this is a CLI version of an <hr /> tag
@@ -75,4 +78,4 @@ def hr(s: str = '-', n: int = 79) -> str:
         s : str  - string to repeat (default '-')
         n : int  - number of times to repeat (default 79)
         """
-    print(s*n)
+    print(s * n)

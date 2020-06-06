@@ -58,7 +58,9 @@ if True:  # setup dev mode and logger
     if SET_DEBUG:  # enable detailed logging
         # cgitb.enable([display[, logdir[, context[, format]]]])
         DEFAULT_CGITB_DISPLAY: int = 1  # 0 to suppress messages
-        DEFAULT_CGITB_FILE_LOGDIR: str = os.path.join(os.path.dirname(__file__), "LOGS")
+        DEFAULT_CGITB_FILE_LOGDIR: str = os.path.join(
+            os.path.dirname(__file__), "LOGS"
+        )
         DEFAULT_CGITB_CONTEXT: int = 3  # 5 is the normal default
         DEFAULT_CGITB_FORMAT: str = "html"
 

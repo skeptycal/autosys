@@ -20,7 +20,9 @@ class BaseFile:
         try:
             self._path = Path(self.file_name).resolve()
         except:
-            raise BaseFileError(f"Unable to initialize file '{self.file_name}' ...")
+            raise BaseFileError(
+                f"Unable to initialize file '{self.file_name}' ..."
+            )
 
     @property
     def basename(self) -> str:

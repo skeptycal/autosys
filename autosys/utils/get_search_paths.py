@@ -82,7 +82,9 @@ for p in sys.path:
     if p == SCRIPT_DIR or p.startswith(SCRIPT_DIR + os.sep):
         continue
 
-    if not os.path.isdir(p) and not (os.path.isfile(p) and zipfile.is_zipfile(p)):
+    if not os.path.isdir(p) and not (
+        os.path.isfile(p) and zipfile.is_zipfile(p)
+    ):
         continue
 
     if p in BEFORE_SITE:

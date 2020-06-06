@@ -1,4 +1,3 @@
-
 import os
 from pathlib import Path, _windows_flavour, _posix_flavour
 from dataclasses import dataclass
@@ -8,7 +7,8 @@ from autosys.implore.text import TextMessaging
 
 @dataclass(frozen=True)
 class Verbosity:
-    ''' Reports output of the selected level and below. '''
+    """ Reports output of the selected level and below. """
+
     V_CRITICAL: int = 50  # Serious error - unable to continue
     V_ERROR: int = 40  # Failure of essential function
     V_WARN: int = 30  # Show Warnings of possible problems
@@ -24,10 +24,11 @@ class Verbosity:
 
 
 @dataclass(frozen=True)
-class LogLevel():
-    ''' Logging Levels Numeric values.
+class LogLevel:
+    """ Logging Levels Numeric values.
         https://docs.python.org/3.9/library/logging.html#levels
-        '''
+        """
+
     LOG_CRITICAL: int = 50  # Serious error - unable to continue
     LOG_ERROR: int = 40  # Failure of essential function
     LOG_WARNING: int = 30  # Show Warnings of possible problems
@@ -40,8 +41,9 @@ class LogLevel():
 
 
 @dataclass
-class DevConfig():
-    ''' Handle exceptions and logging for development. '''
+class DevConfig:
+    """ Handle exceptions and logging for development. """
+
     debug: bool = True
     log_flag: bool = True
     re_raise: bool = True
@@ -59,11 +61,11 @@ class DevConfig():
             self.tm = TextMessaging()
 
     def log(e: Exception):
-        ''' Log an exception based on configuration. '''
+        """ Log an exception based on configuration. """
         self.logger()
 
     def e(e: Exception):
-        ''' Handle exceptions based on configuration. '''
+        """ Handle exceptions based on configuration. """
         pass
 
     def dev(e: Exception):
@@ -73,9 +75,8 @@ class DevConfig():
 dev = DevConfig()
 
 
-
 class PathFinder(Path):
-    _flavour = _windows_flavour if os.name == 'nt' else _posix_flavour
+    _flavour = _windows_flavour if os.name == "nt" else _posix_flavour
 
     def __init__(self, filename):
         super().__init__()
@@ -128,7 +129,6 @@ class PathFinder(Path):
 
 
 class MarkdownFile(PathFinder):
-
     def __init__(*args, **kwargs):
         self._headers = []
         super.__init__(*args, **kwargs)
@@ -136,24 +136,25 @@ class MarkdownFile(PathFinder):
     def headers():
         # path = pathlib.Path.cwd() / 'test.md'
         if not self._headers:
-            with open(self, mode='r') as fid:
-                self._headers = [line.strip()
-                                 for line in fid if line.startswith('#')]
+            with open(self, mode="r") as fid:
+                self._headers = [
+                    line.strip() for line in fid if line.startswith("#")
+                ]
         return self._headers
         # print('\n'.join(headers))
 
 
 class PythonFile(PathFinder):
-
     def headers():
         # path = pathlib.Path.cwd() / 'test.py'
         if not self._headers:
-            with open(self, mode='r') as f:
-                self._headers = [line.strip()
-                                 for line in f if line.startswith('#')]
+            with open(self, mode="r") as f:
+                self._headers = [
+                    line.strip() for line in f if line.startswith("#")
+                ]
         return self._headers
         # print('\n'.join(headers))
 
 
 if __name__ == "__main__":
-    p = PathFinder('faketest')
+    p = PathFinder("faketest")

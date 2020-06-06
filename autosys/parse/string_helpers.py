@@ -11,9 +11,11 @@ from typing import Sequence
 
 # TODO profile and compare with RE and C functions
 
+
 def isutf8(f):
     # TODO - create a function version of `isutf8 -li *`
     pass
+
 
 # Reference: these 'string' versions without RE are from this link:
 # https://stackoverflow.com/a/48350803

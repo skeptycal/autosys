@@ -68,8 +68,12 @@ class Git(BaseVCS):
     _TEST_USABLE_COMMAND = ["git", "rev-parse", "--git-dir"]
     _COMMIT_COMMAND = ["git", "commit", "-F"]
     _GIT_ADD_ALL = ["git", "add", "-all"]
-    _GIT_COMMIT_AUTO = ["git", "commit", "-m",
-                        "The Great Gitspy autoformatting / refactoring."]
+    _GIT_COMMIT_AUTO = [
+        "git",
+        "commit",
+        "-m",
+        "The Great Gitspy autoformatting / refactoring.",
+    ]
     _GIT_PUSH = ["git", "push", "--signed"]
     _GIT_PUSH_SUP = "git push --set-upstream origin $(git_current_branch)"
 

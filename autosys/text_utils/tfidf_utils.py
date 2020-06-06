@@ -44,7 +44,9 @@ class NullStemmer:
 
 if True:
     _stopwords = frozenset()
-    _accepted = frozenset(ascii_letters + digits + punctuation) - frozenset("'")
+    _accepted = frozenset(ascii_letters + digits + punctuation) - frozenset(
+        "'"
+    )
 
     _punctuation = copy(punctuation)
     _punctuation = _punctuation.replace("\\", "")
@@ -85,7 +87,9 @@ def normalize_unicode(text):
     """
     if isinstance(text, str):
         return (
-            unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("utf8")
+            unicodedata.normalize("NFKD", text)
+            .encode("ascii", "ignore")
+            .decode("utf8")
         )
     else:
         return text

@@ -11,9 +11,9 @@ from autosys.defaults import _debug_
 from autosys.cli.debug import *
 
 # regex
-RE_SAFE_WORD_Pattern: re.Pattern = r'\w'
-RE_NOT_SAFE_WORD_Pattern: re.Pattern = r'\W'
-RE_NOT_ALPHA_UNDER_Pattern: re.Pattern = r'[^\w_]'
+RE_SAFE_WORD_Pattern: re.Pattern = r"\w"
+RE_NOT_SAFE_WORD_Pattern: re.Pattern = r"\W"
+RE_NOT_ALPHA_UNDER_Pattern: re.Pattern = r"[^\w_]"
 
 RE_SAFE_WORD = re.compile(fr"{RE_SAFE_WORD_Pattern}")
 RE_NOT_SAFE_WORD = re.compile(fr"{RE_NOT_SAFE_WORD_Pattern}")
@@ -21,12 +21,11 @@ RE_NOT_SAFE_WORD = re.compile(fr"{RE_NOT_SAFE_WORD_Pattern}")
 RE_NOT_ALPHA_UNDER = re.compile(fr"{RE_NOT_ALPHA_UNDER_Pattern}")
 
 # pre-made translation table
-TRANSLATE_TABLE_SAFE_WORD = dict.fromkeys(
-    map(ord, '!@#$'), None)
+TRANSLATE_TABLE_SAFE_WORD = dict.fromkeys(map(ord, "!@#$"), None)
 
 # in place translation table creation
-unicode_line: str = ''
-unicode_line = unicode_line.translate({ord(c): None for c in '!@#$'})
+unicode_line: str = ""
+unicode_line = unicode_line.translate({ord(c): None for c in "!@#$"})
 
 
 def translate(translation_table, string):
@@ -34,13 +33,13 @@ def translate(translation_table, string):
 
 
 def safe_word(s):
-    return re.sub(RE_NOT_SAFE_WORD, '', s)
+    return re.sub(RE_NOT_SAFE_WORD, "", s)
 
 
 def safe_filename(s):
     """ Truncates text and returns only alphanumeric and underscore characters. """
-    s = fR"{s}"
-    return re.sub(RE_NOT_ALPHA_UNDER, '', s)
+    s = fr"{s}"
+    return re.sub(RE_NOT_ALPHA_UNDER, "", s)
 
 
 class ASCIIRecord(str):
@@ -52,6 +51,7 @@ class ASCIIRecord(str):
         desc: str
     }
     """
+
     pass
     # def __init__(self, name, num, desc):
     #     self._name = name
@@ -111,6 +111,7 @@ class ASCII:
         # 68 — C  
         # 42 — *  
         """
+
     CRLF: str = chr(10) + chr(13)
     BELL: str = chr(7)
     BKSP: str = chr(8)
@@ -165,15 +166,16 @@ class ASCII:
 
 class Default:  # CLI Defaults
     """ Defaults for CLI formats and settings """
+
     SHOW_UNDERS = True
     SHOW_DUNDERS = True
     USE_REPR = False
 
     INDENT: int = 4
-    TABLE_CHAR: str = '-'
-    TABLE_GRAPHICS_TOP: str = ''
-    TABLE_GRAPHICS_MID: str = ''
-    TABLE_GRAPHICS_BOTTOM: str = ''
+    TABLE_CHAR: str = "-"
+    TABLE_GRAPHICS_TOP: str = ""
+    TABLE_GRAPHICS_MID: str = ""
+    TABLE_GRAPHICS_BOTTOM: str = ""
 
     DICT_KEY_WIDTH: int = 20
     DICT_VALUE_WIDTH: int = 35
@@ -181,11 +183,11 @@ class Default:  # CLI Defaults
     LIST_ITEM_WIDTH: int = 35
     INT_WIDTH: float = 3.2
 
-    FMT_DICT_KEY: str = F':>{DICT_KEY_WIDTH}'
-    FMT_DICT_VALUE: str = f':>{DICT_VALUE_WIDTH}'
-    FMT_LIST_ITEM_WIDTH: str = f':>{LIST_ITEM_WIDTH}'
-    FMT_STR_WIDTH: str = f':>{STR_WIDTH}'
-    FMT_INT_WIDTH: str = f':>{INT_WIDTH}'
+    FMT_DICT_KEY: str = f":>{DICT_KEY_WIDTH}"
+    FMT_DICT_VALUE: str = f":>{DICT_VALUE_WIDTH}"
+    FMT_LIST_ITEM_WIDTH: str = f":>{LIST_ITEM_WIDTH}"
+    FMT_STR_WIDTH: str = f":>{STR_WIDTH}"
+    FMT_INT_WIDTH: str = f":>{INT_WIDTH}"
 
 
 class PrettyCLI:
@@ -193,11 +195,20 @@ class PrettyCLI:
 
     def __init__(self, d: Dict):
         if not isinstance(d, dict):
-            raise TypeError('Parameter should be of type `dict`')
+            raise TypeError("Parameter should be of type `dict`")
         else:
             self._dict: Dict = d
 
-    def print_dict(self, indent=Default.INDENT, group=10, blacklist=[], no_unders=True, no_dunders=True, value_repr=True, trim=True):
+    def print_dict(
+        self,
+        indent=Default.INDENT,
+        group=10,
+        blacklist=[],
+        no_unders=True,
+        no_dunders=True,
+        value_repr=True,
+        trim=True,
+    ):
         c = Default.TABLE_CHAR
         kw = Default.DICT_KEY_WIDTH
         vw = Default.DICT_VALUE_WIDTH
@@ -208,9 +219,9 @@ class PrettyCLI:
         for i, (k, v) in enumerate(self.items()):
             # k, v = x
             # kick out unwanted keys:
-            if no_unders and k.startswith('_'):
+            if no_unders and k.startswith("_"):
                 continue
-            if no_dunders and k.startswith('__'):
+            if no_dunders and k.startswith("__"):
                 continue
             if k in blacklist:
                 continue
@@ -218,17 +229,17 @@ class PrettyCLI:
                 print(TABLE_BREAK)
 
             if isinstance(v, dict):  # recursive if v is dict
-                print_dict(v, indent=indent+Default.INDENT)
+                print_dict(v, indent=indent + Default.INDENT)
             else:
                 v = f"{v!r}" if value_repr else f"{v!s}"
                 v = str(v)
                 if trim:
                     try:
-                        v = v[:vw-1] + ASCII.ELLIPSIS
+                        v = v[: vw - 1] + ASCII.ELLIPSIS
                     except:
                         pass
                     try:
-                        k = k[:kw-1]
+                        k = k[: kw - 1]
                     except:
                         pass
                     # v = f"{v:<{vw}}"
@@ -236,7 +247,16 @@ class PrettyCLI:
         print(TABLE_BREAK)
         return 0
 
-    def print_list(self, indent=Default.INDENT, group=10, blacklist=[], no_unders=True, no_dunders=True, value_repr=True, trim=True):
+    def print_list(
+        self,
+        indent=Default.INDENT,
+        group=10,
+        blacklist=[],
+        no_unders=True,
+        no_dunders=True,
+        value_repr=True,
+        trim=True,
+    ):
         c = Default.TABLE_CHAR
         kw = Default.DICT_KEY_WIDTH
         vw = Default.DICT_VALUE_WIDTH
@@ -247,9 +267,9 @@ class PrettyCLI:
         for i, (k, v) in enumerate(self.items()):
             # k, v = x
             # kick out unwanted keys:
-            if no_unders and k.startswith('_'):
+            if no_unders and k.startswith("_"):
                 continue
-            if no_dunders and k.startswith('__'):
+            if no_dunders and k.startswith("__"):
                 continue
             if k in blacklist:
                 continue
@@ -257,17 +277,17 @@ class PrettyCLI:
                 print(TABLE_BREAK)
 
             if isinstance(v, dict):  # recursive if v is dict
-                print_dict(v, indent=indent+Default.INDENT)
+                print_dict(v, indent=indent + Default.INDENT)
             else:
                 v = f"{v!r}" if value_repr else f"{v!s}"
                 v = str(v)
                 if trim:
                     try:
-                        v = v[:vw-1] + ASCII.ELLIPSIS
+                        v = v[: vw - 1] + ASCII.ELLIPSIS
                     except:
                         pass
                     try:
-                        k = k[:kw-1]
+                        k = k[: kw - 1]
                     except:
                         pass
                     # v = f"{v:<{vw}}"
@@ -277,16 +297,17 @@ class PrettyCLI:
 
 
 if True:  # !------------------------ Script Tests
+
     def _tests_(args):
         """
         Run Debug Tests for script if _debug_ = True.
         """
         print(f"{args=}")
         print()
-        print(get_class_name('platform.uname()'))
-        print(get_class_name('LOG_PATH'))
-        print(get_class_name('SCRIPT_PATH()'))
-        print(get_class_name('_debug_'))
+        print(get_class_name("platform.uname()"))
+        print(get_class_name("LOG_PATH"))
+        print(get_class_name("SCRIPT_PATH()"))
+        print(get_class_name("_debug_"))
         return 0
 
     def _main_(args):
@@ -295,14 +316,15 @@ if True:  # !------------------------ Script Tests
         #! script testing
         if _debug_:
             # inject `args` here ...
-            args.append('--version')
-            args.append('--verbose')
+            args.append("--version")
+            args.append("--verbose")
             return _tests_(args)
         return 0
 
+
 if __name__ == "__main__":  # if script is loaded directly from CLI
     _main_(ARGS())
-test_str = r'f_fkj3*$//\\fadkjkk'
+test_str = r"f_fkj3*$//\\fadkjkk"
 print(RE_NOT_ALPHA_UNDER)
 print(safe_word(test_str))
 print(safe_filename(test_str))

@@ -5,6 +5,7 @@ from contextlib import closing
 from bs4 import BeautifulSoup
 from typing import List
 import sys
+
 # from webpage import *
 import webpage
 
@@ -13,12 +14,12 @@ _debug_: bool = True
 
 def get_mathematicians():
     # example use case
-    url = 'http://www.fabpedigree.com/james/mathmen.htm'
+    url = "http://www.fabpedigree.com/james/mathmen.htm"
     w = WebSite(url)
     print(w)
-    html = BeautifulSoup(WebSite(url), 'html.parser')
+    html = BeautifulSoup(WebSite(url), "html.parser")
 
-    for i, li in enumerate(html.select('li')):
+    for i, li in enumerate(html.select("li")):
         print(i, li.text)
 
 
@@ -36,16 +37,16 @@ def _test_(args):
         print()
         get_mathematicians()
 
-        content_type = w.resp.headers['Content-Type'].lower()
+        content_type = w.resp.headers["Content-Type"].lower()
         print(content_type)
-        print(w.resp.headers['Content-Type'].lower())
+        print(w.resp.headers["Content-Type"].lower())
 
 
 def _main_(args: List):
-    '''
+    """
     CLI script main entry point.
-    '''
-    url = 'https://realpython.com/blog/'
+    """
+    url = "https://realpython.com/blog/"
     if _debug_:
         args.extend(url)
         _test_(args)

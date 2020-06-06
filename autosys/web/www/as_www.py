@@ -11,8 +11,12 @@ import os
 import requests
 
 
-CONNECT_ERRORS = (ConnectionError, ConnectionAbortedError,
-                  ConnectionResetError, ConnectionRefusedError)
+CONNECT_ERRORS = (
+    ConnectionError,
+    ConnectionAbortedError,
+    ConnectionResetError,
+    ConnectionRefusedError,
+)
 
 
 def url_test(url: str = "http://www.google.com") -> int:
@@ -22,7 +26,7 @@ def url_test(url: str = "http://www.google.com") -> int:
     try:
         r = requests.get(url)
     except CONNECT_ERRORS as e:
-        print(f'Connection error: {e}')
+        print(f"Connection error: {e}")
         return 0
     return r.status_code
 
@@ -30,13 +34,16 @@ def url_test(url: str = "http://www.google.com") -> int:
 if __name__ == "__main__":
 
     print()
-    urls = ['http://www.google.com', 'https://www.google.com',
-            'https://www.twitter.com/skeptycal']
+    urls = [
+        "http://www.google.com",
+        "https://www.google.com",
+        "https://www.twitter.com/skeptycal",
+    ]
     # 'https://www.skeptycal.com'
     for url in urls:
         res = url_test(url)
         print()
         if res == 200:
-            print(f'Successful connection to {url} ...response: {res}')
+            print(f"Successful connection to {url} ...response: {res}")
         else:
-            print(f'No connection to {url} ... response: {res}')
+            print(f"No connection to {url} ... response: {res}")

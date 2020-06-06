@@ -15,7 +15,7 @@ def print_to_stdout(clipboard_content):
 
 
 class ClipboardWatcher(threading.Thread):
-    def __init__(self, predicate, callback, pause=5.):
+    def __init__(self, predicate, callback, pause=5.0):
         super(ClipboardWatcher, self).__init__()
         self._predicate = predicate
         self._callback = callback
@@ -37,7 +37,7 @@ class ClipboardWatcher(threading.Thread):
 
 
 def main():
-    watcher = ClipboardWatcher(is_url_but_not_bitly, print_to_stdout, 5.)
+    watcher = ClipboardWatcher(is_url_but_not_bitly, print_to_stdout, 5.0)
     watcher.start()
     while True:
         try:

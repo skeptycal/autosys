@@ -1,7 +1,6 @@
-
-
 def __getattr__(name):
     import importlib
+
     if name in __all__:
         return importlib.import_module("." + name, __name__)
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
@@ -14,12 +13,14 @@ def get_class_name(_name, verbose=True):
         return _cls_name
     return f"{_name} - <class '{_cls_name}'>"
 
+
 # generic test class for `add_method`
-A = type("A", (object, ), dict(a=1))
+A = type("A", (object,), dict(a=1))
 
 
 def add_method(cls):
     """ Decorator to add method to class 'cls' """
+
     def decorator(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):

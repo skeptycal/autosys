@@ -17,20 +17,20 @@ if True:  # !------------------------ Imports
     from subprocess import CalledProcessError
     from typing import List, Tuple
 
-    from autosys import (NL, ARGS, __version__ as VERSION, __title__ as
-                         APP_NAME)
+    from autosys import NL, ARGS, __version__ as VERSION, __title__ as APP_NAME
 
     from autosys.debug import br, hr, dbprint
 
     _debug_: bool = True  # True => use Debug features
     __all__: List[str] = []
 
-if OS().startswith('Darwin'):  # !------------------------ Classes
+if OS().startswith("Darwin"):  # !------------------------ Classes
 
-    class MacOS():
+    class MacOS:
         """
         Provides an interface to interact with macOS.
         """
+
         OSA_TEST = """
             tell application "System Events"
                 set processName to name of processes whose frontmost is true
@@ -47,24 +47,31 @@ if OS().startswith('Darwin'):  # !------------------------ Classes
 
         def _set_os_info(self):
             self.py_vers = platform.python_version_tuple()
-            self.platform = platform.platform().split('-')
+            self.platform = platform.platform().split("-")
             self.py3 = int(self.py_vers[0]) > 2
 
         def clipboard_copy(self, data: str):
-            subprocess.run("pbcopy",
-                           universal_newlines=True,
-                           capture_output=True,
-                           input=data)
+            subprocess.run(
+                "pbcopy",
+                universal_newlines=True,
+                capture_output=True,
+                input=data,
+            )
 
         def osascript(self, applescript: str = OSA_GET_CHROME_ACTIVE_URL):
             """ Return result of applesript. """
             args = [
-                item for x in [("-e", l.strip())
-                               for l in applescript.split('\n')
-                               if l.strip() != ''] for item in x
+                item
+                for x in [
+                    ("-e", l.strip())
+                    for l in applescript.split("\n")
+                    if l.strip() != ""
+                ]
+                for item in x
             ]
-            proc = subprocess.Popen(["osascript"] + args,
-                                    stdout=subprocess.PIPE)
+            proc = subprocess.Popen(
+                ["osascript"] + args, stdout=subprocess.PIPE
+            )
             progname = proc.stdout.read().strip()
             # sys.stdout.write(str(progname))
 
@@ -91,13 +98,13 @@ if OS().startswith('Darwin'):  # !------------------------ Classes
             except CalledProcessError as e:
                 return e
 
-        def get_shell_output(self, data: List[str] = (['ls', '-1'])):
+        def get_shell_output(self, data: List[str] = (["ls", "-1"])):
             return subprocess.check_output(data)
 
     m = MacOS()
     # from autosys._version import *
     # objects exported for 'import *'
-    __all__.extend(['MacOS', 'm'])
+    __all__.extend(["MacOS", "m"])
 
 if True:  # !------------------------ Script Tests
 
@@ -112,20 +119,20 @@ if True:  # !------------------------ Script Tests
 
 
 def _main_():  # !------------------------ Script Main
-    '''
+    """
     CLI script main entry point.
-    '''
+    """
     if _debug_:
         _tests_()
 
 
 if __name__ == "__main__":
     # ARGS.append('version')  # ! test
-    ARGS.append('help')  # ! test
-    if 'version' in ARGS:
+    ARGS.append("help")  # ! test
+    if "version" in ARGS:
         print(f"{APP_NAME} version {VERSION}")
     else:
-        if 'help' in ARGS or 'debug' in ARGS:
+        if "help" in ARGS or "debug" in ARGS:
             _debug_ = True
         _main_()
 """

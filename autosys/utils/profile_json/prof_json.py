@@ -13,9 +13,11 @@ if True:
     import os
     from os.path import dirname
     import shutil
+
     # import sys
     # import tempfile
     from tempfile import NamedTemporaryFile, TemporaryFile, mkstemp
+
     # from contextlib import contextmanager
     from functools import lru_cache
     from time import perf_counter_ns as perf
@@ -27,18 +29,17 @@ if True:
     # import numpy as np
 
 if True:  # temp file setup
-    TMP_SUFFIX: str = '.log'
-    TMP_PREFIX: str = 'profile_'
+    TMP_SUFFIX: str = ".log"
+    TMP_PREFIX: str = "profile_"
     HERE: str = dirname(__file__)
 
     TMP_NAMED: str = NamedTemporaryFile()  # e.g. with TMP_NAMED as f:
     TMP: str = TemporaryFile()  # e.g. with TMP as f:
 
     # temp file in current directory using defaults
-    TMP_HERE = mkstemp(prefix=TMP_PREFIX,
-                       suffix=TMP_SUFFIX,
-                       dir=HERE,
-                       text=True)
+    TMP_HERE = mkstemp(
+        prefix=TMP_PREFIX, suffix=TMP_SUFFIX, dir=HERE, text=True
+    )
 
 
 if True:  # json modules to test
@@ -49,7 +50,7 @@ if True:  # json modules to test
 
 
 if True:  # constants
-    EVAL_PRECOMPILED = compile('2', 'eval.log', 'eval')
+    EVAL_PRECOMPILED = compile("2", "eval.log", "eval")
 
 
 def cpu_usable():
@@ -60,7 +61,7 @@ def thread_count():
     return threading.activeCount()
 
 
-class Code():
+class Code:
     """
     name
     number of varieties
@@ -72,9 +73,14 @@ class Code():
     """
 
     def __init__(self):
-        self.name = 'name'
+        self.name = "name"
         self.code: str = code
-        self.compiled = compile(source=self.code, filename='tmp_profile.log', mode='eval', optimize=True)
+        self.compiled = compile(
+            source=self.code,
+            filename="tmp_profile.log",
+            mode="eval",
+            optimize=True,
+        )
         super().__init__()
 
     pass
@@ -97,13 +103,13 @@ def load_profile(names: List[str]) -> Dict[str, str]:
 
 @lru_cache()
 def eval_int():
-    return eval('2')
+    return eval("2")
     # return eval(EVAL_PRECOMPILED)
 
 
 @lru_cache()
 def set_int():
-    return int('2')
+    return int("2")
 
 
 @lru_cache()
@@ -116,7 +122,7 @@ def eval_test(n: int = 1000):
     for _ in range(n):
         dt = perf()
         eval_int()
-        dt = (perf() - dt)
+        dt = perf() - dt
         if dt < mint:
             mint = dt
         if dt > maxt:
@@ -135,7 +141,7 @@ def set_test(n: int = 1000):
     for _ in range(n):
         dt = perf()
         set_int()
-        dt = (perf() - dt)
+        dt = perf() - dt
         if dt < mint:
             mint = dt
         if dt > maxt:
@@ -146,17 +152,17 @@ def set_test(n: int = 1000):
 
 def print_json_module_info():
     for i in range(1, 5):
-        name = eval('json{}.__name__'.format(i))
-        version = eval('json{}.__version__'.format(i))
+        name = eval("json{}.__name__".format(i))
+        version = eval("json{}.__version__".format(i))
         # print(fmt_str1, fmt_str2)
         fmt_str = f"{name:15.15}.......{version:>10.10}"
         print(fmt_str)
 
 
 def main():
-    '''
+    """
     CLI script main entry point.
-    '''
+    """
     with TMP_NAMED as LOGFILE:
 
         print(LOGFILE.name)
@@ -165,15 +171,19 @@ def main():
         print(f"{thread_count()=}")
 
         br()
-        print("\n", "*"*50, "\n")
+        print("\n", "*" * 50, "\n")
 
         num: int = 0
         width: int = 66
         data: np.array()
-        FMT_2_TEST: str = '{:<2} |  {:<10} | {:>10} {:>10} | {:>10}  {:>10}'
-        print('_'*width)
-        print(FMT_2_TEST.format('i', 'n', 'eval   avg', 'min', 'set    avg', 'min'))
-        print('-'*width)
+        FMT_2_TEST: str = "{:<2} |  {:<10} | {:>10} {:>10} | {:>10}  {:>10}"
+        print("_" * width)
+        print(
+            FMT_2_TEST.format(
+                "i", "n", "eval   avg", "min", "set    avg", "min"
+            )
+        )
+        print("-" * width)
         for i in range(0, 8):
             num = int(5 ** i)
             e, min_e, max_e = eval_test(num)

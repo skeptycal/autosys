@@ -27,10 +27,12 @@ if True:  # ! stupid trick to make collapsing sections easier in VSCode
 
     try:
         import ujson as json  # Speedup if present; no big deal if not
-        JSON_PARSER = 'ujson'
+
+        JSON_PARSER = "ujson"
     except ImportError:
         import json
-        JSON_PARSER = 'json'
+
+        JSON_PARSER = "json"
     # Reference: https://pypi.org/project/ujson/
     # Use speedup if available
     # scanstring = c_scanstring or py_scanstring
@@ -133,7 +135,9 @@ class JSON_file(object):
     def json_comments(self, comments):
         if not comments:
             self.json_data = json.loads(
-                "".join(line for line in data_file if not line.startswith("//"))
+                "".join(
+                    line for line in data_file if not line.startswith("//")
+                )
             )
 
     def json_read(self) -> bool:
@@ -167,7 +171,9 @@ class JSON_file(object):
                 result (int)     : 0 for success else error code
             """
         try:
-            with open(self.file_name, "w", encoding=self.encoding) as data_file:
+            with open(
+                self.file_name, "w", encoding=self.encoding
+            ) as data_file:
                 data_file.write(self.json_data)
             return True
         except (OSError, IOError, ValueError) as e:
@@ -220,7 +226,11 @@ class JSON_file(object):
                 result (bool)       : True if successful else False
             """
         return self.json_format(
-            self, comments=False, sort_keys=False, separators=(",", ":"), indent=None
+            self,
+            comments=False,
+            sort_keys=False,
+            separators=(",", ":"),
+            indent=None,
         )
 
     def json_pretty_print(self, comments: bool = False) -> str:
@@ -248,7 +258,10 @@ def ultrajsonify(*args, **kwargs):
     ensure_ascii = current_app.config.get("JSON_AS_ASCII", True)
     mimetype = current_app.config.get("JSONIFY_MIMETYPE", "application/json")
 
-    if current_app.config["JSONIFY_PRETTYPRINT_REGULAR"] and not request.is_xhr:
+    if (
+        current_app.config["JSONIFY_PRETTYPRINT_REGULAR"]
+        and not request.is_xhr
+    ):
         indent = 2
 
     if args and kwargs:
@@ -261,7 +274,8 @@ def ultrajsonify(*args, **kwargs):
         data = args or kwargs
 
     return current_app.response_class(
-        dumps(data, indent=indent, ensure_ascii=ensure_ascii), mimetype=mimetype
+        dumps(data, indent=indent, ensure_ascii=ensure_ascii),
+        mimetype=mimetype,
     )
 
 
@@ -346,7 +360,8 @@ def sort_json(
                     [
                         line.strip()
                         for line in file
-                        if not line.startswith("#") and not line.startswith("//")
+                        if not line.startswith("#")
+                        and not line.startswith("//")
                     ]
                 )
                 alphabetized = json.loads(raw_file)

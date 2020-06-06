@@ -15,6 +15,7 @@ import inspect
 import io
 import os
 from typing import List
+
 # from functools import lru_cache, wraps
 # from inspect import Parameter, signature
 # from io import StringIO
@@ -23,6 +24,7 @@ from dataclasses import dataclass
 import file_ops
 import cli
 from cli.terminal import hr
+
 # from file_ops import *
 # from file_ops.pytemp_dirs import *
 
@@ -38,13 +40,17 @@ _HERE: str = os.path.dirname(__file__)
 
 def choose_dyn_class(name):
     print(name)
-    if name == 'foo':
+    if name == "foo":
+
         class Foo(object):
             pass
+
         return Foo  # return the class, not an instance
     else:
+
         class Bar(object):
             pass
+
         return Bar
 
 
@@ -110,7 +116,7 @@ class Capturing(io.StringIO):
 
         self.truncate(0)
         sys.stdout = self._stdout
-        del self    # free up some memory
+        del self  # free up some memory
 
     def get_data(self, keepends: bool = False) -> List:
         return self.getvalue().splitlines(keepends=keepends)
@@ -137,7 +143,8 @@ def auto_assign(func):
     for name, param in sig.parameters.items():
         if param.kind in (Parameter.VAR_POSITIONAL, Parameter.VAR_KEYWORD):
             raise RuntimeError(
-                'Unable to auto assign if *args or **kwargs in signature.')
+                "Unable to auto assign if *args or **kwargs in signature."
+            )
     # Wrapper:
 
     @functools.wraps(func)
@@ -155,6 +162,7 @@ def auto_assign(func):
                 val = param.default
             setattr(self, name, val)
         func(self, *args, **kwargs)
+
     return wrapper
 
 
@@ -182,7 +190,7 @@ def _test_():
     (runs if _debug_ = True)
     """
     hr()
-    print(f'{_NAME} is in DEBUG MODE.')
+    print(f"{_NAME} is in DEBUG MODE.")
 
     print(choose_dyn_class)
     print(choose_dyn_class(auto_assign))
@@ -199,9 +207,9 @@ def _test_():
 
 
 def _main_():
-    '''
+    """
     CLI script main entry point.
-    '''
+    """
 
     if _debug_:
         _test_()

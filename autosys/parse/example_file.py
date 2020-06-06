@@ -4,13 +4,13 @@
 
 from remove_lines import remove_line
 
-line = line.replace('test', 'testZ')
-line = line.replace('test', 'testZ')
-line = line.replace('test', 'testZ')
-line = line.replace('test', 'testZ')
-line = line.replace('test', 'testZ')
-line = line.replace('test', 'testZ')
-line = line.replace('test', 'testZ')
+line = line.replace("test", "testZ")
+line = line.replace("test", "testZ")
+line = line.replace("test", "testZ")
+line = line.replace("test", "testZ")
+line = line.replace("test", "testZ")
+line = line.replace("test", "testZ")
+line = line.replace("test", "testZ")
 
 remove_line(example_file.py)
 

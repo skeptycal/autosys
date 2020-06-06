@@ -46,23 +46,27 @@ def v_name(the_var: Any) -> str:
     """
     try:
         result = [
-            var_name for var_name, var_val in
-            inspect.currentframe().f_back.f_locals.items()
+            var_name
+            for var_name, var_val in inspect.currentframe().f_back.f_locals.items()
             if var_val is the_var
         ][0]
         return result
     except IndexError as e:
-        return ''
+        return ""
 
 
 def name_var(the_var: Any) -> List[str]:
     """
     Return list containing name and value of the_var
     """
-    return [[
-        var_name for var_name, var_val in
-        inspect.currentframe().f_back.f_locals.items() if var_val is the_var
-    ][0], the_var]
+    return [
+        [
+            var_name
+            for var_name, var_val in inspect.currentframe().f_back.f_locals.items()
+            if var_val is the_var
+        ][0],
+        the_var,
+    ]
 
 
 def lineno():
@@ -107,8 +111,9 @@ def py_ls(path_name: str = ".") -> Exception:
     return None
 
 
-def _add_dots(s: str, n: int, suffix: str = ' ...',
-              add_dots: bool = True) -> str:
+def _add_dots(
+    s: str, n: int, suffix: str = " ...", add_dots: bool = True
+) -> str:
     """
     Truncate and return formatted string to fit <s> in <n> spaces
         add ' ...' if <add_dots> is True
@@ -124,27 +129,29 @@ def get_module_sig(self, module, parameter_list):
 
     sig = inspect.signature(module)
     bound = sig.bind(
-        'this is arg1',
-        'this is arg2',
-        'this is an extra positional argument',
-        extra_named_arg='value',
+        "this is arg1",
+        "this is arg2",
+        "this is an extra positional argument",
+        extra_named_arg="value",
     )
-    print('Arguments:')
+    print("Arguments:")
 
     for name, value in bound.arguments.items():
-        print('{} = {!r}'.format(name, value))
+        print("{} = {!r}".format(name, value))
     # for name, data in inspect.getmembers(example):
     #     if name.startswith('__'):
     #         continue
     #     print('{} : {!r}'.format(name, data))
 
 
-def print_var(the_string_name: str,
-              the_string: str,
-              p: int = DEFAULT_CLI_FIELD_PADDING,
-              w: int = DEFAULT_CLI_DISPLAY_WIDTH,
-              sep: str = DEFAULT_DICT_DISPLAY_SEPARATOR,
-              print_it: bool = True) -> str:
+def print_var(
+    the_string_name: str,
+    the_string: str,
+    p: int = DEFAULT_CLI_FIELD_PADDING,
+    w: int = DEFAULT_CLI_DISPLAY_WIDTH,
+    sep: str = DEFAULT_DICT_DISPLAY_SEPARATOR,
+    print_it: bool = True,
+) -> str:
     """ Format string for 'var : value' pattern
         string_tuple: Tuple[str, str] - (name, value) of variable
         p: int - padding; len of name field
@@ -153,12 +160,12 @@ def print_var(the_string_name: str,
         print_it: bool - print to CLI within function
         """
     str_name = [
-        var_name for var_name, var_val in
-        inspect.currentframe().f_back.f_locals.items()
+        var_name
+        for var_name, var_val in inspect.currentframe().f_back.f_locals.items()
         if var_val is the_string_name
     ][0]
-    print('str_name: ', str_name)
-    result: str = ''
+    print("str_name: ", str_name)
+    result: str = ""
     if p == 0:
         p = len(the_string_name)
     if p <= DEFAULT_CLI_FIELD_MIN_PADDING:
@@ -166,7 +173,7 @@ def print_var(the_string_name: str,
 
     str_padding: int = w - p - len(sep)
     # print('p: ', p, ' str_p: ', str_padding)
-    str_format: str = f'{{:<{p}.{p}}}{sep}{{:<{str_padding}.{str_padding}}}'
+    str_format: str = f"{{:<{p}.{p}}}{sep}{{:<{str_padding}.{str_padding}}}"
     print(str_format)
     # print(_add_dots(the_string, 16))
     # result = str_format.format(
@@ -319,7 +326,7 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2:
         filename = sys.argv[1]
     else:
-        filename = 'example.py'
+        filename = "example.py"
 
     print()
     print("Debug print values")
@@ -330,8 +337,8 @@ if __name__ == "__main__":
     # print('_add_dots(__file__, 45) : ', _add_dots(__file__, 45))
     # print('_add_dots(__version__, 15) : ', _add_dots(__version__, 15))
     # print('_add_dots(__package__, 25) : ', _add_dots(__package__, 25))
-    print('v and name: ', name_var(__file__))
-    print('get name - file: ', v_name(__file__))
+    print("v and name: ", name_var(__file__))
+    print("get name - file: ", v_name(__file__))
     print("")
     # print_var()
     # print(locals())

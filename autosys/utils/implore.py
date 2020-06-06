@@ -45,15 +45,18 @@ _debug_: bool = True  # turn on for Dev Debugging
 if _debug_:  # enable detailed logging
     # cgitb.enable([display[, logdir[, context[, format]]]])
     DEFAULT_CGITB_DISPLAY: int = 1  # 0 to suppress messages
-    DEFAULT_CGITB_FILE_LOGDIR: str = os.path.join(os.path.dirname(__file__), 'LOGS')
+    DEFAULT_CGITB_FILE_LOGDIR: str = os.path.join(
+        os.path.dirname(__file__), "LOGS"
+    )
     DEFAULT_CGITB_CONTEXT: int = 3  # 5 is the normal default
-    DEFAULT_CGITB_FORMAT: str = 'html'
+    DEFAULT_CGITB_FORMAT: str = "html"
 
-    cgitb.enable(logdir=DEFAULT_CGITB_FILE_LOGDIR,
-                 display=DEFAULT_CGITB_DISPLAY,
-                 context=DEFAULT_CGITB_CONTEXT,
-                 format=DEFAULT_CGITB_FORMAT,
-                 )
+    cgitb.enable(
+        logdir=DEFAULT_CGITB_FILE_LOGDIR,
+        display=DEFAULT_CGITB_DISPLAY,
+        context=DEFAULT_CGITB_CONTEXT,
+        format=DEFAULT_CGITB_FORMAT,
+    )
 
     DEFAULT_CGITB_ERROR: sys.exc_info = ()
 
@@ -62,40 +65,44 @@ if True:  # External Dependencies
     from dev.debug import dbprint, lru_cache, NL
     from bs4 import BeautifulSoup
     import requests
+
     try:
         import ujson as json  # faster json if available
     except:
         import json
 
 if True:  # setup html parser
-    DEFAULT_PARSER: str = ''
+    DEFAULT_PARSER: str = ""
     XML: bool = False  # whether XML parsing is available at all
     try:  # use <lxml> for speed (HTML and / or XML) (VERY fast)
         import lxml as parser
-        DEFAULT_PARSER = 'lxml'
+
+        DEFAULT_PARSER = "lxml"
         XML = True
-        XML_PARSER: str = 'xml'
+        XML_PARSER: str = "xml"
     except:
         try:  # use <html5lib> for accuracy (VERY slow)
             import html5lib as parser
-            DEFAULT_PARSER = 'html5lib'
+
+            DEFAULT_PARSER = "html5lib"
         except:  # use <html5lib> Python's built-in html parser
             import html.parser as parser
-            DEFAULT_PARSER = 'html.parser'
+
+            DEFAULT_PARSER = "html.parser"
 
 if True:  # Default constants
     # * text messaging
     DEFAULT_SCRIPT_PATH: str = os.getcwd() + "/sentMessage.scpt"
-    DEFAULT_CELL_NUMBER: str = '13616488261'
+    DEFAULT_CELL_NUMBER: str = "13616488261"
 
     # * time zones and scheduling
     USE_TZ: bool = False
     sch = BlockingScheduler()
 
     # * html and parsing
-    DEFAULT_ENCODING: str = 'UTF-8'
-    url: str = ''
-    script_text: str = ''
+    DEFAULT_ENCODING: str = "UTF-8"
+    url: str = ""
+    script_text: str = ""
     current_number: str
 
     now: struct_time = gmtime()
@@ -109,10 +116,11 @@ class Contact_List(list):
 def db_print(*args, file=sys.stderr, **kwargs):
     """ Print messages to STDERR in debug mode (if <_debug_> is set) """
     if _debug_:
-        print('@db ->', *args, **kwargs)
+        print("@db ->", *args, **kwargs)
 
 
 # contact_list.save_to_file() # with open('list.txt') as p: # p = json.load(p) # print(p)
+
 
 class Error(Exception):
     """ Custom Exception handler for Implore. """
@@ -125,6 +133,7 @@ class Error(Exception):
 
 class WebPageError(TypeError):
     """  # Exception raised for errors in the WebPage class. """
+
     pass
 
 
@@ -134,6 +143,7 @@ class WebPage(requests.Response):
     parameters
 
     url: the source of the original page grab. Use the <refresh> command to get an updated version."""
+
     # >>> r = requests.get('https://api.github.com/user',
 
     def __init__(self, url):
@@ -154,9 +164,14 @@ class WebPage(requests.Response):
         if self.last_status == 200:
             return self.text
         else:
-            return ''
+            return ""
 
-    def tag_find(self, tag_name: str, attrs_pass: Dict[Any, Any], parser_pass: str = DEFAULT_PARSER) -> List[Any]:
+    def tag_find(
+        self,
+        tag_name: str,
+        attrs_pass: Dict[Any, Any],
+        parser_pass: str = DEFAULT_PARSER,
+    ) -> List[Any]:
         """ Find matching tags from url. """
         soup = BeautifulSoup(self.text, features=DEFAULT_PARSER)
         return soup.findAll(name=tag_name, attrs=attrs_pass)
@@ -166,22 +181,33 @@ class WebPage(requests.Response):
             self.tags = Counter(self.text)
             return self.tags
 
-    def to_markdown(): pass
+    def to_markdown():
+        pass
 
-    def to_json(self): return json.dumps(self.text)
+    def to_json(self):
+        return json.dumps(self.text)
 
-    def stats(self): pass
+    def stats(self):
+        pass
 
-    def soup(self): pass  # return BeautifulSoup()
+    def soup(self):
+        pass  # return BeautifulSoup()
 
 
 class WebPageSet(deque):
     """ Stores and maintains a set of web pages. """
+
     DEFAULT_WEBPAGESET_SIZE = 2000  # maximum number of pages
     # TODO this should be 'maximum size' ... not count
     # ... and class should check it's own size
 
-    def __init__(self, iterable: MutableSequence, maxlen: int = 0, check_links: bool = True, image_storage: str = ''):
+    def __init__(
+        self,
+        iterable: MutableSequence,
+        maxlen: int = 0,
+        check_links: bool = True,
+        image_storage: str = "",
+    ):
         if not maxlen or maxlen < 1:
             maxlen = DEFAULT_WEBPAGESET_SIZE
         self.check_links = check_links
@@ -206,26 +232,30 @@ class WebPageSet(deque):
             else:
                 raise (WebPageError)
 
-    def size_check(self): print(self.__sizeof__())
+    def size_check(self):
+        print(self.__sizeof__())
 
 
-class Text_Messaging():
-
-    def text(message: str,
-             cell: str = DEFAULT_CELL_NUMBER,
-             verbose: bool = False) -> int:
+class Text_Messaging:
+    def text(
+        message: str, cell: str = DEFAULT_CELL_NUMBER, verbose: bool = False
+    ) -> int:
         """ Return status of {message} sent to {cell}(verbose - give CLI feedback if True """
-        script_text = "osascript {} {} '{}'".format(DEFAULT_SCRIPT_PATH, cell, message)
-        db_print('script_text: ', script_text)
+        script_text = "osascript {} {} '{}'".format(
+            DEFAULT_SCRIPT_PATH, cell, message
+        )
+        db_print("script_text: ", script_text)
         try:
             result = os.system(script_text)
         except:
             result = -1
         finally:
-            db_print('result: ', result)
+            db_print("result: ", result)
             return result
 
-    def test_text(self, message: str = 'A python program just sent you a message ...'):
+    def test_text(
+        self, message: str = "A python program just sent you a message ..."
+    ):
         """ Send a test message using <text> """
         test_cell_number = DEFAULT_CELL_NUMBER
         db_print(f"{message=}")
@@ -239,8 +269,8 @@ def index():
 
 
 def main_test():
-    url = 'https://www.indeed.com/jobs?q=python&l=Remote'
-    matches = soup_match(url, tag_name='div', attrs_pass={'class': 'title'})
+    url = "https://www.indeed.com/jobs?q=python&l=Remote"
+    matches = soup_match(url, tag_name="div", attrs_pass={"class": "title"})
     # for jobTitle in matches: # if "Developer" in jobTitle.text:
     # text(default_cell_number, 'jobTitle.text')  # break # elif "Jr" in jobTitle.text:
     # print(type(matches)) for match in matches: print(match.text.strip())
@@ -250,14 +280,14 @@ def main_test():
 def main():
     db_print(f"{DEFAULT_PARSER}")
     wps = WebPageSet([], check_links=True, maxlen=100)
-    wps.append(WebPage('https://www.google.com'))
-    wps.append(WebPage('fake page'))
-    wps.append('fake page')
+    wps.append(WebPage("https://www.google.com"))
+    wps.append(WebPage("fake page"))
+    wps.append("fake page")
 
 
 if __name__ == "__main__":
     cgitb.enable()
-    db_print(cgitb.grey('test grey font'))
+    db_print(cgitb.grey("test grey font"))
     try:
         app.run()
     except:

@@ -10,10 +10,11 @@ list_of_doubles = [math.sin(x) for x in range(10 * 1000 * 1000)]
 for arg in sys.__dir__():
     print(arg)
 
+
 def main():
-    '''
+    """
     CLI script main entry point.
-    '''
+    """
     arg = sys.argv[1]
 
 

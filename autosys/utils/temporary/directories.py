@@ -10,7 +10,7 @@ import temporary.util
 
 
 @contextlib.contextmanager
-def temp_dir(suffix='', prefix='tmp', parent_dir=None, make_cwd=False):
+def temp_dir(suffix="", prefix="tmp", parent_dir=None, make_cwd=False):
     """
     Create a temporary directory and optionally change the current
     working directory to it. The directory is deleted when the context
@@ -62,4 +62,6 @@ def temp_dir(suffix='', prefix='tmp', parent_dir=None, make_cwd=False):
             shutil.rmtree(str(abs_path))
 
 
-in_temp_dir = functools.partial(temp_dir, make_cwd=True)  # pylint: disable=invalid-name
+in_temp_dir = functools.partial(
+    temp_dir, make_cwd=True
+)  # pylint: disable=invalid-name

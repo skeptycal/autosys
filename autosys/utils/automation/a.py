@@ -28,10 +28,11 @@ def a(func):
     def _all(*args, **kwargs):
         result = func(*args, **kwargs)
         name = func.__name__
-        print(f'a({name}) is {result}')
+        print(f"a({name}) is {result}")
         if name not in __all__:
             __all__.append(name)
         return result
+
     return _all
 
 
@@ -39,9 +40,9 @@ def a(func):
 @try_it
 @a
 def test_all_decorator(*args, **kwargs):
-    print(ansi.BBRIGHTBLUE, ' ** test all the decorators')
-    print(1/0)
+    print(ansi.BBRIGHTBLUE, " ** test all the decorators")
+    print(1 / 0)
 
 
-test_all_decorator('try this stuff')
+test_all_decorator("try this stuff")
 print(f"__all__ = {__all__}")

@@ -45,15 +45,18 @@ SET_DEBUG: bool = True  # turn on for Dev Debugging
 if SET_DEBUG:  # enable detailed logging
     # cgitb.enable([display[, logdir[, context[, format]]]])
     DEFAULT_CGITB_DISPLAY: int = 1  # 0 to suppress messages
-    DEFAULT_CGITB_FILE_LOGDIR: str = os.path.join(os.path.dirname(__file__), 'LOGS')
+    DEFAULT_CGITB_FILE_LOGDIR: str = os.path.join(
+        os.path.dirname(__file__), "LOGS"
+    )
     DEFAULT_CGITB_CONTEXT: int = 3  # 5 is the normal default
-    DEFAULT_CGITB_FORMAT: str = 'html'
+    DEFAULT_CGITB_FORMAT: str = "html"
 
-    cgitb.enable(logdir=DEFAULT_CGITB_FILE_LOGDIR,
-                 display=DEFAULT_CGITB_DISPLAY,
-                 context=DEFAULT_CGITB_CONTEXT,
-                 format=DEFAULT_CGITB_FORMAT,
-                 )
+    cgitb.enable(
+        logdir=DEFAULT_CGITB_FILE_LOGDIR,
+        display=DEFAULT_CGITB_DISPLAY,
+        context=DEFAULT_CGITB_CONTEXT,
+        format=DEFAULT_CGITB_FORMAT,
+    )
 
     DEFAULT_CGITB_ERROR: sys.exc_info = ()
 
@@ -61,26 +64,30 @@ if True:  # External Dependencies
     from apscheduler.schedulers.blocking import BlockingScheduler
     from bs4 import BeautifulSoup
     import requests
+
     try:
         import ujson as json  # faster json if available
     except:
         import json
 
 if True:  # setup html parser
-    DEFAULT_PARSER: str = ''
+    DEFAULT_PARSER: str = ""
     XML: bool = False  # whether XML parsing is available at all
     try:  # use <lxml> for speed (HTML and / or XML) (VERY fast)
         import lxml as parser
-        DEFAULT_PARSER = 'lxml'
+
+        DEFAULT_PARSER = "lxml"
         XML = True
-        XML_PARSER: str = 'xml'
+        XML_PARSER: str = "xml"
     except:
         try:  # use <html5lib> for accuracy (VERY slow)
             import html5lib as parser
-            DEFAULT_PARSER = 'html5lib'
+
+            DEFAULT_PARSER = "html5lib"
         except:  # use <html5lib> Python's built-in html parser
             import html.parser as parser
-            DEFAULT_PARSER = 'html.parser'
+
+            DEFAULT_PARSER = "html.parser"
 
 if True:  # Default constants
     # * time zones and scheduling
@@ -88,9 +95,9 @@ if True:  # Default constants
     sch = BlockingScheduler()
 
     # * html and parsing
-    DEFAULT_ENCODING: str = 'UTF-8'
-    url: str = ''
-    script_text: str = ''
+    DEFAULT_ENCODING: str = "UTF-8"
+    url: str = ""
+    script_text: str = ""
     current_number: str
 
     now: struct_time = gmtime()
@@ -99,7 +106,7 @@ if True:  # Default constants
 def db_print(*args, file=sys.stderr, **kwargs):
     """ Print messages to STDERR in debug mode (if <SET_DEBUG> is set) """
     if SET_DEBUG:
-        print('@db ->', *args, **kwargs)
+        print("@db ->", *args, **kwargs)
 
 
 # contact_list.save_to_file() # with open('list.txt') as p: # p = json.load(p) # print(p)
@@ -111,8 +118,8 @@ def index():
 
 
 def main_test():
-    url = 'https://www.indeed.com/jobs?q=python&l=Remote'
-    matches = soup_match(url, tag_name='div', attrs_pass={'class': 'title'})
+    url = "https://www.indeed.com/jobs?q=python&l=Remote"
+    matches = soup_match(url, tag_name="div", attrs_pass={"class": "title"})
     # for jobTitle in matches: # if "Developer" in jobTitle.text:
     # text(default_cell_number, 'jobTitle.text')  # break # elif "Jr" in jobTitle.text:
     # print(type(matches)) for match in matches: print(match.text.strip())
@@ -122,14 +129,14 @@ def main_test():
 def main():
     db_print(f"{DEFAULT_PARSER}")
     wps = WebPageSet([], check_links=True, maxlen=100)
-    wps.append(WebPage('https://www.google.com'))
-    wps.append(WebPage('fake page'))
-    wps.append('fake page')
+    wps.append(WebPage("https://www.google.com"))
+    wps.append(WebPage("fake page"))
+    wps.append("fake page")
 
 
 if __name__ == "__main__":
     cgitb.enable()
-    db_print(cgitb.grey('test grey font'))
+    db_print(cgitb.grey("test grey font"))
     try:
         app.run()
     except:

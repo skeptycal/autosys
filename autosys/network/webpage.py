@@ -12,6 +12,7 @@ __license__ = "MIT"
 
 class WebPageError(TypeError):
     """  # Exception raised for errors in the WebPage class. """
+
     pass
 
 
@@ -21,6 +22,7 @@ class WebPage(requests.Response):
     parameters
 
     url: the source of the original page grab. Use the <refresh> command to get an updated version."""
+
     # >>> r = requests.get('https://api.github.com/user',
 
     def __init__(self, url):
@@ -41,9 +43,14 @@ class WebPage(requests.Response):
         if self.last_status == 200:
             return self.text
         else:
-            return ''
+            return ""
 
-    def tag_find(self, tag_name: str, attrs_pass: Dict[Any, Any], parser_pass: str = DEFAULT_PARSER) -> List[Any]:
+    def tag_find(
+        self,
+        tag_name: str,
+        attrs_pass: Dict[Any, Any],
+        parser_pass: str = DEFAULT_PARSER,
+    ) -> List[Any]:
         """ Find matching tags from url. """
         soup = BeautifulSoup(self.text, features=DEFAULT_PARSER)
         return soup.findAll(name=tag_name, attrs=attrs_pass)
@@ -53,22 +60,33 @@ class WebPage(requests.Response):
             self.tags = Counter(self.text)
             return self.tags
 
-    def to_markdown(self): pass
+    def to_markdown(self):
+        pass
 
-    def to_json(self): return json.dumps(self.text)
+    def to_json(self):
+        return json.dumps(self.text)
 
-    def stats(self): pass
+    def stats(self):
+        pass
 
-    def soup(self): pass  # return BeautifulSoup()
+    def soup(self):
+        pass  # return BeautifulSoup()
 
 
 class WebPageSet(deque):
     """ Stores and maintains a set of web pages. """
+
     DEFAULT_WEBPAGESET_SIZE = 2000  # maximum number of pages
     # TODO this should be 'maximum size' ... not count
     # ... and class should check it's own size
 
-    def __init__(self, iterable: MutableSequence, maxlen: int = 0, check_links: bool = True, image_storage: str = ''):
+    def __init__(
+        self,
+        iterable: MutableSequence,
+        maxlen: int = 0,
+        check_links: bool = True,
+        image_storage: str = "",
+    ):
         if not maxlen or maxlen < 1:
             maxlen = DEFAULT_WEBPAGESET_SIZE
         self.check_links = check_links
@@ -93,4 +111,5 @@ class WebPageSet(deque):
             else:
                 raise (WebPageError)
 
-    def size_check(self): print(self.__sizeof__())
+    def size_check(self):
+        print(self.__sizeof__())

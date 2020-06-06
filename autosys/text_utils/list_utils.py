@@ -13,7 +13,9 @@ def dict_str(ignore_errors=True, sort_items=True, **kwargs):
     for k, v in kwargs:
         try:
             if isinstance(v, dict):
-                v = dict_str(ignore_errors=ignore_errors, sort_items=sort_items, **v)
+                v = dict_str(
+                    ignore_errors=ignore_errors, sort_items=sort_items, **v
+                )
             tmp.append(f"{k}: {v}")
         except:
             pass

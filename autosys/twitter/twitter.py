@@ -10,6 +10,7 @@ if True:  # ! -- Specific System Imports
     from base64 import b64decode, b64encode
     from pathlib import Path
     from typing import Dict, List
+
     try:
         import ujson as json
     except:
@@ -18,7 +19,7 @@ if True:  # ! -- Package Imports
     from autosys.utils import dbprint, read, NL
 
 #!---------------------------------------------- CONSTANTS
-DEFAULT_BASE_URL: str = 'https://api.twitter.com/'
+DEFAULT_BASE_URL: str = "https://api.twitter.com/"
 CWD: Path = Path(__file__).resolve().parents[0]
 DEFAULT_TWITTER_CREDENTIAL_FILE: Path = CWD / "twitter_credentials_private.json"
 _debug_: bool = True
@@ -33,38 +34,41 @@ def try_it(func):
 
         Return - normal function return or Exception
         """
+
     def tried(*args, **kwargs):
         try:
             return func(*args, **kwargs)
         except Exception as e:
             return e
+
     return tried(*args, **kwargs)
 
 
-def GET(url='http://www.example.com'):
+def GET(url="http://www.example.com"):
     return requests.get(url)
 
 
 def api_test():
     url = "http://httpbin.org/post"
 
-    payload = "{\n    \"key1\": 1,\n    \"key2\": \"value2\"\n}"
+    payload = '{\n    "key1": 1,\n    "key2": "value2"\n}'
     headers = {
-        'Content-Type': "application/json,text/plain",
-        'User-Agent': "PostmanRuntime/7.15.0",
-        'Accept': "*/*",
-        'Cache-Control': "no-cache",
-        'Postman-Token': "e908a437-88ea-4b00-af53-7a9a49033830,ba90e008-0f7f-4576-beb8-b7739c8961f1",
-        'Host': "httpbin.org",
-        'accept-encoding': "gzip, deflate",
-        'content-length': "42",
-        'Connection': "keep-alive",
-        'cache-control': "no-cache"
+        "Content-Type": "application/json,text/plain",
+        "User-Agent": "PostmanRuntime/7.15.0",
+        "Accept": "*/*",
+        "Cache-Control": "no-cache",
+        "Postman-Token": "e908a437-88ea-4b00-af53-7a9a49033830,ba90e008-0f7f-4576-beb8-b7739c8961f1",
+        "Host": "httpbin.org",
+        "accept-encoding": "gzip, deflate",
+        "content-length": "42",
+        "Connection": "keep-alive",
+        "cache-control": "no-cache",
     }
 
     response = requests.request("POST", url, data=payload, headers=headers)
 
     print(response.text)
+
 
 #!---------------------------------------------- encoding utilities
 
@@ -73,30 +77,30 @@ def encode64(s):
     """ Return ascii string encoded to Base64.
 
         utf-8 -> ascii -> base64 -> ascii """
-    return b64encode(s.encode('ascii')).decode('ascii')
+    return b64encode(s.encode("ascii")).decode("ascii")
 
 
 def decode64(s):
     """ Return ascii string decoded from Base64.
 
         utf-8 -> base64 -> ascii -> utf-8 """
-    return b64decode(s.encode('ascii')).decode('ascii')
+    return b64decode(s.encode("ascii")).decode("ascii")
 
 
 def binary_encode_64(binary_filename: str):
     """ Returns a base64 string from decoded binary file. """
     try:
-        with open(binary_filename, 'rb') as binary_file:
-            return b64encode(binary_file.read()).decode('utf-8')
+        with open(binary_filename, "rb") as binary_file:
+            return b64encode(binary_file.read()).decode("utf-8")
     except OSError as e:
-        return ''
+        return ""
 
 
 def binary_decode_64(base64_img: str, binary_filename: str):
     """ Encodes a base64 string to bytes and writes it to a binary file. """
     try:
-        base64_img_bytes = base64_img.encode('utf-8')
-        with open(binary_filename, 'wb') as file_to_save:
+        base64_img_bytes = base64_img.encode("utf-8")
+        with open(binary_filename, "wb") as file_to_save:
             file_to_save.write(base64.decodebytes(base64_img_bytes))
         return 0  # 0 = success ...
     except OSError as e:
@@ -105,17 +109,19 @@ def binary_decode_64(base64_img: str, binary_filename: str):
 
 def print_binary(data):
     for byte in data:
-        print(format(byte, '08b'), end=" ")
+        print(format(byte, "08b"), end=" ")
+
 
 #!---------------------------------------------- Classes
 
 
 class TwitterAPIError(Exception):
     """ Base Class for Twitter API Errors. """
+
     pass
 
 
-class TwitterKeys():
+class TwitterKeys:
     def __init__(self, filename=DEFAULT_TWITTER_CREDENTIAL_FILE):
         self._filename: Path = filename
         self._credentials: Dict[str, str] = {}
@@ -127,13 +133,14 @@ class TwitterKeys():
     def _load(self):
         """ Get twitter credentials from file object. """
         self._credentials = {}
-        self._encoded_key: Unicode = r''
+        self._encoded_key: Unicode = r""
         try:
             with open(self._filename, "r") as f:
                 self._credentials = json.load(f)
         except Exception as e:
             raise TwitterAPIError(
-                f"The credential file ({self._filename}) was not loaded.{NL}Error: {e}.")
+                f"The credential file ({self._filename}) was not loaded.{NL}Error: {e}."
+            )
 
     def save(self, credentials):
         """ Save the credentials dictionary object to a json file. """
@@ -145,12 +152,15 @@ class TwitterKeys():
                 self._load()  # ! read back file from disk to verify
                 if not self.check:
                     raise TwitterAPIError(
-                        f"The file did not load and verify correctly: {self._filename}")
+                        f"The file did not load and verify correctly: {self._filename}"
+                    )
                 return 0
             raise TwitterAPIError(
-                'The provided credentials are missing values.')
+                "The provided credentials are missing values."
+            )
         raise TwitterAPIError(
-            'The provided credentials are not in proper dictionary format.')
+            "The provided credentials are not in proper dictionary format."
+        )
 
     @property
     def encoded_key(self):
@@ -160,12 +170,17 @@ class TwitterKeys():
             self._encoded_key = encode64(f"{self.c_key}:{self.c_secret}")
         return self._encoded_key
 
- #!-------------------------------- TwitterKeys properties
+    #!-------------------------------- TwitterKeys properties
 
     @property
     def check(self):
         """ Return 0 for good self-test, 1 otherwise. """
-        return (self.c_key is None and self.c_secret is None and self.a_token is None and self.a_secret is None)
+        return (
+            self.c_key is None
+            and self.c_secret is None
+            and self.a_token is None
+            and self.a_secret is None
+        )
 
     @property
     def c_key(self):
@@ -211,8 +226,7 @@ def twitter_credential_json_file_create():
     del tk_save
 
 
-class APIconnect():
-
+class APIconnect:
     def __init__(self, base_url=DEFAULT_BASE_URL):
         pass
         # create url for API request:
@@ -233,21 +247,23 @@ class APIconnect():
     # dbprint('Auth response: ', auth_resp.status_code)
 
     # return 0
+
+
 #!---------------------------------------------- Script Tests
 
 
 # __all__ = [
-    # 'DEFAULT_BASE_URL',
-    # 'DEFAULT_TWITTER_CREDENTIAL_FILE',
-    # 'TwitterAPIError',
-    # 'try_it',
-    # 'TwitterKeys',
-    # 'tk',
-    # 'key_save',
-    # 'APIconnect',
-    # 'dbprint',
-    # 'read'
-    # ]
+# 'DEFAULT_BASE_URL',
+# 'DEFAULT_TWITTER_CREDENTIAL_FILE',
+# 'TwitterAPIError',
+# 'try_it',
+# 'TwitterKeys',
+# 'tk',
+# 'key_save',
+# 'APIconnect',
+# 'dbprint',
+# 'read'
+# ]
 
 
 def _tests_(args):
@@ -259,7 +275,7 @@ def _tests_(args):
     # print(f"{DEFAULT_BASE_URL=}")
     # print(f"{DEFAULT_TWITTER_CREDENTIAL_FILE=}")
 
-    print('Partial encoded key from class TwitterKeys: ')
+    print("Partial encoded key from class TwitterKeys: ")
     print(tk_tmp.encoded_key[1:5])
     tk_save
     # print_dict(globals())

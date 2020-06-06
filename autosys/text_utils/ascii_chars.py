@@ -15,7 +15,9 @@ class Ascii_Chars(dict):
         self = {f"c{x}": chr(x) for x in self.ascii_range}
 
     def pprint(self, indent: int = 2) -> str:
-        return NL.join([f"{' '* indent}{k:>5.5}: {v:<2.2}" for k, v in self.items()])
+        return NL.join(
+            [f"{' '* indent}{k:>5.5}: {v:<2.2}" for k, v in self.items()]
+        )
 
 
 print(Ascii_Chars())

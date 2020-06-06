@@ -86,6 +86,8 @@ The following requirements apply to the system interfaces (functions and headers
 
 The character classes digit, xdigit, lower, upper, and space have a set of automatically included characters. These only need to be specified if the character values (that is, encoding) differ from the implementation default values. It is not possible to define a locale without these automatically included characters unless some implementation extension is used to prevent their inclusion. Such a definition would not be a proper superset of the C or POSIX locale and, thus, it might not be possible for conforming applications to work properly.
 
+I think this should be the other way around "$(pyenv init - zsh --no-rehash)". I tried this way and it didn't seem to solve, reverting the order worked fine.
+
 
 
 

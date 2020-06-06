@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-''' as_system.py - system utilities and tools for efficient python3 '''
+""" as_system.py - system utilities and tools for efficient python3 """
 # copyright (c) 2019 Michael Treanor
 # https://www.github.com/skeptycal
 # https://www.twitter.com/skeptycal
@@ -17,8 +17,9 @@ if True:
 
 
 def _get_env_path():
-    ''' Return system path '''
-    return os.getenv('PATH')
+    """ Return system path """
+    return os.getenv("PATH")
+
 
 def timeit(method):
     def timed(*args, **kw):
@@ -28,7 +29,7 @@ def timeit(method):
         dt = time.time() - t0
         s1 = sys.getsizeof(method)
         print(method.__name__)
-        fn = var_name(kw.get('func'))
+        fn = var_name(kw.get("func"))
         # print(func_name)
 
         # if 'log_time' in kw:
@@ -37,10 +38,12 @@ def timeit(method):
         # else:
         print(f"{fn:25.25} - {dt*1000:>6.6} \t{'ms':>3.2}")
         return result
+
     return timed
 
+
 class PPath(pathlib.Path):
-    ''' Base Path Object '''
+    """ Base Path Object """
 
     def __init__(self, pattern: pathlib.PurePath):
         self.pattern = pattern
@@ -51,9 +54,9 @@ class PPath(pathlib.Path):
     def subs(self, recursive=False):
         """ Yield an iterator of subdirectories. """
         if recursive:
-            func = self.rglob(self.pattern + '/')
+            func = self.rglob(self.pattern + "/")
         else:
-            func = self.glob(self.pattern + '/')
+            func = self.glob(self.pattern + "/")
         for _ in func:
             # if x.is_dir():
             yield _
@@ -87,38 +90,38 @@ def _get_builtins() -> Sequence[str]:
 
 
 def _get_basename(filename: str) -> str:
-    ''' get only basename from full path '''
+    """ get only basename from full path """
     return Path(filename).resolve().parts()[-1]  # pathlib version
     # return os.path.basename(filename) # os.path version
 
 
 def py_path() -> List[str]:
-    ''' Return list of current python path elements. '''
+    """ Return list of current python path elements. """
     try:
-        return os.environ['PYTHONPATH'].split(os.pathsep)
+        return os.environ["PYTHONPATH"].split(os.pathsep)
     except KeyError:
         return []
 
 
 def py3up() -> bool:
-    ''' Return True if 'Python >= 3' else False
+    """ Return True if 'Python >= 3' else False
 
         If you want to detect pre-Python 3 and don't want to import anything,
-        you can (ab)use list comprehension scoping changes '''
+        you can (ab)use list comprehension scoping changes """
     # https://stackoverflow.com/questions/1093322/how-do-i-check-what-version-of-python-is-running-my-script/35294211
     # https://stackoverflow.com/a/52825819/9878098
     return (lambda x: [x for x in [False]] and None or x)(True)
 
 
 def pyver() -> str:
-    ''' Returns string with python version number in major.minor.micro format.
-            (e.g. 3.7.3  or  2.7.12) '''
-    return '.'.join(str(i) for i in __import__('sys').version_info[:3])
+    """ Returns string with python version number in major.minor.micro format.
+            (e.g. 3.7.3  or  2.7.12) """
+    return ".".join(str(i) for i in __import__("sys").version_info[:3])
 
 
 def py_shell() -> str:
-    ''' Returns string containing current python shell name.
-            (e.g. ipython notebook, pypy, jupyter notebook, ipython, cpython) '''
+    """ Returns string containing current python shell name.
+            (e.g. ipython notebook, pypy, jupyter notebook, ipython, cpython) """
 
     shell: str = "unknown"
     PY_ENV = os.environ
@@ -134,6 +137,7 @@ def py_shell() -> str:
     else:
         try:
             import platform
+
             shell = platform.python_implementation()
         except ImportError:
             pass
@@ -142,20 +146,21 @@ def py_shell() -> str:
 
 
 def _pprint_globals():
-    ''' Pretty Print all global variables.
-        Designed for debugging purposes. '''
+    """ Pretty Print all global variables.
+        Designed for debugging purposes. """
     print()
     print("Globals: ")
     print("*" * 40)
     width = max(len(i) for i in globals())
-    print(f'(key width: {width})')
+    print(f"(key width: {width})")
     for s in globals():
         print("{:<15.15} : {:<64.64}".format(s, str(globals().get(s))))
     print()
 
 
-def iterable(obj): return hasattr(
-    obj, '__iter__') or hasattr(obj, '__getitem__')
+def iterable(obj):
+    return hasattr(obj, "__iter__") or hasattr(obj, "__getitem__")
+
 
 # def njoin(l: List[str]) -> str:
 #     return '\n'.join(l)
@@ -164,7 +169,7 @@ def iterable(obj): return hasattr(
 @timeit  # testing efficiency of version 1
 def time_iter_check1(n: int = 10000, var: object = None):
     if not var:
-        var = "*"*2000
+        var = "*" * 2000
     for _ in range(n):
         result = iterable(var)
     return result
@@ -173,7 +178,7 @@ def time_iter_check1(n: int = 10000, var: object = None):
 @timeit  # testing efficiency of version 2
 def time_iter_check2(n: int = 10000, var: object = None):
     if not var:
-        var = "*"*2000
+        var = "*" * 2000
 
     for _ in range(n):
         try:
@@ -188,13 +193,13 @@ def time_iter_check(n: int = 10000, var: object = None):
     time_iter_check2(n, var)
 
 
-def njoin(s, delimeter: str = ',') -> str:
-    ''' Return a string of lines (with LF) from a delimited string or iterable object. '''
+def njoin(s, delimeter: str = ",") -> str:
+    """ Return a string of lines (with LF) from a delimited string or iterable object. """
     if isinstance(s, str):
-        return '\n'.join(s.split(delimeter))
+        return "\n".join(s.split(delimeter))
     try:
         _ = iter(s)
-        return '\n'.join(_)
+        return "\n".join(_)
     except TypeError:
         pass
 
@@ -207,14 +212,14 @@ def _get_functions():
     pass
 
 
-def _pprint_dict_table(data: Dict[Any, Any] = globals(),
-                       title: str = "",
-                       borders: str = 'text'):
-    ''' Pretty Print dictionary in table format.
+def _pprint_dict_table(
+    data: Dict[Any, Any] = globals(), title: str = "", borders: str = "text"
+):
+    """ Pretty Print dictionary in table format.
         parameters:
             data: Dict[Any, Any] - dictionary containing table data
             title: str - Displayed Title of Data Table (Title Case Used)
-            borders: str - border format (single, double, graphic, text*) '''
+            borders: str - border format (single, double, graphic, text*) """
     if title == "":
         title = data.__repr__()
     print(data.__repr__())
@@ -229,8 +234,18 @@ def _pprint_dict_table(data: Dict[Any, Any] = globals(),
         print("width: ", width)
         print("width2: ", width2)
 
-    fmt = ("{:<" + str(width) + "." + str(width) + "} : " + "{:<" +
-           str(width2) + "." + str(width2) + "}")
+    fmt = (
+        "{:<"
+        + str(width)
+        + "."
+        + str(width)
+        + "} : "
+        + "{:<"
+        + str(width2)
+        + "."
+        + str(width2)
+        + "}"
+    )
 
     print("*" * 80)
     for s in globals():
@@ -276,12 +291,12 @@ if __name__ == "__main__":
 
     print(njoin(_get_builtins()))
     print()
-    print(njoin(_get_env_path(), ':'))
-    print(iterable('this'))
+    print(njoin(_get_env_path(), ":"))
+    print(iterable("this"))
     print(iterable(5343))
     print(iterable([1, 2, 3, 4]))
-    print(iterable(['a', 'b']))
-    s1 = set(x for x in 'this')
+    print(iterable(["a", "b"]))
+    s1 = set(x for x in "this")
     print(iterable(s1))
     print(iterable(pathlib.Path()))
     print(time_iter_check(10000000))

@@ -24,9 +24,9 @@ def limited_exec(code: str, global_dict: Dict = {}):
     return exec(code, global_dict)
 
 
-def remove_lines(test_condition='line.startswith("#TT")',
-                 inplace=True,
-                 backup='.bak'):
+def remove_lines(
+    test_condition='line.startswith("#TT")', inplace=True, backup=".bak"
+):
     for line in fileinput.input(inplace=inplace, backup=backup):
         if line.startswith("#TT"):
             print(line),  # this goes to the current file
@@ -36,11 +36,11 @@ def remove_inplace(filenames: List[str]):
     try:
         import in_place
     except ImportError as e:
-        raise ImportError('module <in_place> was not imported correctly', e)
+        raise ImportError("module <in_place> was not imported correctly", e)
     else:
         with in_place.InPlace(filenames) as file:
             for line in file:
-                line = line.replace('test', 'testZ')
+                line = line.replace("test", "testZ")
                 file.write(line)
 
 

@@ -2,7 +2,8 @@
 
 # Reference: http://www.pythonlearn.com/html-009/book011.html
 import string
-fhand = open('romeo-full.txt')
+
+fhand = open("romeo-full.txt")
 counts = dict()
 for line in fhand:
     line = line.translate(None, string.punctuation)

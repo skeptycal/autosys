@@ -82,7 +82,7 @@ def _init_all_args(fn):  # TODO --- not working (renamed as _xxx)
 
         names = fn.func_code.co_varnames[1:]
         print(f"{names=}")
-        vprint('names')
+        vprint("names")
 
         for name, value in zip(names, args):
             setattr(self, name, value)
@@ -91,6 +91,7 @@ def _init_all_args(fn):  # TODO --- not working (renamed as _xxx)
             setattr(self, name, value)
 
     return wrapped_init
+
 
 # Singleton/BorgSingleton.py
 # Alex Martelli's 'Borg'
@@ -108,9 +109,10 @@ class Singleton(Borg):
         Borg.__init__(self)
         self.val = arg
 
-    def __str__(self): return self.val
+    def __str__(self):
+        return self.val
 
 
-stuff = 'the stuff'
-other_stuff = 'the other stuff'
-vprint('stuff', 'other_stuff')
+stuff = "the stuff"
+other_stuff = "the other stuff"
+vprint("stuff", "other_stuff")

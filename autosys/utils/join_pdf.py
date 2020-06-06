@@ -25,18 +25,18 @@
 
     """
 
-__docformat__ = 'reStructuredText'
+__docformat__ = "reStructuredText"
 
 std_inp = "AREPL requires standard_input to be hardcoded, like so: standard_input = 'hello world'; print(input())"
 
 for d in dir():
     print(d)
-    print('-' * 60)
+    print("-" * 60)
     try:
         print(eval(d))
     except:
-        print(eval(d + '()'))
-    print('-'*60)
+        print(eval(d + "()"))
+    print("-" * 60)
 
 # print(__doc__)
 

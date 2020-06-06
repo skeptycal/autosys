@@ -29,8 +29,8 @@ t2 = numpy_version()
 print(f"Time 1: {t1:8}")
 print(f"Time 2: {t2:8}")
 print()
-faster=t1
-slower=t2
+faster = t1
+slower = t2
 if t1 > t2:
     faster, slower = slower, faster
 print(f"{faster} is {t1 / t2:7.5} % faster than {slower}!")

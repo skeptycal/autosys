@@ -10,12 +10,12 @@ https://docs.python-guide.org/writing/tests/
 from autosys.cli.debug import NL, ARGS, br, hr, dbprint
 from typing import Iterable
 
-_debug_: bool = True                    # True => use Debug features
-__all__ = ['Lister']
+_debug_: bool = True  # True => use Debug features
+__all__ = ["Lister"]
 
 
 class Lister(list):
-    DEV_BLACKLIST = ('_', 'arepl')
+    DEV_BLACKLIST = ("_", "arepl")
     """ Utility to return various formats of an iterable. """
     # TODO - add textwrap functionality
 
@@ -24,12 +24,12 @@ class Lister(list):
         self.data = list(iterable)
 
     def __all__(self):
-        return [f'{x}' for x in self.filter(blacklist=Lister.DEV_BLACKLIST)]
+        return [f"{x}" for x in self.filter(blacklist=Lister.DEV_BLACKLIST)]
 
     def __str__(self):
         return self.comma
 
-    def join(self, sep=' ') -> str:
+    def join(self, sep=" ") -> str:
         return sep.join(self)
 
     @property
@@ -38,7 +38,7 @@ class Lister(list):
 
     @property
     def comma(self) -> str:
-        return ', '.join(self)
+        return ", ".join(self)
 
     @property
     def sort(self, rev=False):
@@ -62,10 +62,10 @@ class Lister(list):
     def bl(self, blacklist=DEV_BLACKLIST):
         return Lister([x for x in self._list if not x.startswith(blacklist)])
 
-    def wl(self, whitelist=('')):
+    def wl(self, whitelist=("")):
         return Lister([x for x in self._list if x.startswith(whitelist)])
 
-    def filter(self, blacklist=DEV_BLACKLIST, whitelist=('')):
+    def filter(self, blacklist=DEV_BLACKLIST, whitelist=("")):
         """ Return the list containing only `whitelist` items that are not `blacklist` items.
 
             blacklist - items that are tossed out. defaults:
@@ -89,7 +89,15 @@ class Lister(list):
             return self.bl(blacklist=blacklist)
         # if '' in blacklist:
         #     return self.wl(whitelist=whitelist)
-        return Lister(list([x for x in self if x.startswith(whitelist) and not x.startswith(blacklist)]))
+        return Lister(
+            list(
+                [
+                    x
+                    for x in self
+                    if x.startswith(whitelist) and not x.startswith(blacklist)
+                ]
+            )
+        )
 
 
 _lister = Lister(dir())
@@ -115,13 +123,13 @@ def _tests_():
     print(d.__all__())
     print(d.lines)
     br()
-    del(d)
+    del d
 
 
 def _main_():  # !------------------------ Script Main
-    '''
+    """
     CLI script main entry point.
-    '''
+    """
     if _debug_:
         _tests_()
 

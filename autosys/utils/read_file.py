@@ -1,5 +1,6 @@
 from pathlib import Path
 
+
 def read(filename: str, ignore_errors: bool = False):
     """ Returns the text of `filename`.
 

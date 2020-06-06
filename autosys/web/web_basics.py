@@ -40,7 +40,9 @@ _fuzzy_: bool = True
 DEFAULT_URL_HISTORY: int = 1000
 
 log_web = Logger(__file__)
-pp_web = PrettyPrinter(indent=2, width=79, depth=5, stream=stdout, compact=False)
+pp_web = PrettyPrinter(
+    indent=2, width=79, depth=5, stream=stdout, compact=False
+)
 
 # !---------------------------------------------- Custom Types
 

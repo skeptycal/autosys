@@ -66,7 +66,9 @@ class HashedIndex:
         )
 
     def __eq__(self, other):
-        return self._terms == other._terms and self._documents == other._documents
+        return (
+            self._terms == other._terms and self._documents == other._documents
+        )
 
     def clear(self):
         """
@@ -310,7 +312,9 @@ def merge(index_list):
             elif term in second_index._terms:
                 result._terms[term] = second_index._terms[term]
             else:  # pragma: nocover
-                raise ValueError("I dont know how the hell you managed to get here")
+                raise ValueError(
+                    "I dont know how the hell you managed to get here"
+                )
 
         result._documents = first_index._documents + second_index._documents
 

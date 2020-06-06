@@ -8,10 +8,12 @@ from flask import current_app, request
 
 try:
     from ujson import dumps
-    JSON_PARSER = 'ujson'
+
+    JSON_PARSER = "ujson"
 except ImportError as e:
     from json import dumps
-    JSON_PARSER = 'json'
+
+    JSON_PARSER = "json"
 
 
 def ultrajsonify(*args, **kwargs):
@@ -22,7 +24,10 @@ def ultrajsonify(*args, **kwargs):
     ensure_ascii = current_app.config.get("JSON_AS_ASCII", True)
     mimetype = current_app.config.get("JSONIFY_MIMETYPE", "application/json")
 
-    if current_app.config["JSONIFY_PRETTYPRINT_REGULAR"] and not request.is_xhr:
+    if (
+        current_app.config["JSONIFY_PRETTYPRINT_REGULAR"]
+        and not request.is_xhr
+    ):
         indent = 2
 
     if args and kwargs:
@@ -35,5 +40,6 @@ def ultrajsonify(*args, **kwargs):
         data = args or kwargs
 
     return current_app.response_class(
-        dumps(data, indent=indent, ensure_ascii=ensure_ascii), mimetype=mimetype
+        dumps(data, indent=indent, ensure_ascii=ensure_ascii),
+        mimetype=mimetype,
     )

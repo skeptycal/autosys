@@ -8,7 +8,9 @@ from collections import Counter
 
 SET_DEBUG: bool = True
 RE_document_article = "^\b*"
-RE_pattern_document_article: re.Pattern = re.compile(RE_document_article, re.IGNORECASE)
+RE_pattern_document_article: re.Pattern = re.compile(
+    RE_document_article, re.IGNORECASE
+)
 FMT_URL_STATUSCODE_TEST = "url_test: GET request to {} returns {}"
 
 

@@ -45,7 +45,7 @@ def timeit(method):
         dt = time.time() - t0
         s1 = sys.getsizeof(method)
         print(method.__name__)
-        fn = var_name(kw.get('func'))
+        fn = var_name(kw.get("func"))
         # print(func_name)
 
         # if 'log_time' in kw:
@@ -54,6 +54,7 @@ def timeit(method):
         # else:
         print(f"{fn:25.25} - {dt*1000:>6.6} \t{'ms':>3.2}")
         return result
+
     return timed
 
 
@@ -124,7 +125,7 @@ class Profiler_(list):
     DEFAULT_DURATION = 100
     DEFAULT_MAX_DURATION = 1000
 
-    class Code():
+    class Code:
         """ Objects containing code blocks and/or data for a function.
 
             Code objects contain the following:
@@ -155,7 +156,7 @@ class Profiler_(list):
             - create Code object
             - add item to test list
             """
-        if type(code) == 'function':
+        if type(code) == "function":
             c = Code(code, code.__doc__, args)
         if type(code) == str:
             pass
@@ -168,13 +169,9 @@ class Profiler_(list):
             - add Codes to Profiler list
             """
         for (func, desc, args) in func_list:
-            if desc == 'doc':
+            if desc == "doc":
                 desc = func.__doc__
-            c = Code(
-                func,
-                func.__doc__,
-                args
-            )
+            c = Code(func, func.__doc__, args)
             print(func)
             self.append(Code(func))
 
@@ -197,8 +194,8 @@ class Profiler_(list):
             - Decorator function used for consistent timing and to collate results.
             """
         # remove kwargs used for testing
-        func = kwargs.pop('func', None)
-        reps = kwargs.pop('reps', 1)
+        func = kwargs.pop("func", None)
+        reps = kwargs.pop("reps", 1)
 
         # repeat tests <reps> times
         for _ in range(reps):
@@ -218,19 +215,19 @@ def main():
 
     reps: int = 1000
     n: int = 10
-    s: str = 'test'
+    s: str = "test"
 
     func_list: List[tuple] = [
-        (fibonacci, 'doc', ['n']),
-        (fibonacci_2, 'doc', ['n']),
-        (fibomemo, 'doc', ['n']),
-        (fibo_deque, 'doc', ['n']),
-        (fibo_fake_deque, 'doc', ['n']),
-        (fibo_fake_deque_2, 'doc', ['n']),
+        (fibonacci, "doc", ["n"]),
+        (fibonacci_2, "doc", ["n"]),
+        (fibomemo, "doc", ["n"]),
+        (fibo_deque, "doc", ["n"]),
+        (fibo_fake_deque, "doc", ["n"]),
+        (fibo_fake_deque_2, "doc", ["n"]),
     ]
 
     # TODO: replace fibonacci.__name__
-    code = Profiler_.Code(fibonacci, fibonacci.__name__, ['n'])
+    code = Profiler_.Code(fibonacci, fibonacci.__name__, ["n"])
     print(code)
     print(code.code)
     print(code.description)

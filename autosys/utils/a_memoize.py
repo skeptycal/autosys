@@ -3,6 +3,7 @@
 try:
     from html5lib._utils import memoize
 except ImportError:
+
     def memoize(func):
         cache = {}
 

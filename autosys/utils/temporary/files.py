@@ -8,11 +8,7 @@ import temporary.util
 
 
 @contextlib.contextmanager
-def temp_file(
-        content=None,
-        suffix='',
-        prefix='tmp',
-        parent_dir=None):
+def temp_file(content=None, suffix="", prefix="tmp", parent_dir=None):
     """
     Create a temporary file and optionally populate it with content. The file
     is deleted when the context exits.
