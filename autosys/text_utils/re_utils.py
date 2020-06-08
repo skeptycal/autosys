@@ -42,113 +42,88 @@ CASE_LIST: Tuple = ("upper", "lower", "title", "snake", "camel", "pascal")
 DEFAULT_RE_FLAGS: Final[int] = re.MULTILINE | re.IGNORECASE
 
 
+class ReUtilsError(Exception):
+    "An error occurred while processing regex strings with ReUtils."
+
+
 if True:  # * --------------------------------- ReUtils Class
 
     @dataclass
     class ReUtils:
         """ Wrapper for common Python3 Regex Utilities. """
 
-        import re
+        if True:  # * --------------------------------- Config
 
-        DEFAULT_RE_FLAGS: Final[int] = re.MULTILINE | re.IGNORECASE
-        RE_REPLACE: Final[re.Pattern] = re.compile(
-            pattern=r"[-\s]", flags=DEFAULT_RE_FLAGS
-        )
+            import re
 
-        string = r""
+            DEFAULT_RE_FLAGS: Final[int] = re.MULTILINE | re.IGNORECASE
+            RE_REPLACE: Final[re.Pattern] = re.compile(
+                pattern=r"[-\s]", flags=DEFAULT_RE_FLAGS
+            )
 
-        def sub_it(
-            self, pattern: re.Pattern = RE_REPLACE, repl: str = "_"
-        ) -> (str, None, Exception):
-            """ Return a string where items in `pattern` have been replaced with `repl`. """
-            return re.sub(pattern=pattern, repl=repl, string=self.string)
+            string = r""
 
-        def re_pip_safe_name(self) -> (str, None, Exception):
-            """ Return a name that is converted to pypi safe format.
+            def __post_init__(self):
+                # strip whitespace from ends
+                self.strip()
+                # self.string = self.string.strip()
+                # remove duplicate whitespace
+                self.dedupe_whitespace()
+                self._set_cases()
 
-                Replace ' ' (space) and '-'(hyphen) with _(underscore) using python3 regex
-                """
-            return RE.sub_it(string=self.string, pattern=RE_REPLACE, repl="_")
+            def __str__(self):
+                return self.string
 
-        def split_it(self, delimiter: str = "\s") -> (str, None, Exception):
-            """ Return a string separated using 'delimiter' using python3 regex. """
-            return re.split(pattern=delimiter, string=self.string)
+            def _set_cases(self):
+                """ Choose a case by mapping the prefix to the methods.
 
-        def dedupe_whitespace(self):
-            """ Return a string with duplicate whitespace replaced with ' '. """
-            return re.sub(pattern=r"\s+", repl=" ", string=self.string)
+                    e.g.
+                    ```
+                    CASE_LIST = ('upper', 'lower', 'title', 'snake', 'camel', 'pascal')
 
+                    _cases = {x: f"self.to_{x}_case" for x in CASE_LIST}
+                    ```
+                    """
 
-# * --------------------------------- Strang Class
+                self._cases = {x: f"self.to_{x}_case" for x in CASE_LIST}
 
+        if True:  # * --------------------------------- Cases
 
-@dataclass
-class Strang:
-    """ Wrapper for common Python3 Built-in String Utilities. """
+            @property
+            def to_upper_case(self):
+                return self.string.upper()
 
-    if True:  # * --------------------------------- Config
-        string: str = ""
+            @property
+            def to_lower_case(self):
+                return self.string.lower()
 
-        def __post_init__(self):
-            # strip whitespace from ends
-            self.string = self.string.strip()
-            # remove duplicate whitespace
-            self.dedupe_whitespace()
-            self._set_cases()
+            @property
+            def to_title_case(self):
+                return self.string.title()
 
-        def __str__(self):
-            return self.string
+            @property
+            def to_snake_case(self):
+                return self.sub_it().lower()
 
-        def _set_cases(self):
-            """ Choose a case by mapping the prefix to the methods.
+            @property
+            def to_kebab_case(self):
+                return self.sub_it(pattern=" _", repl="-").lower()
 
-                e.g.
-                ```
-                CASE_LIST = ('upper', 'lower', 'title', 'snake', 'camel', 'pascal')
+            @property
+            def to_camel_case(self):
+                return "".join([word.title() for word in self.string.split()])
 
-                _cases = {x: f"self.to_{x}_case" for x in CASE_LIST}
-                ```
-                """
-
-            self._cases = {x: f"self.to_{x}_case" for x in CASE_LIST}
-
-    if True:  # * --------------------------------- Cases
-
-        @property
-        def to_upper_case(self):
-            return self.string.upper()
-
-        @property
-        def to_lower_case(self):
-            return self.string.lower()
-
-        @property
-        def to_title_case(self):
-            return self.string.title()
-
-        @property
-        def to_snake_case(self):
-            return self.sub_it().lower()
-
-        @property
-        def to_kebab_case(self):
-            return self.sub_it(pattern=" _", repl="-").lower()
-
-        @property
-        def to_camel_case(self):
-            return "".join([word.title() for word in self.string.split()])
-
-        @property
-        def to_pascal_case(self):
-            return f"{self.string[0].lower()}{''.join([word.title() for word in self.string.split()])[1:]}"
+            @property
+            def to_pascal_case(self):
+                return f"{self.string[0].lower()}{''.join([word.title() for word in self.string.split()])[1:]}"
 
     if True:  # * --------------------------------- Utilities
 
         def pip_safe_name(self) -> (str):
             """ Return a name that is converted to pypi safe format.
 
-                Replace ' ' (space) and '-'(hyphen) with _(underscore) using python3 built-ins
-                """
+                    Replace ' ' (space) and '-'(hyphen) with _(underscore) using python3 built-ins
+                    """
             return self.string.lower().replace("- ", "_")
 
         def sub_it(self, pattern: str = " -", repl="_") -> (str, None, Exception):
@@ -171,6 +146,32 @@ class Strang:
 
         def dedupe_whitespace(self):
             self.string = " ".join(self.string.split())
+
+    if True:  # * --------------------------------- Done
+
+        def sub_it(
+            self, pattern: re.Pattern = RE_REPLACE, repl: str = "_"
+        ) -> (str, None, Exception):
+            """ Return a string where items in `pattern` have been replaced with `repl`. """
+            return re.sub(pattern=pattern, repl=repl, string=self.string)
+
+        def re_pip_safe_name(self) -> (str, None, Exception):
+            """ Return a name that is converted to pypi safe format.
+
+                    Replace ' ' (space) and '-'(hyphen) with _(underscore) using python3 regex
+                    """
+            return RE.sub_it(string=self.string, pattern=RE_REPLACE, repl="_")
+
+        def split_it(self, delimiter: str = "\s") -> (str, None, Exception):
+            """ Return a string separated using 'delimiter' using python3 regex. """
+            return re.split(pattern=delimiter, string=self.string)
+
+        def dedupe_whitespace(self):
+            """ Return a string with duplicate whitespace replaced with ' '. """
+            return re.sub(pattern=r"\s+", repl=" ", string=self.string)
+
+
+# * --------------------------------- Strang Class
 
 
 if True:  # * --------------------------------- Tests
