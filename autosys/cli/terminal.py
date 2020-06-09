@@ -6,31 +6,22 @@ from io import TextIOWrapper
 from dataclasses import dataclass
 from autosys.log.autosys_logger import *
 
-log = autosys_logger
+__all__ = [
+    "color",
+    "DEFAULT_COLOR",
+    "hr",
+    "s80",
+    "br",
+    "vprint",
+    "rprint",
+    "PLATFORM",
+    "SUPPORTS_COLOR",
+    "Terminal",
+]
 
 PLATFORM = platform()
 DEFAULT_COLOR = "MAIN"
-
-
-def replace_all(
-    needle: Sequence, haystack: Sequence, volunteer: Sequence = ""
-) -> Sequence:
-    """ return a sequence with all `needles` in `haystack` replaced with `volunteers` """
-    return "".join(volunteer if c in needle else c for c in haystack)
-
-
-def rep_whitelist(
-    needle: Sequence, haystack: Sequence, volunteer: Sequence = ""
-) -> Sequence:
-    """ return a sequence with all `needles` in `haystack` saved and all other characters replaced with `volunteers` """
-    return "".join(volunteer if c not in needle else c for c in haystack)
-
-
-def make_safe_id(haystack: Sequence, volunteer: Sequence = "_") -> Sequence:
-    """ return a string that has only alphanumeric and _ characters.
-
-        others are replaced with `volunteer` (default `_`) """
-    return "".join(volunteer if not c.isidentifier() else c for c in haystack)
+CR: str = r"\r"
 
 
 if True:  # !------------------------ CLI display utilities
@@ -60,6 +51,9 @@ if True:  # !------------------------ CLI display utilities
             print(fmt)
         else:
             return fmt
+
+    def rprint(*args, **kwargs):
+        print(CR, *args, **kwargs)
 
 
 @dataclass
@@ -178,9 +172,7 @@ class Terminal:  # !------------------------ Terminal Class
 
             cr = _SH_SIZE(fallback=Terminal.DEFAULT_TERMINAL_SIZE)
             if cr:
-                log.info(
-                    f"shutil.get_terminal_size returns ({cr.columns},{cr.lines})"
-                )
+                log.info(f"shutil.get_terminal_size returns ({cr.columns},{cr.lines})")
                 return (cr.columns, cr.lines)
         except Exception as e:
             log.error(e)
@@ -219,9 +211,8 @@ class Terminal:  # !------------------------ Terminal Class
 
 
 term = Terminal()
+
 SUPPORTS_COLOR: bool = term.SUPPORTS_COLOR
-
-
 # some basic colors ..
 class BasicColors:
     MAIN: str = "\x1B[38;5;229m" * SUPPORTS_COLOR
@@ -235,23 +226,6 @@ class BasicColors:
     WHITE: str = "\x1B[37m" * SUPPORTS_COLOR
     RESET: str = "\x1B[0m" * SUPPORTS_COLOR
 
-
-color = BasicColors()
-
-
-@dataclass
-class LogColors:
-    LC_50: str = color.WARN
-    LC_40: str = color.ATTN
-    LC_30: str = color.CANARY
-    LC_20: str = color.BLUE
-    LC_10: str = color.GO
-
-    def str(self):
-        print(self.LC_50, f"{self.LC_50}color")
-
-
-lc = LogColors()
 
 if __name__ == "__main__":
     from pprint import pprint

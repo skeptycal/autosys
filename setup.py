@@ -38,9 +38,6 @@ if True:  # ? #################################### packaging utilities.
         pattern=r"\s-", flags=re.MULTILINE | re.IGNORECASE
     )
 
-    class SetupError(ValueError):
-        "The parameters necessary to complete the setup process were not available."
-
     def pip_safe_name(s: str):
         """ Return a name that is converted to pypi safe format. """
         return s.lower().replace("-", "_").replace(" ", "_")
@@ -58,12 +55,6 @@ if True:  # ? #################################### packaging utilities.
             print(f"{indent*' '}{k:<{key_size}.{key_size}}{divider}{val}")
 
     # TODO - split off this class to a module ---------------------------------->>
-
-    class Re_File_Error(ValueError):
-        "There was a file error while attempting to match the pattern."
-
-    class Re_Value_Error(ValueError):
-        "There was a matching error while attempting to match the pattern."
 
     @dataclass
     class ReGetFileField:

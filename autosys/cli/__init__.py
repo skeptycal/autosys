@@ -10,6 +10,15 @@
     `AutoSys` is licensed under the `MIT License
         `<https://opensource.org/licenses/MIT>`
     """
+from typing import List
+
+from .terminal import *
+from . import terminal
+
+print(dir())
+__all__: List[str] = []
+__all__.extend(terminal.__all__)
+
 
 if True:  # !------------------------ config
     import re

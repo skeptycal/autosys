@@ -10,6 +10,8 @@ from pathlib import Path
 import os
 import shutil
 
+from autosys.exceptions import BaseFileError
+
 
 @dataclass
 class BaseFile:
@@ -20,12 +22,10 @@ class BaseFile:
         try:
             self._path = Path(self.file_name).resolve()
         except:
-            raise BaseFileError(
-                f"Unable to initialize file '{self.file_name}' ..."
-            )
+            raise BaseFileError(f"Unable to initialize file '{self.file_name}' ...")
 
     @property
-    def basename(self) -> str:
+    def basename(self) -> (str):
         """ Return only the basename of the file. """
         try:
             return self.file_name.split(".")[0].split("/")[-1]
@@ -33,7 +33,7 @@ class BaseFile:
             raise BaseFileError(f"Unable to return basename of file.")
 
     @property
-    def extension(self) -> str:
+    def extension(self) -> (str):
         """ Return only the extension of the file. """
         try:
             return self.file_name.split(".")[-1]
@@ -41,17 +41,17 @@ class BaseFile:
             raise BaseFileError(f"Unable to return extension of file.")
 
     @property
-    def path(self) -> Path:
+    def path(self) -> (Path):
         if not self._path:
             self._path = Path(self.file_name).resolve()
         return self._path
 
     @property
-    def as_posix(self):
+    def as_posix(self) -> (str):
         return self._path.as_posix()
 
     @property
-    def stat(self):
+    def stat(self) -> (str):
         """ Return os.stat type information.
 
             e.g.
@@ -75,12 +75,6 @@ class TextFile(BaseFile):
     def get_line_count(filename) -> int:
         with open(filename) as f:
             return sum(True for line in f)
-
-
-class BaseFileError(IOError):
-    """ There was a problem initializing the file object. """
-
-    pass
 
 
 if False:

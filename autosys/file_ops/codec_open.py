@@ -15,14 +15,12 @@
 from codecs import open as codec_open
 from pathlib import Path
 
-from os import path
+from autosys.log.autosys_logger import *
 
-from setuptools import find_packages, setup
-
-HERE = path.abspath(path.dirname(__file__))
 HERE = Path(__file__).resolve().parent
 
 
+@log_it
 def load_file_contents(file_path, as_list=True):
     """ Load file as string or list.
 
@@ -31,12 +29,20 @@ def load_file_contents(file_path, as_list=True):
             :website: https://github.com/jambonrose/roman-numerals
             :license: Simplified BSD, see LICENSE_BSD for details.
         """
-    abs_file_path = path.join(HERE, file_path)
-    abs_file_path = HERE / file_path
-    with codec_open(abs_file_path, encoding="utf-8") as file_pointer:
+    # abs_file_path = path.join(HERE, file_path)
+    try:
+        abs_file_path = HERE / file_path
+        d = c
+    except:
+        try:
+            log.error(e)
+        except:
+            pass
+        raise
+    with codec_open(abs_file_path, encoding="utf-8") as fp:
         if as_list:
-            return file_pointer.read().splitlines()
-        return file_pointer.read()
+            return fp.read().splitlines()
+        return fp.read()
 
 
 print(load_file_contents("codec_open.py", as_list=False))
