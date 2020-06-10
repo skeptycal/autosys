@@ -13,16 +13,15 @@ TODO.md
 .pylintrc
 .vsce
 .vuerc
-**/__pycache__/
 **/.gitconfig
 **/.gitmodules
-**/.mypy_cache/
-**/.pytest_cache/
 **/.vscode/
 **/gists/
 **/node_modules/
 
 # Python build files
+**/_build
+**/_templates
 .coveralls.yml
 .pypirc
 .tox/
@@ -37,6 +36,9 @@ TODO.md
 MANIFEST
 pyproject.toml
 pytest.ini
+**/.mypy_cache/
+**/.pytest_cache/
+**/__pycache__/
 
 # general ignore files
 .ignore
