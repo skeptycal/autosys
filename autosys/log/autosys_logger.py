@@ -9,6 +9,7 @@
         `<https://opensource.org/licenses/MIT>`
     """
 
+import re
 from locale import getpreferredencoding
 from dataclasses import dataclass
 from typing import Dict, Final, List, Tuple
@@ -16,6 +17,13 @@ import logging
 from autosys.cli.terminal import SUPPORTS_COLOR, BasicColors
 
 DEFAULT_ENCODING: str = getpreferredencoding(True)
+DEFAULT_LOG_FORMAT = "%(levelname)-8s %(name)s:%(filename)s:%(lineno)d %(message)s"
+DEFAULT_LOG_DATE_FORMAT = "%H:%M:%S"
+_ANSI_ESCAPE_SEQ = re.compile(r"\x1b\[[\d;]+m")
+
+
+def _remove_ansi_escape_sequences(text):
+    return _ANSI_ESCAPE_SEQ.sub("", text)
 
 
 @dataclass
@@ -36,11 +44,55 @@ class LogColors:
     INFO: str = color.BLUE
     DEBUG: str = color.GO
 
-    def str(self):
-        print(self.LC_50, f"{self.LC_50}color")
-
 
 log_colors = LogColors()
+
+# from pytest.logging.py
+class ColoredLevelFormatter(logging.Formatter):
+    """
+    Colorize the %(levelname)..s part of the log format passed to __init__.
+    """
+
+    LOGLEVEL_COLOROPTS: Mapping[int, AbstractSet[str]] = {
+        logging.CRITICAL: {"red"},
+        logging.ERROR: {"red", "bold"},
+        logging.WARNING: {"yellow"},
+        logging.WARN: {"yellow"},
+        logging.INFO: {"green"},
+        logging.DEBUG: {"purple"},
+        logging.NOTSET: set(),
+    }  # type: Mapping[int, AbstractSet[str]]
+    LEVELNAME_FMT_REGEX: re.Pattern = re.compile(r"%\(levelname\)([+-.]?\d*s)")
+
+    def __init__(self, terminalwriter, *args, **kwargs) -> (None):
+        super().__init__(*args, **kwargs)
+        self._original_fmt: str = self._style._fmt
+        self._level_to_fmt_mapping: Dict[int, str] = {}  # type: Dict[int, str]
+
+        assert self._fmt is not None
+        levelname_fmt_match = self.LEVELNAME_FMT_REGEX.search(self._fmt)
+        if not levelname_fmt_match:
+            return
+        levelname_fmt = levelname_fmt_match.group()
+
+        for level, color_opts in self.LOGLEVEL_COLOROPTS.items():
+            formatted_levelname = levelname_fmt % {
+                "levelname": logging.getLevelName(level)
+            }
+
+            # add ANSI escape sequences around the formatted levelname
+            color_kwargs: Dict = {name: True for name in color_opts}
+            colorized_formatted_levelname = terminalwriter.markup(
+                formatted_levelname, **color_kwargs
+            )
+            self._level_to_fmt_mapping[level] = self.LEVELNAME_FMT_REGEX.sub(
+                colorized_formatted_levelname, self._fmt
+            )
+
+    def format(self, record):
+        fmt = self._level_to_fmt_mapping.get(record.levelno, self._original_fmt)
+        self._style._fmt = fmt
+        return super().format(record)
 
 
 @dataclass

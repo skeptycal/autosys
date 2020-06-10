@@ -7,12 +7,12 @@ from typing import Dict, Iterable
 from time import sleep
 from dataclasses import dataclass
 from autosys import *
-from autosys.debug import SUPPORTS_COLOR
+from cli.supports_color import SUPPORTS_COLOR
 
 NAN = object()
 NUL = ""
 
-
+'''
 @unique
 class NpAlign(Enum):
     left = "<"
@@ -155,17 +155,17 @@ def np_row(
     checkerboard: bool = True,
     align: NpAlign = NpAlign.left,
 ):
-    """ Format a row of data for cli output. 
+    """ Format a row of data for cli output.
 
-        param       description                             default  
+        param       description                             default
         ===========================================================
-        a -         any iterable data set                   
+        a -         any iterable data set
         size -      space allowed for each data point       4
         padding -   space between each data point           1
         pad -       character used for padding              ' '
         alt_color - should it alternate colors?             False
         align -     alignment of data in cells              '<'
-    
+
         """
 
     ct = ColorToggle() if SUPPORTS_COLOR else ""
@@ -180,6 +180,6 @@ for arithmetic in arithmetic_lst:
     print(f"{arithmetic:>10}: {fmt}")
 print()
 
-
+'''
 # print methods of numpy.ndarray without dunders
 # print([x for x in dir(evl) if not x.startswith("_")])

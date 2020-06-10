@@ -37,107 +37,105 @@ import re
 from dataclasses import dataclass, Field, field
 from typing import Final, List, Tuple
 
+from autosys import debug
+from strang import Strang, random_string
+
 CASE_LIST: Tuple = ("upper", "lower", "title", "snake", "camel", "pascal")
 
 DEFAULT_RE_FLAGS: Final[int] = re.MULTILINE | re.IGNORECASE
+
+RE_VERSION: re.Pattern = re.compile(
+    pattern=r'^__version__\s?=\s?[\'"]([^\'"]*)[\'"]', flags=DEFAULT_RE_FLAGS,
+)
+
+RE_REPLACE: Final[re.Pattern] = re.compile(pattern=r"[-\s]", flags=DEFAULT_RE_FLAGS)
 
 
 class ReUtilsError(Exception):
     "An error occurred while processing regex strings with ReUtils."
 
 
+__all__ = [
+    "CASE_LIST",
+    "DEFAULT_RE_FLAGS",
+    "NL",
+    "NUL",
+    "RE_REPLACE",
+    "RE_VERSION",
+    "ReUtils",
+    "ReUtilsError",
+    "STR_ALPHA",
+    "STR_ALPHANUMERIC",
+    "STR_HEX",
+    "STR_NAMES",
+    "STR_PRINTABLE",
+    "STR_PUNCTUATION",
+    "STR_WHITESPACE",
+    "linesep",
+    "random_string",
+    "re",
+    "re_pip_safe_name",
+    "split_it",
+    "string",
+    "sub_it",
+]
 if True:  # * --------------------------------- ReUtils Class
 
     @dataclass
-    class ReUtils:
+    class ReUtils(Strang):
         """ Wrapper for common Python3 Regex Utilities. """
 
-        if True:  # * --------------------------------- Config
+        string: str = r""
 
-            import re
+        def __post_init__(self):
+            # strip whitespace from ends
+            self.string.strip()
+            # self.string = self.string.strip()
+            # remove duplicate whitespace
+            self.dedupe_whitespace()
+            self._set_cases()
 
-            DEFAULT_RE_FLAGS: Final[int] = re.MULTILINE | re.IGNORECASE
-            RE_REPLACE: Final[re.Pattern] = re.compile(
-                pattern=r"[-\s]", flags=DEFAULT_RE_FLAGS
-            )
+        def __str__(self):
+            return self.string
 
-            string = r""
+        def _set_cases(self):
+            """ Choose a case by mapping the prefix to the methods.
 
-            def __post_init__(self):
-                # strip whitespace from ends
-                self.strip()
-                # self.string = self.string.strip()
-                # remove duplicate whitespace
-                self.dedupe_whitespace()
-                self._set_cases()
+                e.g.
+                ```
+                CASE_LIST = ('upper', 'lower', 'title', 'snake', 'camel', 'pascal')
 
-            def __str__(self):
-                return self.string
+                _cases = {x: f"self.to_{x}_case" for x in CASE_LIST}
+                ```
+                """
 
-            def _set_cases(self):
-                """ Choose a case by mapping the prefix to the methods.
+            self._cases = {x: f"self.to_{x}_case" for x in CASE_LIST}
 
-                    e.g.
-                    ```
-                    CASE_LIST = ('upper', 'lower', 'title', 'snake', 'camel', 'pascal')
-
-                    _cases = {x: f"self.to_{x}_case" for x in CASE_LIST}
-                    ```
-                    """
-
-                self._cases = {x: f"self.to_{x}_case" for x in CASE_LIST}
-
-        if True:  # * --------------------------------- Cases
-
-            @property
-            def to_upper_case(self):
-                return self.string.upper()
-
-            @property
-            def to_lower_case(self):
-                return self.string.lower()
-
-            @property
-            def to_title_case(self):
-                return self.string.title()
-
-            @property
-            def to_snake_case(self):
-                return self.sub_it().lower()
-
-            @property
-            def to_kebab_case(self):
-                return self.sub_it(pattern=" _", repl="-").lower()
-
-            @property
-            def to_camel_case(self):
-                return "".join([word.title() for word in self.string.split()])
-
-            @property
-            def to_pascal_case(self):
-                return f"{self.string[0].lower()}{''.join([word.title() for word in self.string.split()])[1:]}"
-
-    if True:  # * --------------------------------- Utilities
-
-        def pip_safe_name(self) -> (str):
+        def re_pip_safe_name(self) -> (str, None, Exception):
             """ Return a name that is converted to pypi safe format.
 
-                    Replace ' ' (space) and '-'(hyphen) with _(underscore) using python3 built-ins
-                    """
-            return self.string.lower().replace("- ", "_")
+                Replace ' ' (space) and '-'(hyphen) with _(underscore) using python3 regex
+                """
+            try:
+                return RE.sub_it(
+                    string=self.string.lower(), pattern=RE_REPLACE, repl="_"
+                )
+            except Exception as e:
+                raise ReUtilsError(e)
 
-        def sub_it(self, pattern: str = " -", repl="_") -> (str, None, Exception):
-            """ Return a string with elements of `pattern` replaced with `repl` using python3 built-ins. """
-            retval: str = ""
-            for c in self.string:
-                if c in pattern:
-                    c = repl
-                retval += c
-            return retval
+        def sub_it(self, pattern: re.Pattern = RE_REPLACE, repl: str = "_") -> (str):
+            """ Return a string where items in `pattern` have been replaced with `repl`. """
+            try:
+                return re.sub(pattern=pattern, repl=repl, string=self.string)
+            except Exception as e:
+                raise ReUtilsError(e)
 
-        def split_it(self, delimiter: str = " ") -> (List[str]):
-            """ Return a list of strings formed by spliting a string on each 'delimiter' using python3 built-ins. """
-            return self.string.split(sep=delimiter)
+        def split_it(self, delimiter: str = "\s") -> (str):
+            """ Return a string separated using 'delimiter' using python3 regex. """
+            try:
+                return re.split(pattern=delimiter, string=self.string)
+            except Exception as e:
+                raise ReUtilsError(e)
 
         def clear_all_whitespace(self):
             return self.string.translate({ord(c): None for c in string.whitespace})
@@ -145,37 +143,11 @@ if True:  # * --------------------------------- ReUtils Class
             # self.string = "".join(self.string.split())
 
         def dedupe_whitespace(self):
-            self.string = " ".join(self.string.split())
-
-    if True:  # * --------------------------------- Done
-
-        def sub_it(
-            self, pattern: re.Pattern = RE_REPLACE, repl: str = "_"
-        ) -> (str, None, Exception):
-            """ Return a string where items in `pattern` have been replaced with `repl`. """
-            return re.sub(pattern=pattern, repl=repl, string=self.string)
-
-        def re_pip_safe_name(self) -> (str, None, Exception):
-            """ Return a name that is converted to pypi safe format.
-
-                    Replace ' ' (space) and '-'(hyphen) with _(underscore) using python3 regex
-                    """
-            return RE.sub_it(string=self.string, pattern=RE_REPLACE, repl="_")
-
-        def split_it(self, delimiter: str = "\s") -> (str, None, Exception):
-            """ Return a string separated using 'delimiter' using python3 regex. """
-            return re.split(pattern=delimiter, string=self.string)
-
-        def dedupe_whitespace(self):
             """ Return a string with duplicate whitespace replaced with ' '. """
-            return re.sub(pattern=r"\s+", repl=" ", string=self.string)
+            return re.sub(pattern=r"[\s+]", repl=" ", string=self.string)
 
 
-# * --------------------------------- Strang Class
-
-
-if True:  # * --------------------------------- Tests
-
+def _test():
     test_list1: List[str] = [
         "this is a-test",
         "123_456 789-111",
@@ -196,7 +168,6 @@ if True:  # * --------------------------------- Tests
     for i in range(20):
         test_list.append(random_string(25))
 
-    s: Strang = Strang()
     re_delimiter = r"[\s-]"
     delimiter = r" -"
     print()
@@ -204,7 +175,7 @@ if True:  # * --------------------------------- Tests
         print("---------------------------------")
         print(item)
         print("---------------------------------")
-        s = Strang(item)
+        s = ReUtils(item)
         print("s:        ", s)
         print("repr:     ", repr(s))
         print("split:    ", s.split_it())
@@ -217,3 +188,7 @@ if True:  # * --------------------------------- Tests
         print("camel:    ", s.to_camel_case)
         print("pascal:   ", s.to_pascal_case)
         print("clear:    ", s.clear_all_whitespace())
+
+
+if True == False:  # * --------------------------------- Tests
+    _test()

@@ -10,3 +10,41 @@
     `AutoSys` is licensed under the `MIT License
         `<https://opensource.org/licenses/MIT>`
     """
+
+import string
+from os import linesep
+
+import text_utils
+
+from text_utils import *
+
+from debug.show_all import show_all
+
+__all__ = [
+    "ascii_chars",
+    "datetime",
+    "dunder_it",
+    "fstring_list",
+    "hashed_index",
+    "list_utils",
+    "nowandthen",
+    "pretty_dict",
+    "quoted",
+    "random_string",
+    "re_utils",
+    "str_subclass",
+    "strang",
+    "tfidf_utils",
+]
+NUL: str = chr(0)
+NL: str = linesep
+
+STR_ALPHA: str = string.ascii_letters
+STR_ALPHANUMERIC: str = string.ascii_letters + string.digits
+STR_HEX: str = string.hexdigits
+STR_NAMES: str = string.ascii_letters + " _-"
+STR_WHITESPACE: str = string.whitespace
+STR_PRINTABLE: str = string.printable
+STR_PUNCTUATION: str = string.punctuation
+
+show_all(dir())

@@ -12,6 +12,8 @@
 import string
 from os import linesep
 from random import choice
+from typing import List
+
 
 NUL: str = chr(0)
 NL: str = linesep
@@ -29,3 +31,18 @@ def random_string(string_length=8, pool: str = STR_NAMES):
     """ Returns a string of length 'string_length' made up of characters
         from the string 'pool' """
     return "".join(choice(pool) for _ in range(string_length))
+
+
+__all__: List[str] = [
+    "NL",
+    "NUL",
+    "STR_ALPHA",
+    "STR_ALPHANUMERIC",
+    "STR_HEX",
+    "STR_NAMES",
+    "STR_PRINTABLE",
+    "STR_PUNCTUATION",
+    "STR_WHITESPACE",
+    "random_string",
+    "string",
+]

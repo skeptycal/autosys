@@ -1,3 +1,25 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+""" BasicColors - basic ANSI CLI colors
+
+    Part of the `AutoSys` package - utilities for macOS apps
+        copyright (c) 2019 Michael Treanor
+        https://www.github.com/skeptycal/autosys
+        https://www.twitter.com/skeptycal
+
+    `AutoSys` is licensed under the `MIT License
+        `<https://opensource.org/licenses/MIT>`
+    """
+
+try:
+    SUPPORTS_COLOR == True
+except:
+    try:
+        from cli import SUPPORTS_COLOR
+    except:
+        SUPPORTS_COLOR: bool = False
+
+print(SUPPORTS_COLOR)
 # some basic CLI colors ..
 class BasicColors:
     MAIN: str = "\x1B[38;5;229m" * SUPPORTS_COLOR
@@ -10,6 +32,3 @@ class BasicColors:
     RAIN: str = "\x1B[38;5;93m" * SUPPORTS_COLOR
     WHITE: str = "\x1B[37m" * SUPPORTS_COLOR
     RESET: str = "\x1B[0m" * SUPPORTS_COLOR
-
-
-color = BasicColors()

@@ -9,6 +9,10 @@
         `<https://opensource.org/licenses/MIT>`
     """
 
+from autosys.debug import *
+
+print(dir())
+
 """ Error alternates:
 
     class _Enum_ish(tuple):

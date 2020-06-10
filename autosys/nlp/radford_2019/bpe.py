@@ -10,3 +10,8 @@
     `AutoSys` is licensed under the `MIT License
         `<https://opensource.org/licenses/MIT>`
     """
+
+import string
+from text_utils import *
+
+print(dir())

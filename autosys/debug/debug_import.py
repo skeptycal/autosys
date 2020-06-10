@@ -39,23 +39,9 @@ def stuff(number=0, *args, **kw):
 
 __all__ = ["_debug_", "_debug_it"]
 
-print(stuff(1, "number 1", debug=False))
-print(stuff(0, "number 0", debug=True))
-print(stuff(1, "number 1", debug=5))
-print(stuff(2, "number2", debug=True))
 
-
-"""
-def timeit(method):
-    def timed(*args, **kw):
-        ts = time.time()
-        result = method(*args, **kw)
-        te = time.time()
-        dt = (te - ts) * 1000
-
-        time_list.append({method.__name__: f"{dt:4.4}"})
-        dbprint(time_list[-1])
-        return (result, dt)
-
-    return timed
-"""
+def _test():
+    print(stuff(1, "number 1", debug=False))
+    print(stuff(0, "number 0", debug=True))
+    print(stuff(1, "number 1", debug=5))
+    print(stuff(2, "number2", debug=True))

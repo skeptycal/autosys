@@ -37,143 +37,145 @@ from dataclasses import dataclass, Field, field
 from os import linesep
 from typing import Final, List, Tuple
 
-CASE_LIST: Tuple = ("upper", "lower", "title", "snake", "camel", "pascal")
 
+__all__: List[str] = [
+    "CASE_LIST",
+    "NL",
+    "NUL",
+    "STR_ALPHA",
+    "STR_ALPHANUMERIC",
+    "STR_HEX",
+    "STR_NAMES",
+    "STR_PRINTABLE",
+    "STR_PUNCTUATION",
+    "STR_WHITESPACE",
+    "StrWrapper",
+    "Strang",
+    "random_string",
+    "string",
+]
 
-# * --------------------------------- Strang Class
+CASE_LIST: Tuple[str] = ("upper", "lower", "title", "snake", "camel", "pascal")
 
 
 @dataclass
-class Strang:
+class StrWrapper:
+    """ Generic Wrapper for common Python3 strings.
+
+        :normalize: flag to strip extra whitespace. (default True)
+
+        Contains functions to split, sub, and change case.
+
+        Example:
+
+        ```
+        string:         spaces all over the places
+        repr:      StrWrapper(string='spaces all over the places')
+        split:     ['spaces', 'all', 'over', 'the', 'places']
+        sub:       spaces_all_over_the_places
+        upper:     SPACES ALL OVER THE PLACES
+        lower:     spaces all over the places
+        title:     Spaces All Over The Places
+        snake:     spaces_all_over_the_places
+        kebab:     spaces-all-over-the-places
+        camel:     SpacesAllOverThePlaces
+        pascal:    spacesAllOverThePlaces
+        clear:     spacesallovertheplaces
+        ```
+        """
+
+    string: str = ""
+    normalize: bool = True
+
+    def __post_init__(self):
+        if self.normalize:
+            # remove leading / trailing whitespace
+            self.string = self.string.strip()
+            self.dedupe_whitespace()
+        self._set_cases()
+
+    def __str__(self):
+        return self.string
+
+    def _set_cases(self):
+        """ # TODO not yet implemented
+            Choose a case by mapping the prefix to the methods.
+
+            e.g.
+            ```
+            CASE_LIST = ('upper', 'lower', 'title', 'snake', 'camel', 'pascal')
+
+            _cases = {x: f"self.to_{x}_case" for x in CASE_LIST}
+            ```
+            """
+
+        self._cases = {x: f"self.to_{x}_case" for x in CASE_LIST}
+
+    @property
+    def to_upper_case(self):
+        return self.string.upper()
+
+    @property
+    def to_lower_case(self):
+        return self.string.lower()
+
+    @property
+    def to_title_case(self):
+        return self.string.title()
+
+    @property
+    def to_snake_case(self):
+        return self.sub_it().lower()
+
+    @property
+    def to_kebab_case(self):
+        return self.sub_it(pattern=" _", repl="-").lower()
+
+    @property
+    def to_camel_case(self):
+        return f"{self.string[0].lower()}{''.join([word.title() for word in self.string.split()])[1:]}"
+
+    @property
+    def to_pascal_case(self):
+        return "".join([word.title() for word in self.string.split()])
+
+    def split_it(self, delimiter: str = " ") -> (List[str]):
+        """ Return a list of strings formed by spliting a string on each 'delimiter' using python3 built-ins. """
+        return self.string.split(sep=delimiter)
+
+    def sub_it(self, pattern: str = " -", repl="_") -> (str, None, Exception):
+        """ Return a string with elements of `pattern` replaced with `repl` using python3 built-ins. """
+        retval: str = ""
+        for c in self.string:
+            if c in pattern:
+                c = repl
+            retval += c
+        return retval
+
+    def dedupe_whitespace(self):
+        """ Remove duplicate whitespace. """
+        self.string = " ".join(self.string.split())
+        return self.string
+
+
+@dataclass
+class Strang(StrWrapper):
     """ Wrapper for common Python3 Built-in String Utilities. """
 
-    if True:  # * --------------------------------- Config
-        string: str = ""
+    def __post_init__(self):
+        super().__post_init__()
 
-        def __post_init__(self):
-            # strip whitespace from ends
-            self.string = self.string.strip()
-            # remove duplicate whitespace
-            self.dedupe_whitespace()
-            self._set_cases()
+    def pip_safe_name(self) -> (str):
+        """ Return a name that is converted to pypi safe format.
 
-        def __str__(self):
-            return self.string
+            Replace ' ' (space) and '-'(hyphen) with _(underscore) using python3 built-ins
+            """
+        return self.string.lower().replace("- ", "_")
 
-        def _set_cases(self):
-            """ Choose a case by mapping the prefix to the methods.
-
-                e.g.
-                ```
-                CASE_LIST = ('upper', 'lower', 'title', 'snake', 'camel', 'pascal')
-
-                _cases = {x: f"self.to_{x}_case" for x in CASE_LIST}
-                ```
-                """
-
-            self._cases = {x: f"self.to_{x}_case" for x in CASE_LIST}
-
-    if True:  # * --------------------------------- Cases
-
-        @property
-        def to_upper_case(self):
-            return self.string.upper()
-
-        @property
-        def to_lower_case(self):
-            return self.string.lower()
-
-        @property
-        def to_title_case(self):
-            return self.string.title()
-
-        @property
-        def to_snake_case(self):
-            return self.sub_it().lower()
-
-        @property
-        def to_kebab_case(self):
-            return self.sub_it(pattern=" _", repl="-").lower()
-
-        @property
-        def to_camel_case(self):
-            return "".join([word.title() for word in self.string.split()])
-
-        @property
-        def to_pascal_case(self):
-            return f"{self.string[0].lower()}{''.join([word.title() for word in self.string.split()])[1:]}"
-
-    if True:  # * --------------------------------- Utilities
-
-        def pip_safe_name(self) -> (str):
-            """ Return a name that is converted to pypi safe format.
-
-                Replace ' ' (space) and '-'(hyphen) with _(underscore) using python3 built-ins
-                """
-            return self.string.lower().replace("- ", "_")
-
-        def sub_it(self, pattern: str = " -", repl="_") -> (str, None, Exception):
-            """ Return a string with elements of `pattern` replaced with `repl` using python3 built-ins. """
-            retval: str = ""
-            for c in self.string:
-                if c in pattern:
-                    c = repl
-                retval += c
-            return retval
-
-        def split_it(self, delimiter: str = " ") -> (List[str]):
-            """ Return a list of strings formed by spliting a string on each 'delimiter' using python3 built-ins. """
-            return self.string.split(sep=delimiter)
-
-        def clear_all_whitespace(self):
-            return self.string.translate({ord(c): None for c in string.whitespace})
-            # TODO - which is faster?
-            # self.string = "".join(self.string.split())
-
-        def dedupe_whitespace(self):
-            self.string = " ".join(self.string.split())
+    def clear_all_whitespace(self):
+        return self.string.translate({ord(c): None for c in string.whitespace})
+        # TODO - which is faster?
+        # self.string = "".join(self.string.split())
 
 
-if True:  # * --------------------------------- Tests
-
-    test_list1: List[str] = [
-        "this is a-test",
-        "123_456 789-111",
-        "(361) 773-2832",
-        ";alskjdfpo82jn sdf83nf ",
-    ]
-
-    test_whitespace: List[str] = [
-        "  spaces all      over   the    \n places     \t",
-        "white\t\n\r\x0b\x0cspace",
-        "   fasdf   ",
-        "a   b  c     d  e f g hij k  ",
-    ]
-
-    test_list: List[str] = []
-    test_list.extend(test_whitespace)
-
-    for i in range(20):
-        test_list.append(random_string(25))
-
-    s: Strang = Strang()
-    re_delimiter = r"[\s-]"
-    delimiter = r" -"
-    print()
-    for item in test_list:
-        print("---------------------------------")
-        print(item)
-        print("---------------------------------")
-        s = Strang(item)
-        print("s:        ", s)
-        print("repr:     ", repr(s))
-        print("split:    ", s.split_it())
-        print("sub:      ", s.sub_it())
-        print("upper:    ", s.to_upper_case)
-        print("lower:    ", s.to_lower_case)
-        print("title:    ", s.to_title_case)
-        print("snake:    ", s.to_snake_case)
-        print("kebab:    ", s.to_kebab_case)
-        print("camel:    ", s.to_camel_case)
-        print("pascal:   ", s.to_pascal_case)
-        print("clear:    ", s.clear_all_whitespace())
+from autosys.debug.show_all import show_all

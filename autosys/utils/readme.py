@@ -1,5 +1,4 @@
 from pathlib import Path
-import logging
 
 try:
     DEFAULT_ENCODING
@@ -25,13 +24,6 @@ def readme(filename: str = "readme.md"):
         long_description=readme()
         ```
         """
-    try:
-        log.info(f"Autosys: {__file__} - Begin logging")
-    except:
-        log = logging.Logger(__file__)
-        log.info(f"Autosys: {__file__} - Begin logging")
-    finally:
-        log.info(f"Autosys: {__file__} - Loading readme file: {filename}")
 
     search_list = ["readme.md", "readme.rst", "readme", "readme.txt"]
     if filename not in search_list:

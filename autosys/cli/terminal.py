@@ -4,10 +4,10 @@ from os import linesep as NL, environ as ENV
 from platform import platform
 from io import TextIOWrapper
 from dataclasses import dataclass
-from autosys.log.autosys_logger import *
+from cli import colors
 
 __all__ = [
-    "color",
+    "BaseColors",
     "DEFAULT_COLOR",
     "hr",
     "s80",

@@ -17,26 +17,27 @@ if True:  # ? #################################### package imports.
     import os
     import re
     from dataclasses import dataclass, Field, field
+    from io import TextIOWrapper
     from os import linesep as NL
-    from sys import argv as _argv
-    from setuptools import setup, find_packages
+    from pathlib import Path
+    from sys import argv as _argv, path as PYTHONPATH
     from typing import Dict, Final, List, Optional, Tuple
     from shutil import rmtree as _rmtree
 
+    from setuptools import setup, find_namespace_packages as find_packages
     from autosys.utils.readme import readme
 
-if True:  # ? #################################### packaging utilities.
+    here = Path(__file__).resolve().parent
+    if here not in PYTHONPATH:
+        PYTHONPATH.append(here)
 
     DEFAULT_RE_FLAGS: Final[int] = re.MULTILINE | re.IGNORECASE
-    print(DEFAULT_RE_FLAGS)
 
     RE_VERSION: re.Pattern = re.compile(
-        pattern=r'^__version__\s?=\s?[\'"]([^\'"]*)[\'"]',
-        flags=re.MULTILINE | re.IGNORECASE,
+        pattern=r'^__version__\s?=\s?[\'"]([^\'"]*)[\'"]', flags=DEFAULT_RE_FLAGS,
     )
-    RE_PYPI_REPLACE: re.Pattern = re.compile(
-        pattern=r"\s-", flags=re.MULTILINE | re.IGNORECASE
-    )
+
+if True:  # ? #################################### packaging utilities.
 
     def pip_safe_name(s: str):
         """ Return a name that is converted to pypi safe format. """
@@ -54,102 +55,16 @@ if True:  # ? #################################### packaging utilities.
             val = str(v)[:value_size]
             print(f"{indent*' '}{k:<{key_size}.{key_size}}{divider}{val}")
 
-    # TODO - split off this class to a module ---------------------------------->>
-
-    @dataclass
-    class ReGetFileField:
-        """ Return a string that matches `pattern` from `file_name`.
-
-            file_name: str - a text file containing the `pattern`
-            pattern: re.Pattern - a precompiled regex `pattern`
-            default: str - a default value used if `pattern` is not found
-
-
-            __version__ = 'version_string'
-
-
-            - if there is a file error, Re_File_Error is raised
-            - if there is a matching error, the `default` is returned
-            - if there is a matching error and no default is provided,
-                a Re_Value_Error is raised
-            """
-
-        file_name: str
-        pattern: re.Pattern
-        default: str
-        _result: str = ""
-
-        def __post_init__(self):
-            self._result: str = ""
-
-        @property
-        def get_file_contents(self) -> (str, Exception):
-            """ Wrapper for logging and error handling of file opening. """
-            try:
-                with open(self.file_name, "r") as fh:
-                    return fh.read()
-            except Exception as e:
-                msg = f"File error while opening file '{file_name}'{NL}{e.args}"
-                log.error(msg, e)
-                raise Re_File_Error(msg, e)
-
-        @property
-        def get_data(self) -> (str, Exception):
-            data = self.get_file_contents
-            try:
-                self._result = self.pattern.search(data).groups()[0] or self.default
-                return self._result
-            except (ValueError, KeyError, AttributeError, TypeError) as e:
-                if self.default:
-                    self._result = self.default
-                    return self._result
-                raise Re_Value_Error(
-                    f"Pattern '{pattern}' not found in file '{file_name}'", e
-                )
-            except Exception as e:
-                log(e)
-                raise Re_Value_Error(
-                    f"Error occurred while searching for pattern '{pattern}' in file '{file_name}'",
-                    e,
-                )
-            return self._result
-
-        def __str__(self):
-            if not self._result:
-                self._result = self.get_data
-            return self._result
-
-    # TODO - split off this class to a module <<--------------------------------
-    @dataclass
-    class GetVersion(ReGetFileField):
-        """ Return a version number from a file.
-
-            A line in the text file must match this pattern:
-
-            __version__ = 'version_string'
-
-            - version_string can be any valid text
-            - the entire search string must start at the start of a line
-            - the format of the 'version_string' part is *not* checked
-            - the __version__ part shall have underscores
-            - the `=` may use optional spaces
-            - version_string shall use either single or double quotes
-            - if there is a file error, the 'default' value is used
-            """
-
-        file_name = "VERSION.txt"
-        pattern = RE_VERSION
-        default = "0.0.1"
-        _result = ""
-
-    getversion = GetVersion("VERSION.txt", RE_VERSION, "0.0.1")
+    version = str(
+        ReExtract(file_name="VERSION.txt", pattern=RE_VERSION, default="0.0.1")
+    )
 
 
 if True:  # ? #################################### package meta-data.
     # VERSION_INFO = VERSION.split(".")
     NAME: str = pip_safe_name("AutoSys")
 
-    VERSION: str = getversion
+    VERSION: str = version  # "0.4.4"
     DESCRIPTION: str = "System utilities for Python on macOS."
     EMAIL: str = "skeptycal@gmail.com"
     AUTHOR: str = "Michael Treanor"
@@ -227,38 +142,37 @@ if True:  # ? #################################### package meta-data.
         "logging",
         "logger",
     ]
-    CLASSIFIERS = (
-        [
-            "Development Status :: 4 - Beta",
-            "License :: OSI Approved :: MIT License",
-            "Environment :: Console",
-            "Environment :: MacOS X",
-            "Intended Audience :: Developers",
-            "Natural Language :: English",
-            "Operating System :: MacOS",
-            "Operating System :: OS Independent",
-            "Programming Language :: Cython",
-            "Programming Language :: Python",
-            "Programming Language :: Python :: 3 :: Only",
-            "Programming Language :: Python :: 3",
-            # These are the Python versions tested; it may work on others
-            "Programming Language :: Python :: 3.8",
-            "Programming Language :: Python :: 3.9",
-            "Programming Language :: Python :: 3.10",
-            "Programming Language :: Python :: Implementation :: CPython",
-            "Programming Language :: Python :: Implementation :: PyPy",
-            "Topic :: Software Development :: Libraries :: Python Modules",
-            "Topic :: Software Development :: Testing",
-            "Topic :: Utilities",
-        ],
-    )
+    CLASSIFIERS = [
+        "Development Status :: 4 - Beta",
+        "License :: OSI Approved :: MIT License",
+        "Environment :: Console",
+        "Environment :: MacOS X",
+        "Intended Audience :: Developers",
+        "Natural Language :: English",
+        "Operating System :: MacOS",
+        "Operating System :: OS Independent",
+        "Programming Language :: Cython",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3 :: Only",
+        "Programming Language :: Python :: 3",
+        # These are the Python versions tested; it may work on others
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: Implementation :: CPython",
+        "Programming Language :: Python :: Implementation :: PyPy",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+        "Topic :: Software Development :: Testing",
+        "Topic :: Utilities",
+    ]
 
 
 def main(args=_argv[1:],):  # ? #################################### package Setup!
     if _debug_:
         _vars
         print(f"{NAME=}")
-        print(f"{version()=}")
+        print(f"{version=}")
+        print(f"{type(version)=}")
         print(f"{VERSION=}")
         # print(table_dict(k))
 
