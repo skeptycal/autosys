@@ -1,12 +1,8 @@
 # [AutoSys][1]
 
-[![netlify badge](https://api.netlify.com/api/v1/badges/416b8ca3-82db-470f-9adf-a6d06264ca75/deploy-status)][link_netlify]
+[![netlify badge](https://api.netlify.com/api/v1/badges/416b8ca3-82db-470f-9adf-a6d06264ca75/deploy-status)][link_netlify] [![Build Status](https://travis-ci.com/skeptycal/autosys.svg?branch=master)][link_travis]
 
-[![Build Status](https://travis-ci.com/skeptycal/autosys.svg?branch=master)][link_travis]
-
-[![Twitter Follow](https://img.shields.io/twitter/follow/skeptycal.svg?style=social)][link_twitter]
-
-[![GitHub followers](https://img.shields.io/github/followers/skeptycal.svg?label=GitHub&style=social)][link_github]
+[![Twitter Follow](https://img.shields.io/twitter/follow/skeptycal.svg?style=social)][link_twitter] [![GitHub followers](https://img.shields.io/github/followers/skeptycal.svg?label=GitHub&style=social)][link_github]
 
 ---
 
