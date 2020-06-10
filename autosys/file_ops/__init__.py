@@ -10,3 +10,6 @@
     `AutoSys` is licensed under the `MIT License
         `<https://opensource.org/licenses/MIT>`
     """
+
+from autosys.log import autosys_logger
+from autosys.log.autosys_logger import *

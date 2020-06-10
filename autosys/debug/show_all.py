@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" `AutoSys` package
+""" # TODO -- @update `AutoSys` package
         copyright (c) 2018 Michael Treanor
         https://www.github.com/skeptycal/autosys
         https://www.twitter.com/skeptycal
@@ -15,6 +15,7 @@ _blacklist = [
     "List",
     "arepl_store",
     "choice",
+    "get_all",
     "help",
     "howdoi",
     "input",

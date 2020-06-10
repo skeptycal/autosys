@@ -10,8 +10,3 @@
     `AutoSys` is licensed under the `MIT License
         `<https://opensource.org/licenses/MIT>`
     """
-
-from autosys.cli.supports_color import *
-
-print(SUPPORTS_COLOR)
-print(dir())

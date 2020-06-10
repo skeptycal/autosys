@@ -11,33 +11,20 @@
         `<https://opensource.org/licenses/MIT>`
     """
 
+import dataclasses
+import json
+import os
 import string
-from os import linesep
 
-import text_utils
+from os import linesep as NL
+from dataclasses import dataclass, field, Field
 
-from text_utils import *
+from autosys.debug import show_all
+from autosys.debug.show_all import show_all as get_all
 
-from debug.show_all import show_all
+from typing import Dict, List
 
-__all__ = [
-    "ascii_chars",
-    "datetime",
-    "dunder_it",
-    "fstring_list",
-    "hashed_index",
-    "list_utils",
-    "nowandthen",
-    "pretty_dict",
-    "quoted",
-    "random_string",
-    "re_utils",
-    "str_subclass",
-    "strang",
-    "tfidf_utils",
-]
 NUL: str = chr(0)
-NL: str = linesep
 
 STR_ALPHA: str = string.ascii_letters
 STR_ALPHANUMERIC: str = string.ascii_letters + string.digits
@@ -47,4 +34,21 @@ STR_WHITESPACE: str = string.whitespace
 STR_PRINTABLE: str = string.printable
 STR_PUNCTUATION: str = string.punctuation
 
-show_all(dir())
+# show_all(dir())
+get_all(vars())
+# __all__ = [
+#     "ascii_chars",
+#     "datetime",
+#     "dunder_it",
+#     "fstring_list",
+#     "hashed_index",
+#     "list_utils",
+#     "nowandthen",
+#     "pretty_dict",
+#     "quoted",
+#     "random_string",
+#     "re_utils",
+#     "str_subclass",
+#     "strang",
+#     "tfidf_utils",
+# ]

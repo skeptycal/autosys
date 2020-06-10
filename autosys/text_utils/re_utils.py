@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" `AutoSys` package
+""" # TODO -- @update `AutoSys` package
         copyright (c) 2018 Michael Treanor
         https://www.github.com/skeptycal/autosys
         https://www.twitter.com/skeptycal
@@ -28,7 +28,6 @@
         [ord(x) for x in STR_PRINTABLE]=[48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 58, 59, 60, 61, 62, 63, 64, 91, 92, 93, 94, 95, 96, 123, 124, 125, 126, 32, 9, 10, 13, 11, 12]
         """
 
-
 # * --------------------------------- Imports and Constants
 
 from random_string import *
@@ -45,10 +44,12 @@ CASE_LIST: Tuple = ("upper", "lower", "title", "snake", "camel", "pascal")
 DEFAULT_RE_FLAGS: Final[int] = re.MULTILINE | re.IGNORECASE
 
 RE_VERSION: re.Pattern = re.compile(
-    pattern=r'^__version__\s?=\s?[\'"]([^\'"]*)[\'"]', flags=DEFAULT_RE_FLAGS,
+    pattern=r'^__version__\s?=\s?[\'"]([^\'"]*)[\'"]',
+    flags=DEFAULT_RE_FLAGS,
 )
 
-RE_REPLACE: Final[re.Pattern] = re.compile(pattern=r"[-\s]", flags=DEFAULT_RE_FLAGS)
+RE_REPLACE: Final[re.Pattern] = re.compile(pattern=r"[-\s]",
+                                           flags=DEFAULT_RE_FLAGS)
 
 
 class ReUtilsError(Exception):
@@ -117,13 +118,15 @@ if True:  # * --------------------------------- ReUtils Class
                 Replace ' ' (space) and '-'(hyphen) with _(underscore) using python3 regex
                 """
             try:
-                return RE.sub_it(
-                    string=self.string.lower(), pattern=RE_REPLACE, repl="_"
-                )
+                return RE.sub_it(string=self.string.lower(),
+                                 pattern=RE_REPLACE,
+                                 repl="_")
             except Exception as e:
                 raise ReUtilsError(e)
 
-        def sub_it(self, pattern: re.Pattern = RE_REPLACE, repl: str = "_") -> (str):
+        def sub_it(self,
+                   pattern: re.Pattern = RE_REPLACE,
+                   repl: str = "_") -> (str):
             """ Return a string where items in `pattern` have been replaced with `repl`. """
             try:
                 return re.sub(pattern=pattern, repl=repl, string=self.string)
@@ -138,7 +141,9 @@ if True:  # * --------------------------------- ReUtils Class
                 raise ReUtilsError(e)
 
         def clear_all_whitespace(self):
-            return self.string.translate({ord(c): None for c in string.whitespace})
+            return self.string.translate(
+                {ord(c): None
+                 for c in string.whitespace})
             # TODO - which is faster?
             # self.string = "".join(self.string.split())
 

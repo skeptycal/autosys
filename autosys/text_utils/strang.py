@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" `AutoSys` package
+""" # TODO -- @update `AutoSys` package
         copyright (c) 2018 Michael Treanor
         https://www.github.com/skeptycal/autosys
         https://www.twitter.com/skeptycal
@@ -28,7 +28,6 @@
         [ord(x) for x in STR_PRINTABLE]=[48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 58, 59, 60, 61, 62, 63, 64, 91, 92, 93, 94, 95, 96, 123, 124, 125, 126, 32, 9, 10, 13, 11, 12]
         """
 
-
 # * --------------------------------- Imports and Constants
 
 from random_string import *
@@ -36,7 +35,6 @@ from random_string import *
 from dataclasses import dataclass, Field, field
 from os import linesep
 from typing import Final, List, Tuple
-
 
 __all__: List[str] = [
     "CASE_LIST",
@@ -161,7 +159,6 @@ class StrWrapper:
 @dataclass
 class Strang(StrWrapper):
     """ Wrapper for common Python3 Built-in String Utilities. """
-
     def __post_init__(self):
         super().__post_init__()
 

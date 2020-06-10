@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-""" `AutoSys` package
+""" # TODO -- @update `AutoSys` package
         copyright (c) 2018 Michael Treanor
         https://www.github.com/skeptycal/autosys
         https://www.twitter.com/skeptycal
@@ -14,8 +13,6 @@
 
 from codecs import open as codec_open
 from pathlib import Path
-
-from autosys.log.autosys_logger import *
 
 HERE = Path(__file__).resolve().parent
 
@@ -46,8 +43,6 @@ def load_file_contents(file_path, as_list=True):
 
 
 print(load_file_contents("codec_open.py", as_list=False))
-
-
 """ LICENSE_BSD
 
  BSD 2-Clause License

@@ -9,9 +9,7 @@
         `<https://opensource.org/licenses/MIT>`
     """
 
-from autosys.debug import *
 
-print(dir())
 
 """ Error alternates:
 

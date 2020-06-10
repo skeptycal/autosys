@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" `AutoSys` package
+""" # TODO -- @update `AutoSys` package
         copyright (c) 2018 Michael Treanor
         https://www.github.com/skeptycal/autosys
         https://www.twitter.com/skeptycal
@@ -13,7 +13,6 @@ import string
 from os import linesep
 from random import choice
 from typing import List
-
 
 NUL: str = chr(0)
 NL: str = linesep
