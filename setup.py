@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" `AutoSys` package
-        copyright (c) 2018 Michael Treanor
-        https://www.github.com/skeptycal/autosys
-        https://www.twitter.com/skeptycal
+""" AutoSys Setup
+    ---
+    Part of the [AutoSys][1] package
 
-    `AutoSys` is licensed under the `MIT License
-        `<https://opensource.org/licenses/MIT>`
+    Copyright (c) 2018 [Michael Treanor][2]
+
+    AutoSys is licensed under the [MIT License][3]
+
+    [1]: https://www.github.com/skeptycal/autosys
+    [2]: https://www.twitter.com/skeptycal
+    [3]: https://opensource.org/licenses/MIT
     """
 
 if True:  # ? #################################### package imports.
@@ -17,7 +21,6 @@ if True:  # ? #################################### package imports.
     import os
     import re
     from dataclasses import dataclass, Field, field
-    from io import TextIOWrapper
     from os import linesep as NL
     from pathlib import Path
     from sys import argv as _argv, path as PYTHONPATH
@@ -26,16 +29,14 @@ if True:  # ? #################################### package imports.
 
     from setuptools import setup, find_namespace_packages as find_packages
     from autosys.utils.readme import readme
+    from autosys.regex_utils.re_extract import *
 
     here = Path(__file__).resolve().parent
     if here not in PYTHONPATH:
         PYTHONPATH.append(here)
 
-    DEFAULT_RE_FLAGS: Final[int] = re.MULTILINE | re.IGNORECASE
+    log = logging.getLogger(__name__)
 
-    RE_VERSION: re.Pattern = re.compile(
-        pattern=r'^__version__\s?=\s?[\'"]([^\'"]*)[\'"]', flags=DEFAULT_RE_FLAGS,
-    )
 
 if True:  # ? #################################### packaging utilities.
 
@@ -56,15 +57,17 @@ if True:  # ? #################################### packaging utilities.
             print(f"{indent*' '}{k:<{key_size}.{key_size}}{divider}{val}")
 
     version = str(
-        ReExtract(file_name="VERSION.txt", pattern=RE_VERSION, default="0.0.1")
+        ReExtract(file_name="VERSION.txt",
+                  pattern=RE_VERSION,
+                  default="0.0.1")
     )
 
 
 if True:  # ? #################################### package meta-data.
-    # VERSION_INFO = VERSION.split(".")
     NAME: str = pip_safe_name("AutoSys")
 
     VERSION: str = version  # "0.4.4"
+    VERSION_INFO: Tuple[int] = VERSION.split(".")
     DESCRIPTION: str = "System utilities for Python on macOS."
     EMAIL: str = "skeptycal@gmail.com"
     AUTHOR: str = "Michael Treanor"
@@ -167,14 +170,13 @@ if True:  # ? #################################### package meta-data.
     ]
 
 
-def main(args=_argv[1:],):  # ? #################################### package Setup!
+def main(args=_argv[1:],):  # ? ############################## Setup!
     if _debug_:
-        _vars
         print(f"{NAME=}")
         print(f"{version=}")
         print(f"{type(version)=}")
         print(f"{VERSION=}")
-        # print(table_dict(k))
+        # print(table_dict(_vars))
 
     else:
         setup(
@@ -205,7 +207,6 @@ def main(args=_argv[1:],):  # ? #################################### package Set
 
 
 _vars = vars()
-_vars = locals()
 if __name__ == "__main__":
-    _debug_: bool = True
+    _debug_: bool = False
     main()
