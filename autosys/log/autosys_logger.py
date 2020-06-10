@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 """ Logger
     ---
-    logger - A wrapper class to setup common logging functions.
+    logger - A wrapper class to setup common logging functions using a fork
+    of the python 3.8.3 `logging` module
 
     AutoSys
     ---
@@ -16,9 +17,10 @@
     [2]: https://www.twitter.com/skeptycal
     [3]: https://opensource.org/licenses/MIT
     """
-
 import re
-import logging
+# import logging
+from autosys import log as logging  # modified fork from python 3.8.3
+
 from locale import getpreferredencoding
 from dataclasses import dataclass
 from typing import AbstractSet, Dict, Final, List, Mapping, Tuple
@@ -32,8 +34,10 @@ DEFAULT_ENCODING: str = getpreferredencoding(True)
 DEFAULT_LOG_FORMAT = "%(levelname)-8s %(name)s:%(filename)s:%(lineno)d %(message)s"
 DEFAULT_LOG_DATE_FORMAT = "%H:%M:%S"
 
-RE_ANSI_ESCAPE_SEQ = re.compile(r"\x1b\[[\d;]+m",flags=re.IGNORECASE|re.DOTALL|re.MULTILINE,)
-
+RE_ANSI_ESCAPE_SEQ = re.compile(
+    r"\x1b\[[\d;]+m",
+    flags=re.IGNORECASE | re.DOTALL | re.MULTILINE,
+)
 
 
 def _remove_ansi_escape_sequences(text):
@@ -59,9 +63,11 @@ class LogColors:
     DEBUG: str = BasicColors.RAIN
     NOTSET: str = BasicColors.RESET
 
+
 class VarTester:
     indent: int = 2
     indent_char: str = ' '
+
 
 def log_var(obj_name: str = '__name__', indent: int = 2):
     """ Log Variable
@@ -75,22 +81,27 @@ def log_var(obj_name: str = '__name__', indent: int = 2):
         - variable contents
         """
     obj: object = f"{obj_name}"
-    ind: str = ' '*indent
+    ind: str = ' ' * indent
     if hasattr(obj_name, 'iter'):
         print('iter')
     try:
-        logger.info(f"{ind}Variable - {obj_name}({obj_name.__class__}): {eval(obj_name)}")
+        logger.info(
+            f"{ind}Variable - {obj_name}({obj_name.__class__}): {eval(obj_name)}"
+        )
     except:
         pass
     try:
-        print(f"{ind}Variable - {obj_name}({obj_name.__class__}): {eval(obj_name)}")
+        print(
+            f"{ind}Variable - {obj_name}({obj_name.__class__}): {eval(obj_name)}"
+        )
     except:
         pass
 
+
 def _test_log_var(*args):
-    print('='*50)
+    print('=' * 50)
     print('log_var testing')
-    print('-'*50)
+    print('-' * 50)
     log_var('DEFAULT_ENCODING')
 
     log_var()
@@ -105,10 +116,10 @@ def _test_log_var(*args):
         except:
             log_var(f"'{arg}'")
         ind -= 2
-    print('-'*50)
+    print('-' * 50)
 
 
-def _test_logger(debug:bool = False):
+def _test_logger(debug: bool = False):
     logger.debug("debug message")
     logger.info("info message")
     logger.warning("warn message")
@@ -121,9 +132,6 @@ def _test_logger(debug:bool = False):
 
 
 _test_logger(True)
-
-
-
 
 # # from pytest.logging.py
 # class ColoredLevelFormatter(logging.Formatter):
@@ -172,7 +180,6 @@ _test_logger(True)
 #         self._style._fmt = fmt
 #         return super().format(record)
 
-
 # @dataclass
 # class Log():
 #     logger: object
@@ -191,9 +198,6 @@ _test_logger(True)
 #         return self.logger
 #     # def __getattribute__(self, name):
 #     #     return self.logger.__getattribute__(name)
-
-
-
 
 # create console handler and set level to debug
 # handler = logging.StreamHandler()
