@@ -1,14 +1,32 @@
-from typing import NamedTuple, Sequence, Tuple
-from sys import stdout
-from os import linesep as NL, environ as ENV
-from platform import platform
-from io import TextIOWrapper
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+""" Logger
+    ---
+    logger - A wrapper class to setup common logging functions.
+
+    AutoSys
+    ---
+    Part of the [AutoSys][1] package
+
+    Copyright (c) 2018 [Michael Treanor][2]
+
+    AutoSys is licensed under the [MIT License][3]
+
+    [1]: https://www.github.com/skeptycal/autosys
+    [2]: https://www.twitter.com/skeptycal
+    [3]: https://opensource.org/licenses/MIT
+    """
+
+# from typing import NamedTuple, Sequence, Tuple
+# from sys import stdout
+# from os import linesep as NL, environ as ENV
+# from platform import platform
+# from io import TextIOWrapper
 from dataclasses import dataclass
+from os import linesep as NL
 
-from autosys.debug.dbprint import *
-
-PLATFORM = platform()
-DEFAULT_COLOR = "MAIN"
+from autosys.cli.supports_color import *
+# PLATFORM = platform()
 
 
 @dataclass
@@ -57,42 +75,39 @@ class BasicColors:
     RESET: str = "\x1B[0m" * SUPPORTS_COLOR
 
 
-color = BasicColors()
+DEFAULT_COLOR = BasicColors.MAIN
+
+
+class Color:
+    name: str
+    level: int
+    color: str
 
 
 @dataclass
 class LogColors:
-    LC_50: str = color.WARN
-    LC_40: str = color.ATTN
-    LC_30: str = color.CANARY
-    LC_20: str = color.BLUE
-    LC_10: str = color.GO
+    CRITICAL: Color = ('Critical', 50, BasicColors.WARN)
+    FATAL: Color = ('Fatal', 50, BasicColors.WARN)
+    ERROR: Color = ('Error', 40, BasicColors.ATTN)
+    WARNING: Color = ('Warning', 30, BasicColors.CANARY)
+    INFO: Color = ('Info', 20, BasicColors.GO)
+    DEBUG: Color = ('Debug', 10, BasicColors.RAIN)
+    NOTSET: Color = ('NotSet', 0, BasicColors.RESET)
 
-    def str(self):
-        print(self.LC_50, f"{self.LC_50}color")
+    FATAL: str = CRITICAL
+    WARN: str = WARNING
+
+    def __str__(self):
+        print(self.__dict__)
+        for c in self.__dict__:
+            print(c)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+        return ''
+
+        # return NL.join([
+        #     f"logger color {c.color}{c.name}{self.NOTSET}{c.level}"
+        #     for c in self.__dict__ if not isinstance(c, Color)
+        # ])
 
 
-lc = LogColors()
-
-if __name__ == "__main__":
-    from pprint import pprint
-
-    def _test_terminal_():
-
-        hr()
-        log.var("PLATFORM")
-        log.var("term")
-        log.var("term.SUPPORTS_COLOR")
-        log.var("SUPPORTS_COLOR")
-        log.var("term._stream")
-        log.var("term._SIZE")
-        log.var("term.SIZE")
-        log.info(f"Terminal SIZE is set to ({term.cols}, {term.rows})")
-        hr()
-        print(str(lc))
-        print(lc.str())
-        print(dir(lc))
-
-        # term._show_debug_info()
-
-    _test_terminal_()
+print(LogColors())
