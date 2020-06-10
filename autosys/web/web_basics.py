@@ -2,6 +2,21 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
+import sys
+from collections import deque
+from contextlib import closing
+from dataclasses import dataclass
+from logging import Logger
+from os import environ as ENV, linesep as NL
+from pprint import PrettyPrinter
+from sys import argv, stderr, stdout
+from typing import Any, Deque, Dict, List, Tuple
+
+from requests import get
+from requests.exceptions import RequestException
+
+from bs4 import BeautifulSoup
+
 """ web_basics.py - basic web scraping tools
 
     copyright (c) 2019 Michael Treanor
@@ -9,19 +24,7 @@ from __future__ import absolute_import
     https://www.twitter.com/skeptycal
     """
 
-import sys
-from collections import deque
-from contextlib import closing
-from dataclasses import dataclass
-from logging import Logger
-from os import linesep as NL, environ as ENV
-from pprint import PrettyPrinter
-from sys import argv, stdout, stderr
-from typing import Any, Deque, Dict, List, Tuple
 
-from requests import get
-from requests.exceptions import RequestException
-from bs4 import BeautifulSoup
 
 try:
     import lxml as parser

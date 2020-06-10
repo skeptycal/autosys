@@ -11,16 +11,15 @@
         `<https://opensource.org/licenses/MIT>`
     """
 
-from dataclasses import dataclass, field, Field
-from io import TextIOWrapper
-from os import linesep as NL
-from pathlib import Path
-import tempfile
 import shutil
 import sys
-from typing import Any, Deque, Dict, Final, List, Sequence, Set, Tuple
+import tempfile
+from dataclasses import Field, dataclass, field
+from io import TextIOWrapper
 from locale import getpreferredencoding
-from contextlib import
+from os import linesep as NL
+from pathlib import Path
+from typing import Any, Deque, Dict, Final, List, Sequence, Set, Tuple
 
 from autosys.text_utils.nowandthen import now
 

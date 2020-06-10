@@ -33,20 +33,20 @@ format. Automation services are also available.
 
 """
 
+import sys
+import threading
 # builtins
 import time
-from multiprocessing import Process, Queue, Pool, Manager
-import threading
 from dataclasses import dataclass
-import sys
 from datetime import datetime
+from multiprocessing import Manager, Pool, Process, Queue
 
+import pandas as pd
 # third party packages
 import requests
-from bs4 import BeautifulSoup
-import pandas as pd
-from autosys.text_utils.nowandthen import now
 
+from autosys.text_utils.nowandthen import now
+from bs4 import BeautifulSoup
 
 __author__ = "Michael Treanor"
 __email__ = "skeptycal@gmail.com"

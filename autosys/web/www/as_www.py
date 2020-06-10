@@ -6,10 +6,10 @@
 # https://www.twitter.com/skeptycal
 # from __future__ import absolute_import, print_function
 
-import sys
 import os
-import requests
+import sys
 
+import requests
 
 CONNECT_ERRORS = (
     ConnectionError,

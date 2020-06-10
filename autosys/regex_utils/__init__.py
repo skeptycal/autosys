@@ -18,9 +18,9 @@
     """
 
 import re
-from os import linesep as NL
-from dataclasses import dataclass, field, Field
+from dataclasses import Field, dataclass, field
 from io import TextIOWrapper
+from os import linesep as NL
 from typing import Final, List
 
 from autosys.exceptions.exceptions import Re_File_Error, Re_Value_Error

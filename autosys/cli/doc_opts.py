@@ -26,7 +26,6 @@ Options:
 """
 
 from docopt import docopt
-from autosys
 
 if __name__ == "__main__":
     test_args: List[str] = [ "--verbose", "--help" ]

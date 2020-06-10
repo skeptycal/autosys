@@ -1,5 +1,5 @@
-from os import linesep as NL
 import re
+from os import linesep as NL
 
 RE_DEFAULT_BITE_SIZE = 5
 RE_DEFAULT_FLAGS = re.MULTILINE

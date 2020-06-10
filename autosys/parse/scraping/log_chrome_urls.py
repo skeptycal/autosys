@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-import platform, os, sys, subprocess
+import os
+import platform
+import subprocess
+import sys
+
 import requests
+
 url_log = ~/.url_log.log
 
 def getURL():

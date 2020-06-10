@@ -5,10 +5,10 @@
 # https://www.github.com/skeptycal
 # https://www.twitter.com/skeptycal
 
-from dataclasses import dataclass, field
-from pathlib import Path
 import os
 import shutil
+from dataclasses import dataclass, field
+from pathlib import Path
 
 from autosys.exceptions import BaseFileError
 

@@ -15,14 +15,12 @@ import dataclasses
 import json
 import os
 import string
-
+from dataclasses import Field, dataclass, field
 from os import linesep as NL
-from dataclasses import dataclass, field, Field
+from typing import Dict, List
 
 from autosys.debug import show_all
 from autosys.debug.show_all import show_all as get_all
-
-from typing import Dict, List
 
 NUL: str = chr(0)
 

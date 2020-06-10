@@ -12,10 +12,11 @@ import os
 import sys
 import tempfile
 
+import autosys.parsing.file_ops.file_class
+
 # from io import StringIO
 # from pathlib import Path
 
-import autosys.parsing.file_ops.file_class
 
 
 # !------------------------------------- Dev and Debugging

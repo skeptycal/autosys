@@ -13,35 +13,17 @@
 
 # * ------------------------------------------- Common Imports
 
-from os import linesep as NL, sep as PATHSEP, environ as ENV
+import logging
+from os import environ as ENV, linesep as NL, sep as PATHSEP
 from pathlib import Path
 from platform import (
-    platform,
-    system as WHICH_OS,
-    python_implementation as WHICH_PY,
-)
+    platform, python_implementation as WHICH_PY, system as WHICH_OS,)
 from pprint import pformat
 from sys import (
-    stdout,
-    stderr,
-    argv,
-    path as PYTHON_PATH,
-    version_info,
-    maxsize,
-)
+    argv, maxsize, path as PYTHON_PATH, stderr, stdout, version_info,)
 from typing import (
-    Any,
-    Dict,
-    Final,
-    Iterable,
-    List,
-    NamedTuple,
-    Sequence,
-    Tuple,
-)
-import logging
+    Any, Dict, Final, Iterable, List, NamedTuple, Sequence, Tuple,)
 
-# package and version data
 from autosys._version import *
 
 # * ------------------------------------------- Common Constants

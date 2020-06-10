@@ -12,12 +12,13 @@
 
 # TODO - this is just a rough idea ... not yet implemented ... not functional
 
-from profiling.timeit import *
-from io import TextIOWrapper
 import sys
+from io import TextIOWrapper
 from typing import List
+
 from cli.anansi import *
-from dev.debug import logit, log
+from dev.debug import log, logit
+from profiling.timeit import *
 
 LOG_FILE: TextIOWrapper = sys.stdout
 __all__: List[str] = []

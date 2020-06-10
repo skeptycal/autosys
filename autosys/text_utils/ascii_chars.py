@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from pprint import pformat
+
 import text_utils
 from text_utils import *
-from pprint import pformat
+
 
 @dataclass
 class Ascii_Chars(dict):

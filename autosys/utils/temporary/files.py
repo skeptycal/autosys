@@ -1,9 +1,8 @@
 import os
 import tempfile
 
-import pathlib2 as pathlib
 import contextlib2 as contextlib
-
+import pathlib2 as pathlib
 import temporary.util
 
 

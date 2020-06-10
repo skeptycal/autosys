@@ -2,9 +2,9 @@
 # -*- coding: UTF-8 -*-
 
 import re
-import requests
 from collections import Counter
 
+import requests
 
 SET_DEBUG: bool = True
 RE_document_article = "^\b*"

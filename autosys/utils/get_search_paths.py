@@ -17,7 +17,10 @@
 __author__ = "Microsoft Corporation <ptvshelp@microsoft.com>"
 __version__ = "3.2"
 
+import os
+import site
 import sys
+import zipfile
 
 # HACK: macOS sets __cached__ to None for __main__
 # but site.main() cannot handle it. So we force it to a str.
@@ -28,7 +31,6 @@ if "site" in sys.modules:
 
 BEFORE_SITE = list(sys.path)
 
-import site
 
 try:
     site.main()
@@ -38,7 +40,6 @@ except:
     traceback.print_exc(file=sys.stderr)
 AFTER_SITE = list(sys.path)
 
-import os
 
 
 def clean(path):
@@ -74,7 +75,6 @@ for prefix in [
 BEFORE_SITE.discard(None)
 AFTER_SITE.discard(None)
 
-import zipfile
 
 for p in sys.path:
     p = clean(p)

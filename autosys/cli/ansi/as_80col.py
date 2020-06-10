@@ -7,10 +7,11 @@
 
 
 import fileinput
-import sys
 import pathlib
+import sys
 import textwrap
 from typing import List
+
 from autosys.as_constants import DEFAULT
 
 

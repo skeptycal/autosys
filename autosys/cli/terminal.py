@@ -17,12 +17,12 @@
     [3]: https://opensource.org/licenses/MIT
     """
 
-from typing import NamedTuple, Sequence, Tuple
-from sys import stdout
-from os import linesep as NL, environ as ENV
-from platform import platform
+from dataclasses import Field, dataclass, field
 from io import TextIOWrapper
-from dataclasses import dataclass
+from os import environ as ENV, linesep as NL
+from platform import platform
+from sys import stdout
+from typing import NamedTuple, Sequence, Tuple
 
 __all__ = [
     "BasicColors",
@@ -43,7 +43,6 @@ PLATFORM = platform()
 DEFAULT_COLOR = "MAIN"
 CR: str = "\r"
 
-
 if True:  # !------------------------ CLI display utilities
 
     def hr(s: str = "-", width: int = 50, print_it: bool = True):
@@ -63,7 +62,7 @@ if True:  # !------------------------ CLI display utilities
             ---
             n - number of line breaks
             """
-        print(NL*n, end ='')
+        print(NL * n, end='')
 
     def s80(s: str = "=", n: int = 1):
         """ string80
@@ -73,7 +72,7 @@ if True:  # !------------------------ CLI display utilities
             n - number of times to print it
             """
         for _ in range(n):
-            print(s*79)
+            print(s * 79)
 
     def vprint(var_name: str, print_it: bool = True):
         fmt = f"{var_name}"
@@ -95,6 +94,7 @@ if True:  # !------------------------ CLI display utilities
         except:
             pass
         print(CR, *args, **kwargs)
+
 
 @dataclass
 class Terminal:  # !------------------------ Terminal Class
@@ -168,11 +168,8 @@ class Terminal:  # !------------------------ Terminal Class
 
         try:
             print(1 / 0)
-            cr = (
-                self._ioctl_get_win_size(0)
-                or self._ioctl_get_win_size(1)
-                or self._ioctl_get_win_size(2)
-            )
+            cr = (self._ioctl_get_win_size(0) or self._ioctl_get_win_size(1)
+                  or self._ioctl_get_win_size(2))
             if cr:
                 log.info(f"cr from 'or' ioctl's: {cr}")
                 return cr
@@ -212,7 +209,9 @@ class Terminal:  # !------------------------ Terminal Class
 
             cr = _SH_SIZE(fallback=Terminal.DEFAULT_TERMINAL_SIZE)
             if cr:
-                log.info(f"shutil.get_terminal_size returns ({cr.columns},{cr.lines})")
+                log.info(
+                    f"shutil.get_terminal_size returns ({cr.columns},{cr.lines})"
+                )
                 return (cr.columns, cr.lines)
         except Exception as e:
             log.error(e)
@@ -226,7 +225,8 @@ class Terminal:  # !------------------------ Terminal Class
 
     def _get_supports_color(self) -> (bool):
         """ generic script level stderr output characteristics """
-        self._IS_A_TTY: bool = self._stream.isatty() and hasattr(self._stream, "isatty")
+        self._IS_A_TTY: bool = self._stream.isatty() and hasattr(
+            self._stream, "isatty")
         # if self._IS_A_TTY:
         #     return True
         self._IS_PPC: bool = PLATFORM == "Pocket PC"
@@ -245,7 +245,7 @@ class Terminal:  # !------------------------ Terminal Class
             print(k, v)
         print("---------------------------------------")
 
-    def out(self, *args, sep=" ", end=NL, flush=False) -> (bool,Exception):
+    def out(self, *args, sep=" ", end=NL, flush=False) -> (bool, Exception):
         """ send output to the stream. catch and return errors. """
         try:
             print(*args, sep=sep, end=end, flush=flush, file=self._stream)
@@ -257,6 +257,8 @@ class Terminal:  # !------------------------ Terminal Class
 term = Terminal()
 
 SUPPORTS_COLOR: bool = term.SUPPORTS_COLOR
+
+
 # some basic colors ..
 class BasicColors:
     MAIN: str = "\x1B[38;5;229m" * SUPPORTS_COLOR
@@ -289,7 +291,6 @@ if True:
         print(lc.str())
         print(dir(lc))
 
-
     # _test_terminal_()
 
     # term._show_debug_info()
@@ -303,10 +304,10 @@ if True:
         s80('*')
         hr()
         for i in range(50):
-            rprint('='*i, '>', ' '*(80-i))
+            rprint('=' * i, '>', ' ' * (80 - i))
             sleep(0.02)
-        for i in range(50,0,-1):
-            rprint('='*i, '>', ' '*(80-i))
+        for i in range(50, 0, -1):
+            rprint('=' * i, '>', ' ' * (80 - i))
             sleep(0.02)
 
     # _slow_progress_example()

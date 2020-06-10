@@ -30,13 +30,12 @@
 
 # * --------------------------------- Imports and Constants
 
-from random_string import *
-
 import re
-from dataclasses import dataclass, Field, field
+from dataclasses import Field, dataclass, field
 from typing import Final, List, Tuple
 
 from autosys import debug
+from random_string import *
 from strang import Strang, random_string
 
 CASE_LIST: Tuple = ("upper", "lower", "title", "snake", "camel", "pascal")

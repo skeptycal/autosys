@@ -8,10 +8,11 @@
     `AutoSys` is licensed under the `MIT License
         `<https://opensource.org/licenses/MIT>`
     """
+import json
+from dataclasses import Field, asdict, dataclass, field
 from os import linesep as NL
 from typing import Dict, Iterable, List
-from dataclasses import dataclass, field, Field, asdict
-import json
+
 
 def roman():
     while True:

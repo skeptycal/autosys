@@ -13,7 +13,8 @@
 # !---------------------------------------------- Imports
 # from autosys import *
 import pathlib
-from autosys.debug import dbprint, db_column_ruler
+
+from autosys.debug import db_column_ruler, dbprint
 
 # !---------------------------------------------- CONSTANTS
 _debug_: bool = True  # True => use Debug features

@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import numpy as np
-from enum import Enum, unique, IntEnum
-from typing import Dict, Iterable
-from time import sleep
 from dataclasses import dataclass
+from enum import Enum, IntEnum, unique
+from time import sleep
+from typing import Dict, Iterable
+
+import numpy as np
+
 from autosys import *
 from cli.supports_color import SUPPORTS_COLOR
 

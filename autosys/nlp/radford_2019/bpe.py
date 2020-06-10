@@ -12,6 +12,7 @@
     """
 
 import string
+
 from text_utils import *
 
 print(dir())

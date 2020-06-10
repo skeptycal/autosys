@@ -32,7 +32,6 @@ import collections
 import functools
 import math
 
-
 DOCUMENT_DOES_NOT_EXIST = "The specified document does not exist"
 TERM_DOES_NOT_EXIST = "The specified term does not exist"
 

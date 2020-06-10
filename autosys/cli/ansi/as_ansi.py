@@ -8,9 +8,9 @@
 import os
 import textwrap
 
+from autosys.as_constants import PY_ENV
 # import autosys.as_constants
 from autosys.as_system import py_shell
-from autosys.as_constants import PY_ENV
 from autosys.colors import COLORS, STYLES, color
 
 # sys.path.insert(0, os.path.abspath("."))

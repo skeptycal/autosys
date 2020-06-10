@@ -7,8 +7,8 @@ import sys
 from pprint import pprint
 from typing import Dict, List
 
-from autosys.defaults import _debug_
 from autosys.cli.debug import *
+from autosys.defaults import _debug_
 
 # regex
 RE_SAFE_WORD_Pattern: re.Pattern = r"\w"

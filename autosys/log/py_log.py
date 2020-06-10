@@ -12,7 +12,7 @@ backported to Python 2.
 
 import logging
 import time
-from logging import StreamHandler, FileHandler
+from logging import FileHandler, StreamHandler
 
 from logutils.queue import QueueHandler, QueueListener
 

@@ -8,6 +8,15 @@
 
 from __future__ import generators
 
+import codecs
+import logging
+import optparse
+import os
+import re
+import sys
+from pprint import pprint
+from random import randint, random
+
 r"""A fast and complete Python implementation of Markdown.
 
     [from http://daringfireball.net/projects/markdown/]
@@ -87,19 +96,11 @@ __version_info__ = (1, 4, 3)
 __version__ = ".".join(map(str, __version_info__))
 __author__ = "Trent Mick"
 
-import os
-import sys
-from pprint import pprint
-import re
-import logging
 
 try:
     from hashlib import md5
 except ImportError:
     from md5 import md5
-import optparse
-from random import random, randint
-import codecs
 
 # ---- Python version compat
 

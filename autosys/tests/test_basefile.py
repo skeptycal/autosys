@@ -12,6 +12,7 @@ from sys import path as python_path
 from tempfile import NamedTemporaryFile
 
 import pytest
+
 from autosys.filesystem.basefile import *
 
 

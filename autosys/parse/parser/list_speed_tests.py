@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import time
-import numpy as np
 from time import perf_counter_ns as timer
+
+import numpy as np
 
 size_of_vec = 1000
 

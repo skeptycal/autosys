@@ -12,9 +12,7 @@ import os
 from pathlib import Path
 from typing import List
 
-from autosys.as_ansi import color_encode as ce
-from autosys.as_ansi import color_print as cp
-
+from autosys.as_ansi import color_encode as ce, color_print as cp
 
 # def color_encode(fg_color, bg_color, flags_color)
 # def color_print(color_code, *args, **kwargs):

@@ -1,13 +1,14 @@
-import requests
-from requests import get, Response
-from requests.exceptions import RequestException
-from contextlib import closing
-from bs4 import BeautifulSoup
-from typing import List
 import sys
+from contextlib import closing
+from typing import List
+
+import requests
+from requests import Response, get
+from requests.exceptions import RequestException
 
 # from webpage import *
 import webpage
+from bs4 import BeautifulSoup
 
 _debug_: bool = True
 

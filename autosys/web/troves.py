@@ -133,8 +133,9 @@
     """
 
 from os import linesep as NL
-from requests import Response, RequestException, request, get
 from typing import List
+
+from requests import RequestException, Response, get, request
 
 
 def troves() -> List[str]:

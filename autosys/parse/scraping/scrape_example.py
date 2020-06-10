@@ -38,5 +38,3 @@
     # https://images.unsplash.com/photo-1463620695885-8a91d87c53d0?ixlib=rb-1.2.1
     # original url and tag: <iframe src="https://workona.com/newtab/chrome?type=wka&amp;bg=img&amp;galleries=3587225%2C3587267%2C3587269%2C3587264%2C3587279%2C3588045%2C3587324&amp;color=%232B86F1&amp;sb=hvr&amp;clock=true&amp;militaryTime=false&amp;v=442071" frameborder="0" style="position: fixed; top: 0px; right: 0px; bottom: 0px; left: 0px; height: 100vh; width: 100vw;"></iframe>
     """
-
-from autosys import

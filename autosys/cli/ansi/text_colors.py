@@ -11,8 +11,9 @@ import locale
 import os
 import sys
 from typing import Any, Dict, List
-from autosys.bak.system import py_shell, pyver
+
 from autosys import __version__ as version
+from autosys.bak.system import py_shell, pyver
 
 # locale.setlocale(locale.LC_ALL, '')
 DEFAULT_ENCODING = locale.getpreferredencoding(do_setlocale=True)

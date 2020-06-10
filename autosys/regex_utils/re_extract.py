@@ -65,6 +65,7 @@
 import autosys.regex_utils
 from autosys.regex_utils import *
 
+
 @dataclass(repr=False)
 class ReExtract:
     """ Regex Extract

@@ -8,10 +8,10 @@ into class member fields so that we can access them easily.
 """
 
 from __future__ import unicode_literals
-from struct import unpack
-from abc import ABCMeta
-from abc import abstractmethod
+
 import socket
+from abc import ABCMeta, abstractmethod
+from struct import unpack
 
 # A list of IP Protocol numbers, taken directly from IANA.
 PROTO_NUMS = {

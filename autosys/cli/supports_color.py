@@ -11,9 +11,9 @@
         `<https://opensource.org/licenses/MIT>`
     """
 
-from sys import stderr, stdout, path as PYTHONPATH
-from platform import platform as PLATFORM
 from os import environ as ENV
+from platform import platform as PLATFORM
+from sys import path as PYTHONPATH, stderr, stdout
 from typing import Dict, List
 
 

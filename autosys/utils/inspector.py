@@ -19,12 +19,12 @@
 
 from __future__ import print_function
 
+import importlib
+import inspect
 import json
+import os.path
 import sys
 import time
-import inspect
-import importlib
-import os.path
 
 # Uncomment to send stderr somewhere readable.
 # sys.stderr = open(os.path.join(os.path.expanduser("~"), "log.txt"), "a")

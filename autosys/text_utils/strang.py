@@ -30,11 +30,12 @@
 
 # * --------------------------------- Imports and Constants
 
-from random_string import *
-
-from dataclasses import dataclass, Field, field
+from dataclasses import Field, dataclass, field
 from os import linesep
 from typing import Final, List, Tuple
+
+from autosys.debug.show_all import show_all
+from random_string import *
 
 __all__: List[str] = [
     "CASE_LIST",
@@ -173,6 +174,3 @@ class Strang(StrWrapper):
         return self.string.translate({ord(c): None for c in string.whitespace})
         # TODO - which is faster?
         # self.string = "".join(self.string.split())
-
-
-from autosys.debug.show_all import show_all

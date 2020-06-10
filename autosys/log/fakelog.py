@@ -18,15 +18,17 @@
     """
 
 # from typing import NamedTuple, Sequence, Tuple
-# from sys import stdout
-# from os import linesep as NL, environ as ENV
+
+
 # from platform import platform
 # from io import TextIOWrapper
 from dataclasses import dataclass
+# PLATFORM = platform()
+# from sys import stdout
+# from os import linesep as NL, environ as ENV
 from os import linesep as NL
 
 from autosys.cli.supports_color import *
-# PLATFORM = platform()
 
 
 @dataclass

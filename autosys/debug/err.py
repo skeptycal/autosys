@@ -49,8 +49,7 @@ Usage: err [-dhtv] n
 """
 
 import enum
-from enum import auto
-from enum import Enum
+from enum import Enum, auto
 from typing import Dict, List, Sequence, Tuple
 
 import sentry_sdk

@@ -18,12 +18,12 @@
     [3]: https://opensource.org/licenses/MIT
     """
 import re
+from dataclasses import dataclass
+from locale import getpreferredencoding
+from typing import AbstractSet, Dict, Final, List, Mapping, Tuple
+
 # import logging
 from autosys import log as logging  # modified fork from python 3.8.3
-
-from locale import getpreferredencoding
-from dataclasses import dataclass
-from typing import AbstractSet, Dict, Final, List, Mapping, Tuple
 from autosys.cli.terminal import SUPPORTS_COLOR, BasicColors
 
 logger = logging.getLogger(__name__)

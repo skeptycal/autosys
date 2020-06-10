@@ -9,12 +9,10 @@ import os
 import subprocess
 from tempfile import NamedTemporaryFile
 
-from autosys.lister import *
 from autosys.exceptions import (
-    WorkingDirectoryIsDirtyException,
     MercurialDoesNotSupportSignedTagsException,
-)
-
+    WorkingDirectoryIsDirtyException,)
+from autosys.lister import *
 
 logger = logging.getLogger(__name__)
 

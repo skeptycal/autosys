@@ -16,7 +16,6 @@
 # import inspect
 from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
 
-
 # Constants
 DEFAULT_DICT_DISPLAY_SEPARATOR: str = ": "
 DEFAULT_CLI_DISPLAY_WIDTH: int = 80
