@@ -16,8 +16,6 @@ from platform import platform as PLATFORM
 from os import environ as ENV
 from typing import Dict, List
 
-print(PYTHONPATH)
-
 
 def _SUPPORTS_COLOR() -> (bool):
     # generic script level stderr output characteristics
