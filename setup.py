@@ -37,7 +37,6 @@ if True:  # ? #################################### package imports.
 
     log = logging.getLogger(__name__)
 
-
 if True:  # ? #################################### packaging utilities.
 
     def pip_safe_name(s: str):
@@ -57,11 +56,8 @@ if True:  # ? #################################### packaging utilities.
             print(f"{indent*' '}{k:<{key_size}.{key_size}}{divider}{val}")
 
     version = str(
-        ReExtract(file_name="VERSION.txt",
-                  pattern=RE_VERSION,
-                  default="0.0.1")
-    )
-
+        ReExtract(file_name="VERSION.txt", pattern=RE_VERSION,
+                  default="0.0.1"))
 
 if True:  # ? #################################### package meta-data.
     NAME: str = pip_safe_name("AutoSys")
@@ -120,10 +116,14 @@ if True:  # ? #################################### package meta-data.
     }
 
     PROJECT_URLS = {
-        "Website": f"https://skeptycal.github.io/{NAME}/",
-        "Documentation": f"https://skeptycal.github.io/{NAME}/docs",
-        "Source Code": f"https://www.github.com/skeptycal/{NAME}/",
-        "Changelog": f"https://github.com/skeptycal/{NAME}/blob/master/CHANGELOG.md",
+        "Website":
+        f"https://skeptycal.github.io/{NAME}/",
+        "Documentation":
+        f"https://skeptycal.github.io/{NAME}/docs",
+        "Source Code":
+        f"https://www.github.com/skeptycal/{NAME}/",
+        "Changelog":
+        f"https://github.com/skeptycal/{NAME}/blob/master/CHANGELOG.md",
     }
 
     KEYWORDS = [
@@ -170,7 +170,7 @@ if True:  # ? #################################### package meta-data.
     ]
 
 
-def main(args=_argv[1:],):  # ? ############################## Setup!
+def main(args=_argv[1:], ):  # ? ############################## Setup!
     if _debug_:
         print(f"{NAME=}")
         print(f"{version=}")
