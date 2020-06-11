@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" <<< This is a *fork* of the Python 3.8.3 logging __init__.py built-in >>>
+""" <<< This is a *fork* of the Python 3.8.3 logging built-in __init__.py >>>
     ##########################################################################
     Modifications copyright (c) 2020 Michael Treanor
     Licensed following the original python source code.
