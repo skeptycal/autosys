@@ -59,7 +59,7 @@ medium_token
 # security
 *token*
 *history*
-config.py
+config.py.removed
 config.json
 sftp.json
 */*.key
