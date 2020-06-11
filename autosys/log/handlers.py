@@ -31,8 +31,17 @@
     To use, simply 'import logging.handlers' and log away!
     """
 
-import copy, logging, os, pickle, queue, re, socket, struct, threading, time
-from stat import (ST_DEV, ST_INO, ST_MTIME)
+import copy
+import logging
+import os
+import pickle
+import queue
+import re
+import socket
+import struct
+import threading
+import time
+from stat import ST_DEV, ST_INO, ST_MTIME
 
 #
 # Some constants...

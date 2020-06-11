@@ -32,9 +32,16 @@
     To use, simply 'import logging' and log away!
     """
 
-import errno, io, logging, logging.handlers, re, struct, sys, threading, traceback
-
-from socketserver import (ThreadingTCPServer, StreamRequestHandler)
+import errno
+import io
+import logging
+import logging.handlers
+import re
+import struct
+import sys
+import threading
+import traceback
+from socketserver import StreamRequestHandler, ThreadingTCPServer
 
 DEFAULT_LOGGING_CONFIG_PORT = 9030
 
