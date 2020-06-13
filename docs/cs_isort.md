@@ -18,6 +18,18 @@ GitHub resources: ([docs][isort_github_docs] | [repo][isort_github_repo]).
     pip install isort[requirements,pipfile]
     pip install isort[pyproject]
 
+### Using isort:
+
+priority of settings:
+
+-   Settings manually passed into the Python SortImports class.
+-   Settings manually passed into the command line utility.
+-   Settings placed in a setup.cfg file within the project's directory
+-   Settings placed in a .isort.cfg file within the project's directory.
+-   Settings placed in a .isort.cfg file within the users home directory.
+-   Settings placed in a .editorconfig file within the project's directory.
+-   Settings placed in a .editorconfig file within the users home directory.
+
 ### Using isort from the command line:
 
     isort mypythonfile.py mypythonfile2.py
@@ -63,7 +75,7 @@ Several plugins have been written that enable to use isort from within a variety
 -   use [editorconfig][editor_config] files
     (use a `*.py` section.)
 
-## Settings
+# Settings
 
 ```
 [settings]
@@ -85,7 +97,7 @@ balanced_wrapping=True
 length_sort=False
 ```
 
-[isort Wiki settings][wiki]
+[isort Wiki: full list of settings][wiki]
 
 ## Multi line output modes
 
@@ -241,20 +253,13 @@ From the command line:
 
     isort -r "os.system" *.py
 
-## The `--check-only` option
+## The `-c` (`--check-only`) option
 
-isort can also be used to used to verify that code is correctly formatted by running it with `-c`. Any files that contain incorrectly sorted and/or formatted imports will be outputted to `stderr`.
-
-    isort **/*.py -c -vb
-
-    SUCCESS: /home/timothy/Projects/Open_Source/isort/isort_kate_plugin.py Everything Looks Good!
-    ERROR: /home/timothy/Projects/Open_Source/isort/isort/isort.py Imports are incorrectly sorted.
+Check from command line, output to `stderr`, no changes
 
 One great place this can be used is with a pre-commit git hook, such as [this one by @acdha][isort_git_hook]:
 
 ## Git hook
-
-isort provides a hook function that can be integrated into your Git pre-commit script to check Python code before committing.
 
 To cause the commit to fail if there are isort errors (strict mode), include the following in `.git/hooks/pre-commit`:
 
@@ -263,17 +268,13 @@ To cause the commit to fail if there are isort errors (strict mode), include the
     if **name** == '**main**':
     sys.exit(git_hook(strict=True))
 
-If you just want to display warnings, but allow the commit to happen anyway, call git_hook without the strict parameter.
+To display warnings but commit anyway, remove 'strict'
 
 ## Setuptools integration
 
-Upon installation, isort enables a `setuptools` command that checks Python files declared by your project.
-
-Running `python setup.py isort` on the command line will check the files listed in your `py_modules` and `packages`. If any warning is found, the command will exit with an error code:
-
     $ python setup.py isort
 
-Also, to allow users to be able to use the command without having to install isort themselves, add isort to the setup_requires of your `setup()` like so:
+or:
 
     setup(
         name="project",
@@ -284,19 +285,119 @@ Also, to allow users to be able to use the command without having to install iso
         ]
     )
 
-## Why isort?
-
-isort simply stands for import sort. It was originally called “sortImports” however I got tired of typing the extra characters and came to the realization camelCase is not pythonic.
-
-I wrote isort because in an organization I used to work in the manager came in one day and decided all code must have alphabetically sorted imports. The code base was huge - and he meant for us to do it by hand. However, being a programmer - I’m too lazy to spend 8 hours mindlessly performing a function, but not too lazy to spend 16 hours automating it. I was given permission to open source sortImports and here we are :)
-
-> Thanks and I hope you find isort useful!
-
-> ~Timothy Crosley
+source: [isort ReadtheDocs][1]
 
 ---
 
-source: [isort ReadtheDocs][1]
+## Full reference of isort settings
+
+Below is a full reference of every setting isort accepts, alongside a basic explanation of its use:
+
+-   force_to_top: Forces a list of imports to the top of their respective section. This works well for handling the unfortunate cases of import dependencies that occur in many projects.
+
+-   skip: A list of files to skip sorting completely.
+
+-   skip_glob: A list of glob patterns to skip sorting completely.
+
+-   not_skip: A list of files to never skip sorting.
+
+-   line_length: An integer that represents the longest line-length you want a single import to take. Defaults to 79.
+
+-   wrap_length: An integer that represents the longest line-length you want when wrapping. If not set will default to line_length.
+
+-   known_future_library: A list of imports that will be forced to display within the future library category.
+
+-   known_standard_library: A list of imports that will be forced to display within the standard library category.
+
+-   known_third_party: A list of imports that will be forced to display within the third party category.
+
+-   known_first_party: A list of imports that will be forced to display within the first party category.
+
+-   virtual_env: Virtual environment to use for determining whether a package is third-party.
+
+-   multi_line_output: An integer that represents how you want imports to be displayed if they're long enough to span multiple lines. A full definition of all possible modes can be found here.
+
+-   forced_separate:- A list of modules that you want to appear in their own separate section. NOTE: This does not work with custom organized sections. For that use known\_{section} instead.
+
+-   indent: An integer that represents the number of spaces you would like to indent by or Tab to indent by a single tab.
+
+-   length_sort: If set to true - imports will be sorted by their length instead of alphabetically.
+
+-   force_single_line: If set to true - instead of wrapping multi-line from style imports, each import will be forced to display on its own line.
+
+-   force_grid_wrap: Force from imports to be grid wrapped regardless of line length, where the value given is the number of imports allowed before wrapping occurs.
+
+-   default_section: The default section to place imports in, if their section can not be automatically determined. FIRSTPARTY, THIRDPARTY, etc.
+
+-   import_heading_future: A comment to consistently place directly above future imports.
+
+-   import_heading_stdlib: A comment to consistently place directly above imports from the standard library.
+
+-   import_heading_thirdparty: A comment to consistently place directly above thirdparty imports.
+
+-   import_heading_firstparty: A comment to consistently place directly above imports from the current project.
+
+-   import_heading_localfolder: A comment to consistently place directly above imports that start with '.'.
+
+-   balanced_wrapping: If set to true - for each multi-line import statement isort will dynamically change the import length to the one that produces the most balanced grid, while staying below the maximum import length defined.
+
+-   order_by_type: If set to true - isort will create separate sections within "from" imports for CONSTANTS, Classes, and modules/functions.
+
+-   atomic: If set to true - isort will only change a file in place if the resulting file has correct Python syntax. This defaults to false because it can only work if the version of code having it's imports sorted is running the same version of Python as isort itself.
+
+-   lines_after_imports: Forces a certain number of lines after the imports and before the first line of functional code. By default this is 2 lines if the first line of code is a class or function. Otherwise it's 1.
+
+-   lines_between_types: Forces a certain number of lines between the two import types (import mylib and from mylib import foo) within a section.
+
+-   combine_as_imports: If set to true - isort will combine as imports on the same line within for import statements. By default isort forces all as imports to display on their own lines.
+
+-   force_adds: If set to true - isort will add imports even if the file specified is currently completely empty.
+
+-   combine_star: If set to true - ensures that if a star import is present, nothing else is imported from that namespace.
+
+-   verbose: If set to true - isort will print out verbose information such as when a file is skipped intentionally or when a file check is successful.
+
+-   settings-path: Can be used from the command line to manually specify the location of a settings file.
+
+-   include_trailing_comma: Will set isort to automatically add a trailing comma to the end of from imports.
+
+-   use_parentheses: Tells isort to use parenthesis for line continuation instead of \ for lines over the allotted line length limit.
+
+-   from_first: If set, from imports will be displayed above normal (straight) imports.
+
+-   case_sensitive: If set, import sorting will take case in consideration when sorting.
+
+-   add_imports: A comma-delimited list of imports to add to every file ran through isort.
+
+-   filter_files: Tells isort to filter files even when they are explicitly passed in as part of the command. This is especially useful to get skip and skip_glob to work when running isort through pre-commit.
+
+-   force_sort_within_sections: If set, imports will be sorted within their section independent to the import_type.
+
+-   force_alphabetical_sort: If set, forces all imports to be sorted as a single section, instead of within other groups (such as straight vs from).
+
+    For example:
+
+        from os import path
+        import os
+
+    and not the default behavior of:
+
+        import os
+        from os import path
+
+-   reverse_relative: If set, forces relative import to be sorted as Google style guide.
+
+    For example:
+
+        from . import y
+        from ..import x
+
+    and not the default behaviour (alphabetical order) of:
+
+        from .. import x
+        from . import y
+
+---
 
 [editor_config]: (http://editorconfig.org/)
 [isort_rtd]: (https://isort.readthedocs.io/en/latest/)
