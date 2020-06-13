@@ -24,13 +24,15 @@ from os import linesep as NL
 from typing import Final, List
 
 from autosys.exceptions.exceptions import Re_File_Error, Re_Value_Error
+import autosys.log
 from autosys.log.autosys_logger import *
 
 DEFAULT_RE_FLAGS: Final[int] = re.MULTILINE | re.IGNORECASE
 
 # regex pattern to extract version string from text
 RE_VERSION: re.Pattern = re.compile(
-    pattern=r'^__version__\s?=\s?[\'"]([^\'"]*)[\'"]', flags=DEFAULT_RE_FLAGS,
+    pattern=r'^__version__\s?=\s?[\'"]([^\'"]*)[\'"]',
+    flags=DEFAULT_RE_FLAGS,
 )
 
 log = logging.getLogger(__name__)
