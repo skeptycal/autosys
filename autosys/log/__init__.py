@@ -62,19 +62,20 @@
     To use, simply 'import logging' and log away!
     """
 
-#Let's try and shutdown automatically on application exit...
-import atexit
-import collections.abc
+# Standard Library
 import io
 import os
 import re
 import sys
-import threading
 import time
-import traceback
-import warnings
+#Let's try and shutdown automatically on application exit...
+import atexit
 import weakref
-from string import Formatter as StrFormatter, Template
+import warnings
+import threading
+import traceback
+import collections.abc
+from string import Template, Formatter as StrFormatter
 
 __all__ = [
     'BASIC_FORMAT', 'BufferingFormatter', 'CRITICAL', 'DEBUG', 'ERROR',
