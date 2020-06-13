@@ -10,22 +10,24 @@
     `AutoSys` is licensed under the `MIT License
         `<https://opensource.org/licenses/MIT>`
     """
-import json
+# Standard Library
 import sys
-from dataclasses import Field, dataclass, field
+import json
 from io import TextIOWrapper
 from os import linesep as NL
+from typing import Any, Set, Dict, List, Final, Tuple, Optional, Sequence
 from pathlib import Path
 from tempfile import NamedTemporaryFile, mkstemp
-from typing import Any, Dict, Final, List, Optional, Sequence, Set, Tuple
+from dataclasses import Field, field, dataclass
 
 from autosys.text_utils.nowandthen import now
 
 _debug_: Final[bool] = True
 copyright_symbol: Final[str] = "©"  # could be (c)
-temp_file: TextIOWrapper = NamedTemporaryFile(
-    mode="x+t", encoding="utf-8", prefix="versionxxxxxx", suffix="bak"
-)
+temp_file: TextIOWrapper = NamedTemporaryFile(mode="x+t",
+                                              encoding="utf-8",
+                                              prefix="versionxxxxxx",
+                                              suffix="bak")
 
 VERSION_TAG: Final[str] = "# @version"
 
@@ -78,11 +80,8 @@ class MyVersion(PrettyDict):
         try:
             self._start_year = int(self._start_year)
             # include start year if it is in [1900..now]?
-            tmp = (
-                f"{self._start_year}-"
-                if 1900 < self._start_year < year
-                else ""
-            )
+            tmp = (f"{self._start_year}-"
+                   if 1900 < self._start_year < year else "")
         except:
             self._start_year = year
 
@@ -109,20 +108,19 @@ class MyVersion(PrettyDict):
 
         return [dunder_it(x) for x in vars(self).keys()]
 
-    def update_version_file(
-        self, files=List[TextIOWrapper]
-    ) -> Optional[Exception]:
+    def update_version_file(self,
+                            files=List[TextIOWrapper]) -> Optional[Exception]:
 
         for original in files:
             with NamedTemporaryFile(
-                mode="wt",
-                encoding=self.DEFAULT_ENCODING,
-                prefix=__file__,
-                suffix="tmp",
+                    mode="wt",
+                    encoding=self.DEFAULT_ENCODING,
+                    prefix=__file__,
+                    suffix="tmp",
             ) as temp_file:
-                with open(
-                    file=original, mode="rt", encoding=self.DEFAULT_ENCODING
-                ) as fd:
+                with open(file=original,
+                          mode="rt",
+                          encoding=self.DEFAULT_ENCODING) as fd:
                     data = fd.readlines()
 
                     # process lines

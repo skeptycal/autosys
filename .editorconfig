@@ -15,3 +15,24 @@ insert_final_newline = true
 [{.travis.yml,npm-shrinkwrap.json,package.json}]
 indent_style = space
 indent_size = 2
+
+[isort]
+# Full reference of isort settings
+#reference: https://github.com/timothycrosley/isort/wiki/isort-Settings
+balanced_wrapping = true # original
+combine_as_imports = true # original
+combine_star=true
+default_section=FIRSTPARTY # original
+force_grid_wrap=true
+force_to_top=future,stdlib,known_pandas # original
+from_first=false
+import_heading_stdlib='Standard Library' # original
+include_trailing_comma = true # original
+indent='    '
+length_sort=false # original
+line_length = 79 # original
+multi_line_output = 4 # original
+not_skip = __init__.py # original
+sections=FUTURE,STDLIB,KNOWN_PANDAS,KNOWN_DATA_SCI,FIRSTPARTY,THIRDPARTY,LOCALFOLDER # original
+use_parentheses=true
+wrap_length=50
