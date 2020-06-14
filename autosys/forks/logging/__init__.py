@@ -60,21 +60,10 @@
     To use, simply 'import logging' and log away!
     """
 
-from __future__ import absolute_import
-# Standard Library
-import io
-import os
-import re
-import sys
-import time
-#Let's try and shutdown automatically on application exit...
-import atexit
-import weakref
-import warnings
-import threading
-import traceback
-import collections.abc
-from string import Template, Formatter as StrFormatter
+import sys, os, time, io, re, traceback, warnings, weakref, collections.abc
+
+from string import Template
+from string import Formatter as StrFormatter
 
 __all__ = [
     'BASIC_FORMAT', 'BufferingFormatter', 'CRITICAL', 'DEBUG', 'ERROR',
@@ -88,10 +77,7 @@ __all__ = [
     'raiseExceptions'
 ]
 
-from autosys.forks.logging import config
-from autosys.forks.logging import handlers
-
-# import threading # TODO -- MT -- moved up with other module level built-ins
+import threading
 
 __author__ = "Vinay Sajip <vinay_sajip@red-dove.com>"
 __status__ = "production"
@@ -140,6 +126,15 @@ logProcesses = True
 # at user-defined levels.
 #
 
+CRITICAL = 50
+FATAL = CRITICAL
+ERROR = 40
+WARNING = 30
+WARN = WARNING
+INFO = 20
+DEBUG = 10
+NOTSET = 0
+
 _levelToName = {
     CRITICAL: 'CRITICAL',
     ERROR: 'ERROR',
@@ -163,12 +158,15 @@ _nameToLevel = {
 def getLevelName(level):
     """
     Return the textual representation of logging level 'level'.
+
     If the level is one of the predefined levels (CRITICAL, ERROR, WARNING,
     INFO, DEBUG) then you get the corresponding string. If you have
     associated levels with names using addLevelName then the name you have
     associated with 'level' is returned.
+
     If a numeric value corresponding to one of the defined levels is passed
     in, the corresponding string representation is returned.
+
     Otherwise, the string "Level %s" % level is returned.
     """
     # See Issues #22386, #27937 and #29220 for why it's this way
@@ -184,6 +182,7 @@ def getLevelName(level):
 def addLevelName(level, levelName):
     """
     Associate 'levelName' with 'level'.
+
     This is used when converting levels to text during message formatting.
     """
     _acquireLock()
@@ -260,6 +259,7 @@ _lock = threading.RLock()
 def _acquireLock():
     """
     Acquire the module-level lock for serializing access to shared data.
+
     This should be released with _releaseLock().
     """
     if _lock:
@@ -321,6 +321,7 @@ else:
 class LogRecord(object):
     """
     A LogRecord instance represents an event being logged.
+
     LogRecord instances are created every time something is logged. They
     contain all the information pertinent to the event being logged. The
     main information passed in is in msg and args, which are combined
@@ -417,6 +418,7 @@ class LogRecord(object):
     def getMessage(self):
         """
         Return the message for this LogRecord.
+
         Return the message for this LogRecord after merging any user-supplied
         arguments with the message.
         """
@@ -435,6 +437,7 @@ _logRecordFactory = LogRecord
 def setLogRecordFactory(factory):
     """
     Set the factory to be used when instantiating a log record.
+
     :param factory: A callable which will be called to instantiate
     a log record.
     """
@@ -576,17 +579,20 @@ _STYLES = {
 class Formatter(object):
     """
     Formatter instances are used to convert a LogRecord to text.
+
     Formatters need to know how a LogRecord is constructed. They are
     responsible for converting a LogRecord to (usually) a string which can
     be interpreted by either a human or an external system. The base Formatter
     allows a formatting string to be specified. If none is supplied, the
     the style-dependent default value, "%(message)s", "{message}", or
     "${message}", is used.
+
     The Formatter can be initialized with a format string which makes use of
     knowledge of the LogRecord attributes - e.g. the default value mentioned
     above makes use of the fact that the user's message and arguments are pre-
     formatted into a LogRecord's message attribute. Currently, the useful
     attributes in a LogRecord are described by:
+
     %(name)s            Name of the logger (logging channel)
     %(levelno)s         Numeric logging level for the message (DEBUG, INFO,
                         WARNING, ERROR, CRITICAL)
@@ -618,13 +624,16 @@ class Formatter(object):
     def __init__(self, fmt=None, datefmt=None, style='%', validate=True):
         """
         Initialize the formatter with specified format strings.
+
         Initialize the formatter either with the specified format string, or a
         default as described above. Allow for specialized date formatting with
         the optional datefmt argument. If datefmt is omitted, you get an
         ISO8601-like (or RFC 3339-like) format.
+
         Use a style parameter of '%', '{' or '$' to specify that you want to
         use one of %-formatting, :meth:`str.format` (``{}``) formatting or
         :class:`string.Template` formatting in your format string.
+
         .. versionchanged:: 3.2
            Added the ``style`` parameter.
         """
@@ -644,6 +653,7 @@ class Formatter(object):
     def formatTime(self, record, datefmt=None):
         """
         Return the creation time of the specified LogRecord as formatted text.
+
         This method should be called from format() by a formatter which
         wants to make use of a formatted time. This method can be overridden
         in formatters to provide for any specific requirement, but the
@@ -669,6 +679,7 @@ class Formatter(object):
     def formatException(self, ei):
         """
         Format and return the specified exception information as a string.
+
         This default implementation just uses
         traceback.print_exception()
         """
@@ -697,9 +708,11 @@ class Formatter(object):
         """
         This method is provided as an extension point for specialized
         formatting of stack information.
+
         The input data is a string as returned from a call to
         :func:`traceback.print_stack`, but with the last trailing newline
         removed.
+
         The base implementation just returns the value passed in.
         """
         return stack_info
@@ -707,6 +720,7 @@ class Formatter(object):
     def format(self, record):
         """
         Format the specified record as text.
+
         The record's attribute dictionary is used as the operand to a
         string formatting operation which yields the returned string.
         Before formatting the dictionary, a couple of preparatory steps
@@ -789,6 +803,7 @@ class BufferingFormatter(object):
 class Filter(object):
     """
     Filter instances are used to perform arbitrary filtering of LogRecords.
+
     Loggers and Handlers can optionally use Filter instances to filter
     records as desired. The base filter class only allows events which are
     below a certain point in the logger hierarchy. For example, a filter
@@ -799,6 +814,7 @@ class Filter(object):
     def __init__(self, name=''):
         """
         Initialize a filter.
+
         Initialize with the name of the logger which, together with its
         children, will have its events allowed through the filter. If no
         name is specified, allow every event.
@@ -809,6 +825,7 @@ class Filter(object):
     def filter(self, record):
         """
         Determine if the specified record is to be logged.
+
         Is the specified record to be logged? Returns 0 for no, nonzero for
         yes. If deemed appropriate, the record may be modified in-place.
         """
@@ -849,10 +866,13 @@ class Filterer(object):
     def filter(self, record):
         """
         Determine if a record is loggable by consulting all the filters.
+
         The default is to allow the record to be logged; any filter can veto
         this and the record is then dropped. Returns a zero value if a record
         is to be dropped, else non-zero.
+
         .. versionchanged:: 3.2
+
            Allow filters to be just callables.
         """
         rv = True
@@ -908,6 +928,7 @@ def _addHandlerRef(handler):
 class Handler(Filterer):
     """
     Handler instances dispatch logging events to specific destinations.
+
     The base handler class. Acts as a placeholder which defines the Handler
     interface. Handlers can optionally use Formatter instances to format
     records as desired. By default, no formatter is specified; in this case,
@@ -972,6 +993,7 @@ class Handler(Filterer):
     def format(self, record):
         """
         Format the specified record.
+
         If a formatter is set, use it. Otherwise, use the default formatter
         for the module.
         """
@@ -984,6 +1006,7 @@ class Handler(Filterer):
     def emit(self, record):
         """
         Do whatever it takes to actually log the specified logging record.
+
         This version is intended to be implemented by subclasses and so
         raises a NotImplementedError.
         """
@@ -993,6 +1016,7 @@ class Handler(Filterer):
     def handle(self, record):
         """
         Conditionally emit the specified logging record.
+
         Emission depends on filters which may have been added to the handler.
         Wrap the actual emission of the record with acquisition/release of
         the I/O thread lock. Returns whether the filter passed the record for
@@ -1016,6 +1040,7 @@ class Handler(Filterer):
     def flush(self):
         """
         Ensure all logging output has been flushed.
+
         This version does nothing and is intended to be implemented by
         subclasses.
         """
@@ -1024,6 +1049,7 @@ class Handler(Filterer):
     def close(self):
         """
         Tidy up any resources used by the handler.
+
         This version removes the handler from an internal map of handlers,
         _handlers, which is used for handler lookup by name. Subclasses
         should ensure that this gets called from overridden close()
@@ -1040,6 +1066,7 @@ class Handler(Filterer):
     def handleError(self, record):
         """
         Handle errors which occur during an emit() call.
+
         This method should be called from handlers when an exception is
         encountered during an emit() call. If raiseExceptions is false,
         exceptions get silently ignored. This is what is mostly wanted
@@ -1100,6 +1127,7 @@ class StreamHandler(Handler):
     def __init__(self, stream=None):
         """
         Initialize the handler.
+
         If stream is not specified, sys.stderr is used.
         """
         Handler.__init__(self)
@@ -1121,6 +1149,7 @@ class StreamHandler(Handler):
     def emit(self, record):
         """
         Emit a record.
+
         If a formatter is specified, it is used to format the record.
         The record is then written to the stream with a trailing newline.  If
         exception information is present, it is formatted using
@@ -1143,6 +1172,7 @@ class StreamHandler(Handler):
         """
         Sets the StreamHandler's stream to the specified value,
         if it is different.
+
         Returns the old stream, if the stream was changed, or None
         if it wasn't.
         """
@@ -1224,6 +1254,7 @@ class FileHandler(StreamHandler):
     def emit(self, record):
         """
         Emit a record.
+
         If the stream was not opened because 'delay' was specified in the
         constructor, open it before calling the superclass's emit.
         """
@@ -1329,6 +1360,7 @@ class Manager(object):
         Get a logger with the specified name (channel name), creating it
         if it doesn't yet exist. This name is a dot-separated hierarchical
         name, such as "a", "a.b", "a.b.c" or similar.
+
         If a PlaceHolder existed for the specified name [i.e. the logger
         didn't exist but a child of it did], replace it with the created
         logger and fix up the parent/child references which pointed to the
@@ -1468,8 +1500,10 @@ class Logger(Filterer):
     def debug(self, msg, *args, **kwargs):
         """
         Log 'msg % args' with severity 'DEBUG'.
+
         To pass exception information, use the keyword argument exc_info with
         a true value, e.g.
+
         logger.debug("Houston, we have a %s", "thorny problem", exc_info=1)
         """
         if self.isEnabledFor(DEBUG):
@@ -1478,8 +1512,10 @@ class Logger(Filterer):
     def info(self, msg, *args, **kwargs):
         """
         Log 'msg % args' with severity 'INFO'.
+
         To pass exception information, use the keyword argument exc_info with
         a true value, e.g.
+
         logger.info("Houston, we have a %s", "interesting problem", exc_info=1)
         """
         if self.isEnabledFor(INFO):
@@ -1488,8 +1524,10 @@ class Logger(Filterer):
     def warning(self, msg, *args, **kwargs):
         """
         Log 'msg % args' with severity 'WARNING'.
+
         To pass exception information, use the keyword argument exc_info with
         a true value, e.g.
+
         logger.warning("Houston, we have a %s", "bit of a problem", exc_info=1)
         """
         if self.isEnabledFor(WARNING):
@@ -1504,8 +1542,10 @@ class Logger(Filterer):
     def error(self, msg, *args, **kwargs):
         """
         Log 'msg % args' with severity 'ERROR'.
+
         To pass exception information, use the keyword argument exc_info with
         a true value, e.g.
+
         logger.error("Houston, we have a %s", "major problem", exc_info=1)
         """
         if self.isEnabledFor(ERROR):
@@ -1520,8 +1560,10 @@ class Logger(Filterer):
     def critical(self, msg, *args, **kwargs):
         """
         Log 'msg % args' with severity 'CRITICAL'.
+
         To pass exception information, use the keyword argument exc_info with
         a true value, e.g.
+
         logger.critical("Houston, we have a %s", "major disaster", exc_info=1)
         """
         if self.isEnabledFor(CRITICAL):
@@ -1532,8 +1574,10 @@ class Logger(Filterer):
     def log(self, level, msg, *args, **kwargs):
         """
         Log 'msg % args' with the integer severity 'level'.
+
         To pass exception information, use the keyword argument exc_info with
         a true value, e.g.
+
         logger.log(level, "We have a %s", "mysterious problem", exc_info=1)
         """
         if not isinstance(level, int):
@@ -1640,6 +1684,7 @@ class Logger(Filterer):
     def handle(self, record):
         """
         Call the handlers for the specified record.
+
         This method is used for unpickled records received from a socket, as
         well as those created locally. Logger-level filtering is applied.
         """
@@ -1671,6 +1716,7 @@ class Logger(Filterer):
     def hasHandlers(self):
         """
         See if this logger has any handlers configured.
+
         Loop through all handlers for this logger and its parents in the
         logger hierarchy. Return True if a handler was found, else False.
         Stop searching up the hierarchy whenever a logger with the "propagate"
@@ -1692,6 +1738,7 @@ class Logger(Filterer):
     def callHandlers(self, record):
         """
         Pass a record to all relevant handlers.
+
         Loop through all handlers for this logger and its parents in the
         logger hierarchy. If no handler was found, output a one-off error
         message to sys.stderr. Stop searching up the hierarchy whenever a
@@ -1721,6 +1768,7 @@ class Logger(Filterer):
     def getEffectiveLevel(self):
         """
         Get the effective level for this logger.
+
         Loop through this logger and its parents in the logger hierarchy,
         looking for a non-zero logging level. Return the first one found.
         """
@@ -1755,10 +1803,15 @@ class Logger(Filterer):
     def getChild(self, suffix):
         """
         Get a logger which is a descendant to this one.
+
         This is a convenience method, such that
+
         logging.getLogger('abc').getChild('def.ghi')
+
         is the same as
+
         logging.getLogger('abc.def.ghi')
+
         It's useful, for example, when the parent logger is named using
         __name__ rather than a literal string.
         """
@@ -1808,8 +1861,10 @@ class LoggerAdapter(object):
         Initialize the adapter with a logger and a dict-like object which
         provides contextual information. This constructor signature allows
         easy stacking of LoggerAdapters, if so desired.
+
         You can effectively pass keyword arguments as shown in the
         following example:
+
         adapter = LoggerAdapter(someLogger, dict(p1=v1, p2="v2"))
         """
         self.logger = logger
@@ -1821,6 +1876,7 @@ class LoggerAdapter(object):
         a logging call to insert contextual information. You can either
         manipulate the message itself, the keyword args or both. Return
         the message and kwargs modified (or not) to suit your needs.
+
         Normally, you'll only need to override this one method in a
         LoggerAdapter subclass for your specific needs.
         """
@@ -1954,15 +2010,19 @@ Logger.manager = Manager(Logger.root)
 def basicConfig(**kwargs):
     """
     Do basic configuration for the logging system.
+
     This function does nothing if the root logger already has handlers
     configured, unless the keyword argument *force* is set to ``True``.
     It is a convenience method intended for use by simple scripts
     to do one-shot configuration of the logging package.
+
     The default behaviour is to create a StreamHandler which writes to
     sys.stderr, set a formatter using the BASIC_FORMAT format string, and
     add the handler to the root logger.
+
     A number of optional keyword arguments may be specified, which can alter
     the default behaviour.
+
     filename  Specifies that a FileHandler be created, using the specified
               filename, rather than a StreamHandler.
     filemode  Specifies the mode to open the file, if filename is specified
@@ -1990,10 +2050,13 @@ def basicConfig(**kwargs):
     remembered that StreamHandler does not close its stream (since it may be
     using sys.stdout or sys.stderr), whereas FileHandler closes its stream
     when the handler is closed.
+
     .. versionchanged:: 3.8
        Added the ``force`` parameter.
+
     .. versionchanged:: 3.2
        Added the ``style`` parameter.
+
     .. versionchanged:: 3.3
        Added the ``handlers`` parameter. A ``ValueError`` is now thrown for
        incompatible arguments (e.g. ``handlers`` specified together with
@@ -2059,6 +2122,7 @@ def basicConfig(**kwargs):
 def getLogger(name=None):
     """
     Return a logger with the specified name, creating it if necessary.
+
     If no name is specified, return the root logger.
     """
     if name:
@@ -2164,6 +2228,7 @@ def shutdown(handlerList=_handlerList):
     """
     Perform any cleanup actions in the logging system (e.g. flushing
     buffers).
+
     Should be called at application exit.
     """
     for wr in reversed(handlerList[:]):
@@ -2190,6 +2255,8 @@ def shutdown(handlerList=_handlerList):
             #else, swallow
 
 
+#Let's try and shutdown automatically on application exit...
+import atexit
 atexit.register(shutdown)
 
 # Null handler
