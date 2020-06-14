@@ -42,14 +42,16 @@
     """
 
 if True:  # !------------------------ imports
-    import re
-    import sys
-    from sys import argv
-    from platform import platform
+    # import re
+    # import sys
+    # from sys import argv
+    # from platform import platform as PLATFORM
     from time import sleep
     from autosys import _version as VERSION
-    from autosys.debug import dbprint, db_column_ruler
-    from autosys.cli.terminal import *
+
+    # from autosys.debug import dbprint, db_column_ruler
+    # from autosys.cli.terminal import *
+
 
     class Ansi(str):
 
@@ -112,8 +114,7 @@ if True:  # !------------------------ imports
             return ANSI_ESCAPE_7BIT.sub("", n)
 
         ANSI_ESCAPE_8BIT = re.compile(
-            r"""(\x9B|\x1B\[)[0-?]*[ -\/]*[@-~]"""
-        )  # ??? untested [2]
+            r"""(\x9B|\x1B\[)[0-?]*[ -\/]*[@-~]""")  # ??? untested [2]
 
         ANSI_ESCAPE = re.compile(r"(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]")
 
@@ -141,7 +142,6 @@ if True:  # !------------------------ imports
 
         def _add_dynamic_method(self, name, value):
             """ Add dynamic method to class. """
-
             def key_method(self, value=value):
                 """ Dynamic method that returns <value>. """
                 return value
@@ -165,9 +165,8 @@ if True:  # !------------------------ imports
                 if i == 232:
                     s = "GREY"
                 self._add_dynamic_method(f"{s}{i}", self.FMT_8BIT_FG.format(i))
-                self._add_dynamic_method(
-                    f"BG_{s}{i}", self.FMT_8BIT_BG.format(i)
-                )
+                self._add_dynamic_method(f"BG_{s}{i}",
+                                         self.FMT_8BIT_BG.format(i))
 
         # def __iter__(self):
         #     yield from dataclasses.astuple(self)
@@ -214,9 +213,7 @@ if True:  # !------------------------ imports
             fg=DEFAULT_FG_CODE,
             bg=DEFAULT_BG_CODE,
             ef=DEFAULT_EFFECT_CODE,
-        ) -> Tuple[
-            str,
-        ]:
+        ) -> Tuple[str, ]:
             return tuple(self.effect(ef), self.bg(bg), self.fg(fg))
 
         @lru_cache()

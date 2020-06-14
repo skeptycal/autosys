@@ -230,7 +230,7 @@ class AsciiChars:
     char255: str = "  	"
 
 
-def char(i: int) -> str:
+def char(i: int) -> (str):
     """ Return a printable character from the 'chr' function. """
 
     try:
@@ -241,11 +241,11 @@ def char(i: int) -> str:
         return " "
 
 
-def __fmt_def(i: int) -> str:
+def __fmt_def(i: int) -> (str):
     return f"{chr(i)}: str = '{chr(i)}' # ascii code {i} {hex(i)}h"
 
 
-def __ascii_definition_list(a: int, b: int) -> List[str]:
+def __ascii_definition_list(a: int, b: int) -> (List[str]):
     return [__fmt_def(i) for i in range(a, b)]
 
 

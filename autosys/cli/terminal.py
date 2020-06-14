@@ -17,12 +17,12 @@
     [3]: https://opensource.org/licenses/MIT
     """
 
-from dataclasses import Field, dataclass, field
-from io import TextIOWrapper
-from os import environ as ENV, linesep as NL
-from platform import platform
-from sys import stdout
-from typing import NamedTuple, Sequence, Tuple
+# from dataclasses import Field, dataclass, field
+# from io import TextIOWrapper
+# from os import environ as ENV, linesep as NL
+# from platform import platform
+# from sys import stdout
+# from typing import NamedTuple, Sequence, Tuple
 
 __all__ = [
     "BasicColors",
@@ -39,7 +39,7 @@ __all__ = [
     "vprint",
 ]
 
-PLATFORM = platform()
+# PLATFORM = platform()
 DEFAULT_COLOR = "MAIN"
 CR: str = "\r"
 
