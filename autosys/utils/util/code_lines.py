@@ -10,10 +10,7 @@ from pathlib import Path
 # 'package imports'
 import autosys.as_ansi as ansi
 
-from typing import (
-    Dict,
-    List,
-)
+from typing import Dict, List
 
 ce = ansi.color_encode
 cp = ansi.color_print

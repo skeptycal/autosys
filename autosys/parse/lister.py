@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
-
 """
 Tests for Autosys package. For more information:
 https://docs.python-guide.org/writing/tests/
@@ -8,13 +7,7 @@ https://docs.python-guide.org/writing/tests/
 
 # 'package imports'
 # from autosys.debug import *
-from autosys.cli.debug import (
-    ARGS,
-    NL,
-    br,
-    dbprint,
-    hr,
-)
+from autosys.cli.debug import ARGS, NL, br, dbprint, hr
 
 from typing import Iterable
 
@@ -25,6 +18,7 @@ __all__ = ["Lister"]
 class Lister(list):
     DEV_BLACKLIST = ("_", "arepl")
     """ Utility to return various formats of an iterable. """
+
     # TODO - add textwrap functionality
 
     def __init__(self, iterable):
@@ -37,15 +31,15 @@ class Lister(list):
     def __str__(self):
         return self.comma
 
-    def join(self, sep=" ") -> str:
+    def join(self, sep=" ") -> (str):
         return sep.join(self)
 
     @property
-    def lines(self, wrap=79) -> str:
+    def lines(self, wrap=79) -> (str):
         return NL.join(self)
 
     @property
-    def comma(self) -> str:
+    def comma(self) -> (str):
         return ", ".join(self)
 
     @property
@@ -53,7 +47,7 @@ class Lister(list):
         return Lister(sorted(self._list, reverse=rev))
 
     @property
-    def len(self) -> int:
+    def len(self) -> (int):
         try:
             return len(self)
         except IndexError:
@@ -79,7 +73,7 @@ class Lister(list):
             blacklist - items that are tossed out. defaults:
                 - '__' : 'dundermethods'
                 - '_' : 'dunders' and private variables
-                - 'arepl' : (dev) from the AREPL VsCode Extension 
+                - 'arepl' : (dev) from the AREPL VsCode Extension
 
             whitelist - items that are retained if not blacklisted. defaults:
                 - '' : default to return all
@@ -98,14 +92,10 @@ class Lister(list):
         # if '' in blacklist:
         #     return self.wl(whitelist=whitelist)
         return Lister(
-            list(
-                [
-                    x
-                    for x in self
-                    if x.startswith(whitelist) and not x.startswith(blacklist)
-                ]
-            )
-        )
+            list([
+                x for x in self
+                if x.startswith(whitelist) and not x.startswith(blacklist)
+            ]))
 
 
 _lister = Lister(dir())

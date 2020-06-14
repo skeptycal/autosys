@@ -9,13 +9,15 @@
         `<https://opensource.org/licenses/MIT>`
     """
 import json
+
 from dataclasses import Field, asdict, dataclass, field
 from os import linesep as NL
+
 from typing import Dict, Iterable, List
 
 
 def roman():
-    while True:
+    pass
 
 
 @dataclass
@@ -108,9 +110,9 @@ class Indent:
             if self.repeat:  # repeat ignores slicing
                 self.ind = self.c * self.n
             elif not self.right_aligned:  # slice left
-                self.ind = self.ind[: self.n]
+                self.ind = self.ind[:self.n]
             else:  # slice right
-                self.ind = self.ind[-self.n :]
+                self.ind = self.ind[-self.n:]
 
     def __str__(self) -> (str):
         """ Return the current indent string. """
@@ -123,10 +125,10 @@ class Indent:
                 if self.n == 0:
                     return self.c
                 else:
-                    return self.c[: self.n]
+                    return self.c[:self.n]
             except:
                 try:
-                    return DEFAULT_INDENT_STRING[: self.n]
+                    return DEFAULT_INDENT_STRING[:self.n]
                 except:
                     try:
                         return DEFAULT_INDENT_STRING[:DEFAULT_INDENT_NUMBER]
@@ -167,9 +169,11 @@ x = [[31, 17], [40, 51], [13, 12]]
 print()
 # print(pretty_list(x, indent=ind))
 print()
+
 # print(pretty_list(transpose_list(x)))
 
 # ind = Indent(n=3, c="->  ")
+
 
 # for i in range(35, 75):
 #     print(f"{ind}{chr(i)}")

@@ -18,19 +18,19 @@
 
 import os
 import re
+
 from dataclasses import Field, dataclass, field
 from os import linesep as NL
 from pathlib import Path
 from shutil import rmtree as _rmtree
-from sys import argv as _argv
-from sys import path as PYTHONPATH
-from typing import Dict, Final, List, Optional, Tuple
-
-from setuptools import find_namespace_packages as find_packages
-from setuptools import setup
+from sys import argv as _argv, path as PYTHONPATH
 
 from autosys.regex_utils.re_extract import *
 from autosys.utils.readme import readme
+
+from setuptools import find_namespace_packages as find_packages, setup
+
+from typing import Dict, Final, List, Optional, Tuple
 
 #! DEBUG - run some live tests ... set 'False' for production !!!
 _debug_: bool = False

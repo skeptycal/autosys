@@ -74,10 +74,7 @@ import traceback
 import warnings
 import weakref
 
-from string import (
-    Formatter as StrFormatter,
-    Template,
-)
+from string import Formatter as StrFormatter, Template
 
 __all__ = [
     'BASIC_FORMAT', 'BufferingFormatter', 'CRITICAL', 'DEBUG', 'ERROR',

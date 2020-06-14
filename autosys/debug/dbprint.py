@@ -1,9 +1,6 @@
 # 'Standard Library'
 from os import linesep as NL
-from sys import (
-    stderr,
-    stdout,
-)
+from sys import stderr, stdout
 
 from typing import List
 

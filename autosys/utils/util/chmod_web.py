@@ -14,10 +14,7 @@ import os
 from pathlib import Path
 
 # 'package imports'
-from autosys.as_ansi import (
-    color_encode as ce,
-    color_print as cp,
-)
+from autosys.as_ansi import color_encode as ce, color_print as cp
 
 from typing import List
 

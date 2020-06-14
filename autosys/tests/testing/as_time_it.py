@@ -6,14 +6,7 @@ import time
 # from autosys.as_trace_it import traceit
 from autosys.as_trace_it import traceit
 
-from typing import (
-    Any,
-    Dict,
-    FrozenSet,
-    List,
-    Sequence,
-    Tuple,
-)
+from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
 
 __all__ = ["timeit"]
 

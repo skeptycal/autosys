@@ -10,31 +10,17 @@ from collections import deque
 from contextlib import closing
 from dataclasses import dataclass
 from logging import Logger
-from os import (
-    environ as ENV,
-    linesep as NL,
-)
+from os import environ as ENV, linesep as NL
 from pprint import PrettyPrinter
-from sys import (
-    argv,
-    stderr,
-    stdout,
-)
+from sys import argv, stderr, stdout
 
 # 'package imports'
 from bs4 import BeautifulSoup
-
 # 'third party'
 from requests import get
 from requests.exceptions import RequestException
 
-from typing import (
-    Any,
-    Deque,
-    Dict,
-    List,
-    Tuple,
-)
+from typing import Any, Deque, Dict, List, Tuple
 
 """ web_basics.py - basic web scraping tools
 

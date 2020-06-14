@@ -12,10 +12,7 @@ from pprint import pprint
 from autosys.cli.debug import *
 from autosys.defaults import _debug_
 
-from typing import (
-    Dict,
-    List,
-)
+from typing import Dict, List
 
 # regex
 RE_SAFE_WORD_Pattern: re.Pattern = r"\w"

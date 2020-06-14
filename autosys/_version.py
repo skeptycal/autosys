@@ -15,32 +15,16 @@ import json
 # Standard Library
 import sys
 
-from dataclasses import (
-    Field,
-    dataclass,
-    field,
-)
+from dataclasses import Field, dataclass, field
 from io import TextIOWrapper
 from os import linesep as NL
 from pathlib import Path
-from tempfile import (
-    NamedTemporaryFile,
-    mkstemp,
-)
+from tempfile import NamedTemporaryFile, mkstemp
 
 # 'package imports'
 from autosys.text_utils.nowandthen import now
 
-from typing import (
-    Any,
-    Dict,
-    Final,
-    List,
-    Optional,
-    Sequence,
-    Set,
-    Tuple,
-)
+from typing import Any, Dict, Final, List, Optional, Sequence, Set, Tuple
 
 _debug_: Final[bool] = True
 copyright_symbol: Final[str] = "©"  # could be (c)

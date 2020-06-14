@@ -18,7 +18,7 @@ import sys
 NL: str = os.linesep
 
 
-def arg_str(*args, sep=" ") -> str:
+def arg_str(*args, sep=" ") -> (str):
     """ Return one string created from *args sequence.
 
         sep - string used in between joined elements.
@@ -43,7 +43,7 @@ def arg_str(*args, sep=" ") -> str:
     return sep.join(_)
 
 
-def br(n: int = 1) -> int:
+def br(n: int = 1) -> (int):
     """ Yes, this is a CLI version of a <br /> tag ...
 
         n : int - number of line breaks to print
@@ -57,7 +57,7 @@ def br(n: int = 1) -> int:
         return 1
 
 
-def brerr(n: int = 1) -> int:
+def brerr(n: int = 1) -> (int):
     """ Yes, this is a CLI version of a <br /> tag ... sent to STDERR.
 
         n : int - number of line breaks to print
@@ -71,7 +71,7 @@ def brerr(n: int = 1) -> int:
         return 1
 
 
-def hr(s: str = "-", n: int = 79) -> str:
+def hr(s: str = "-", n: int = 79) -> (str):
     """ Print a string duplicated <n> times.
 
         This can act as a page break. Yes, this is a CLI version of an <hr /> tag

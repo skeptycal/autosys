@@ -5,7 +5,8 @@
 # https://www.github.com/skeptycal
 # https://www.twitter.com/skeptycal
 
-# * ############################################################################
+# 'Standard Library'
+# * ##########################################################################
 # features in this module:
 #   _json_translation_table - print python to json translation tables
 #   json_read               - open and read data into python object
@@ -13,39 +14,40 @@
 #   json_sort               - sort list of python files as json objects
 #   json_minify             - compact json files and remove comments
 #   json_pretty_print       - format 'pretty print' style
-# * ############################################################################
-# Imports
-if True:  # ! stupid trick to make collapsing sections easier in VSCode
-    import fileinput
-    import os
-    import pathlib
-    import re
-    import sys
-    from io import StringIO
-    from flask import current_app, request
-    from typing import Any, Dict, List, Tuple, Union
+# * ##########################################################################
+import fileinput
+import os
+import pathlib
+import re
+import sys
 
-    try:
-        import ujson as json  # Speedup if present; no big deal if not
+from io import StringIO
 
-        JSON_PARSER = "ujson"
-    except ImportError:
-        import json
+from flask import current_app, request
 
-        JSON_PARSER = "json"
-    # Reference: https://pypi.org/project/ujson/
-    # Use speedup if available
-    # scanstring = c_scanstring or py_scanstring
+from typing import Any, Dict, List, Tuple, Union
 
-    # fix import path for non standard libraries
-    sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+try:
+    import ujson as json  # Speedup if present; no big deal if not
 
-# * ############################################################################
+    JSON_PARSER = "ujson"
+except ImportError:
+    import json
+
+    JSON_PARSER = "json"
+# Reference: https://pypi.org/project/ujson/
+# Use speedup if available
+# scanstring = c_scanstring or py_scanstring
+
+# fix import path for non standard libraries
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+
+# * ##########################################################################
 # constants
 DEBUG_FLAG: bool = True
 ENCODING: str = "utf8"
 
-# * ############################################################################
+# * ##########################################################################
 # general functions
 
 
@@ -63,7 +65,7 @@ def is_file(file_name: str) -> bool:
         return False
 
 
-# * ############################################################################
+# * ##########################################################################
 # json functions
 class JSON_file(object):
     io = StringIO()
@@ -88,7 +90,7 @@ class JSON_file(object):
         # TODO add error handling ...
         return False
 
-    def _json_translation_table(self) -> str:
+    def _json_translation_table(self) -> (str):
         # Reference: https://docs.python.org/3/library/json.html#json-to-py-table
         """
             _json_translation_table : return json -> python translation table
@@ -100,47 +102,44 @@ class JSON_file(object):
                 https://docs.python.org/3/library/json.html
 
                 ╔═══════════════════════════════╗
-                ║    class json.JSONDecoder     ║
-                ║    (Simple JSON decoder)      ║
+                ║      class json.JSONDecoder     ║
+                ║      (Simple JSON decoder)      ║
                 ╠═════════════════╦═════════════╣
-                ║  JSON           ║  Python     ║
+                ║  JSON            ║  Python      ║
                 ╠═════════════════╬═════════════╣
-                ║  object         ║  dict       ║
-                ║  array          ║  list       ║
-                ║  string         ║  str        ║
-                ║  number (int)   ║  int        ║
-                ║  number (real)  ║  float      ║
-                ║  true           ║  True       ║
-                ║  false          ║  False      ║
-                ║  null           ║  None       ║
+                ║  object          ║  dict        ║
+                ║  array           ║  list        ║
+                ║  string          ║  str         ║
+                ║  number (int)    ║  int         ║
+                ║  number (real)   ║  float       ║
+                ║  true            ║  True        ║
+                ║  false           ║  False       ║
+                ║  null            ║  None        ║
                 ╚═════════════════╩═════════════╝
 
                 ╔═══════════════════════════════╗
-                ║    class json.JSONEncoder     ║
-                ║    (Simple JSON encoder)      ║
+                ║      class json.JSONEncoder     ║
+                ║      (Simple JSON encoder)      ║
                 ╠═════════════════╦═════════════╣
-                ║  Python         ║  JSON       ║
+                ║  Python          ║  JSON        ║
                 ╠═════════════════╬═════════════╣
-                ║  dict           ║  object     ║
-                ║  list, tuple    ║  array      ║
-                ║  str            ║  string     ║
-                ║  int,float,etc  ║  number     ║
-                ║  True           ║  true       ║
-                ║  False          ║  false      ║
-                ║  None           ║  null       ║
+                ║  dict            ║  object      ║
+                ║  list, tuple     ║  array       ║
+                ║  str             ║  string      ║
+                ║  int,float,etc   ║  number      ║
+                ║  True            ║  true        ║
+                ║  False           ║  false       ║
+                ║  None            ║  null        ║
                 ╚═════════════════╩═════════════╝
         """
         return result
 
     def json_comments(self, comments):
         if not comments:
-            self.json_data = json.loads(
-                "".join(
-                    line for line in data_file if not line.startswith("//")
-                )
-            )
+            self.json_data = json.loads("".join(line for line in data_file
+                                                if not line.startswith("//")))
 
-    def json_read(self) -> bool:
+    def json_read(self) -> (bool):
         """
             json_read: load a json file and remove comments if needed
                 (comments are not officially allowed in json format)
@@ -159,7 +158,7 @@ class JSON_file(object):
         except (OSError, IOError, ValueError) as e:
             return False
 
-    def json_write(self) -> bool:
+    def json_write(self) -> (bool):
         """
             json_write: write json object to file and sort if needed
 
@@ -171,9 +170,8 @@ class JSON_file(object):
                 result (int)     : 0 for success else error code
             """
         try:
-            with open(
-                self.file_name, "w", encoding=self.encoding
-            ) as data_file:
+            with open(self.file_name, "w",
+                      encoding=self.encoding) as data_file:
                 data_file.write(self.json_data)
             return True
         except (OSError, IOError, ValueError) as e:
@@ -189,7 +187,7 @@ class JSON_file(object):
         ensure_ascii: bool = False,
         skipkeys: bool = False,
         check_circular: bool = True,
-    ) -> bool:
+    ) -> (bool):
         try:
             self.json_data = json.dumps(
                 self.file_name,
@@ -205,7 +203,7 @@ class JSON_file(object):
             self.error_handler(e)
             return False
 
-    def json_sort(self, comments: bool = False) -> bool:
+    def json_sort(self, comments: bool = False) -> (bool):
         """
             json_sort: alphabetize json files and remove comments if needed
 
@@ -216,7 +214,7 @@ class JSON_file(object):
             """
         return self.json_format(self, comments=True)
 
-    def json_minify(self, comments: bool = False) -> bool:
+    def json_minify(self, comments: bool = False) -> (bool):
         """
             json_minify: compact json data and remove comments
 
@@ -233,7 +231,7 @@ class JSON_file(object):
             indent=None,
         )
 
-    def json_pretty_print(self, comments: bool = False) -> str:
+    def json_pretty_print(self, comments: bool = False) -> (str):
         """
             json_pretty_print: format json for pretty printing
 
@@ -245,7 +243,7 @@ class JSON_file(object):
         return self.json_format(self, comments=True, sort_keys=False)
 
 
-# * ############################################################################
+# * ##########################################################################
 
 # Reference: https://gist.github.com/liftoff/ee7b81659673eca23cd9fc0d8b8e68b7
 
@@ -258,16 +256,13 @@ def ultrajsonify(*args, **kwargs):
     ensure_ascii = current_app.config.get("JSON_AS_ASCII", True)
     mimetype = current_app.config.get("JSONIFY_MIMETYPE", "application/json")
 
-    if (
-        current_app.config["JSONIFY_PRETTYPRINT_REGULAR"]
-        and not request.is_xhr
-    ):
+    if (current_app.config["JSONIFY_PRETTYPRINT_REGULAR"]
+            and not request.is_xhr):
         indent = 2
 
     if args and kwargs:
         raise ValueError(
-            "ultrajsonify behavior undefined when passed both args and kwargs"
-        )
+            "ultrajsonify behavior undefined when passed both args and kwargs")
     elif len(args) == 1:
         data = args[0]
     else:
@@ -314,11 +309,9 @@ def remove_trailing_commas(json_like):
         '{"foo":"bar","baz":["blah"]}'
     """
     trailing_object_commas_re = re.compile(
-        r'(,)\s*}(?=([^"\\]*(\\.|"([^"\\]*\\.)*[^"\\]*"))*[^"]*$)'
-    )
+        r'(,)\s*}(?=([^"\\]*(\\.|"([^"\\]*\\.)*[^"\\]*"))*[^"]*$)')
     trailing_array_commas_re = re.compile(
-        r'(,)\s*\](?=([^"\\]*(\\.|"([^"\\]*\\.)*[^"\\]*"))*[^"]*$)'
-    )
+        r'(,)\s*\](?=([^"\\]*(\\.|"([^"\\]*\\.)*[^"\\]*"))*[^"]*$)')
     # Fix objects {} first
     objects_fixed = trailing_object_commas_re.sub("}", json_like)
     # Now fix arrays/lists [] and return the result
@@ -328,16 +321,16 @@ def remove_trailing_commas(json_like):
 # * ############################################################################
 
 
-def to_json(text: str) -> Dict:
+def to_json(text: str) -> (Dict):
     """ Convert text string to json """
     text.rstrip(",")
     rawfile = (line for line in text if line[0] not in ["/", "#"])
     raise NotImplementedError
 
 
-def sort_json(
-    json_files: List[str], comments: bool = False, delim: str = ","
-) -> List[str]:
+def sort_json(json_files: List[str],
+              comments: bool = False,
+              delim: str = ",") -> (List[str]):
     """
         sort_json: alphabetize json files and remove comments if needed
 
@@ -356,14 +349,10 @@ def sort_json(
         try:
             with p.open(mode="r") as file:
                 # read file contents into buffer 'raw_file'
-                raw_file = "\n".join(
-                    [
-                        line.strip()
-                        for line in file
-                        if not line.startswith("#")
-                        and not line.startswith("//")
-                    ]
-                )
+                raw_file = "\n".join([
+                    line.strip() for line in file
+                    if not line.startswith("#") and not line.startswith("//")
+                ])
                 alphabetized = json.loads(raw_file)
                 with open(file, "w") as w:
                     w.write(
@@ -373,8 +362,7 @@ def sort_json(
                             indent=4,
                             sort_keys=True,
                             skipkeys=True,
-                        )
-                    )
+                        ))
         except OSError:
             # if unable to open file, add current file to error list result
             result.append(file)
@@ -423,6 +411,7 @@ if False and __name__ == "__main__":  # If run as CLI utility
     j: JSON_file = JSON_file()
     j.file_name = TEST_FILE
     print(j.file_name)
+
     # if j.json_read(TEST_FILE):
     #     j.json_pretty_print()
     #     print(j.json_data)

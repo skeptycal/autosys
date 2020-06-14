@@ -23,6 +23,7 @@
 # from os import environ as ENV, linesep as NL
 # from platform import platform
 from autosys.cli import *
+from platform import platform
 
 __all__ = [
     "BasicColors",

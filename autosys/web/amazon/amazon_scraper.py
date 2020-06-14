@@ -41,21 +41,17 @@ import time
 
 from dataclasses import dataclass
 from datetime import datetime
-from multiprocessing import (
-    Manager,
-    Pool,
-    Process,
-    Queue,
-)
+from multiprocessing import Manager, Pool, Process, Queue
 
 # 'package imports'
 from autosys.text_utils.nowandthen import now
-from bs4 import BeautifulSoup
 
 # 'third party'
 import pandas as pd
 # third party packages
 import requests
+
+from bs4 import BeautifulSoup
 
 __author__ = "Michael Treanor"
 __email__ = "skeptycal@gmail.com"

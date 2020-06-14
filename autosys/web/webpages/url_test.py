@@ -21,7 +21,7 @@ CONNECT_ERRORS = (
 )
 
 
-def url_test(url: str = "http://www.google.com") -> int:
+def url_test(url: str = "http://www.google.com") -> (int):
     """
     Return response from server request.
     """
@@ -41,6 +41,7 @@ if __name__ == "__main__":
         "https://www.google.com",
         "https://www.twitter.com/skeptycal",
     ]
+
     # 'https://www.skeptycal.com'
     for url in urls:
         res = url_test(url)

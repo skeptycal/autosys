@@ -14,23 +14,19 @@ RE_SAFE_STRING = re.compile(REGEX_SAFE_STRING, re.IGNORECASE | re.MULTILINE)
 
 RE_FLAGS_DEBUG = re.IGNORECASE | re.MULTILINE | re.VERBOSE | re.DEBUG
 
-test_str = (
-    "def fibonacci_2(n: int) -> int:\n"
-    "    if n > 1:\n"
-    "        return fibonacci(n - 1) + fibonacci(n - 2)\n"
-    "    else:\n"
-    "        return n=^&*(@@!)"
-)
+test_str = ("def fibonacci_2(n: int) -> int:\n"
+            "    if n > 1:\n"
+            "        return fibonacci(n - 1) + fibonacci(n - 2)\n"
+            "    else:\n"
+            "        return n=^&*(@@!)")
 
-matches = re.search(
-    regex, test_str, re.IGNORECASE | re.MULTILINE | re.VERBOSE | re.DEBUG
-)
+matches = re.search(regex, test_str,
+                    re.IGNORECASE | re.MULTILINE | re.VERBOSE | re.DEBUG)
 
 
 def is_safe(s) -> bool:
-    return re.search(
-        RE_SAFE_STRING, s, re.IGNORECASE | re.MULTILINE | re.VERBOSE | re.DEBUG
-    )
+    return re.search(RE_SAFE_STRING, s,
+                     re.IGNORECASE | re.MULTILINE | re.VERBOSE | re.DEBUG)
 
 
 print(matches)

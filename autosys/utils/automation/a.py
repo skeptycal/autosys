@@ -19,10 +19,7 @@ from io import TextIOWrapper
 
 # 'package imports'
 from cli.anansi import *
-from dev.debug import (
-    log,
-    logit,
-)
+from dev.debug import log, logit
 from profiling.timeit import *
 
 from typing import List

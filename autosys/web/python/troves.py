@@ -136,17 +136,12 @@
 from os import linesep as NL
 
 # 'third party'
-from requests import (
-    RequestException,
-    Response,
-    get,
-    request,
-)
+from requests import RequestException, Response, get, request
 
 from typing import List
 
 
-def troves() -> List[str]:
+def troves() -> (List[str]):
     """ Return updated list of Trove Classifiers from legacy endpoint.
 
         https://pypi.org/pypi?%3Aaction=list_classifiers

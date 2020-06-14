@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 """ Add parentheses around print arguments.
 
     Used in translating Python 2 code modules to Python 3.

@@ -9,32 +9,19 @@ import sys
 from collections import deque
 from contextlib import closing
 from dataclasses import dataclass
-from os import (
-    environ as ENV,
-    linesep as NL,
-)
+from os import environ as ENV, linesep as NL
 from pprint import pprint
-from sys import (
-    argv,
-    stderr,
-    stdout,
-)
+from sys import argv, stderr, stdout
 
 # 'package imports'
 from autosys.web.web_basics import *
-from bs4 import BeautifulSoup
 
+from bs4 import BeautifulSoup
 # 'third party'
 from requests import get
 from requests.exceptions import RequestException
 
-from typing import (
-    Any,
-    Deque,
-    Dict,
-    List,
-    Tuple,
-)
+from typing import Any, Deque, Dict, List, Tuple
 
 """ scrape.py - web scraping utilities for python
     (reference: https://realpython.com/python-web-scraping-practical-introduction/)
@@ -44,15 +31,12 @@ from typing import (
         https://www.twitter.com/skeptycal
     """
 
-
-
 try:
     import lxml as parser
 
     DEFAULT_PARSER = "lxml"
 except:
     DEFAULT_PARSER = "html.parser"
-
 
 # !---------------------------------------------- Custom Types
 

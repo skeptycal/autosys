@@ -1,11 +1,7 @@
 # 'Standard Library'
 from os import linesep as NL
 
-from typing import (
-    Any,
-    Dict,
-    List,
-)
+from typing import Any, Dict, List
 
 
 def ddir(

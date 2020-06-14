@@ -13,11 +13,7 @@ import textwrap
 from autosys.as_constants import PY_ENV
 # import autosys.as_constants
 from autosys.as_system import py_shell
-from autosys.colors import (
-    COLORS,
-    STYLES,
-    color,
-)
+from autosys.colors import COLORS, STYLES, color
 
 # sys.path.insert(0, os.path.abspath("."))
 

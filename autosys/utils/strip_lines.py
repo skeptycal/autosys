@@ -19,12 +19,7 @@ from pathlib import Path
 from sys import argv
 from tempfile import NamedTemporaryFile
 
-from typing import (
-    Dict,
-    Final,
-    List,
-    Tuple,
-)
+from typing import Dict, Final, List, Tuple
 
 
 class FileSet(list):

@@ -16,40 +16,22 @@
 # 'Standard Library'
 import logging
 
-from os import (
-    environ as ENV,
-    linesep as NL,
-    sep as PATHSEP,
-)
+from os import environ as ENV, linesep as NL, sep as PATHSEP
 from pathlib import Path
 from platform import (
-    platform,
-    python_implementation as WHICH_PY,
-    system as WHICH_OS,
-)
+    platform, python_implementation as WHICH_PY,
+    system as WHICH_OS)
 from pprint import pformat
 from sys import (
-    argv,
-    maxsize,
-    path as PYTHON_PATH,
-    stderr,
-    stdout,
-    version_info,
-)
+    argv, maxsize, path as PYTHON_PATH, stderr,
+    stdout, version_info)
 
 # 'package imports'
 from autosys._version import *
 
 from typing import (
-    Any,
-    Dict,
-    Final,
-    Iterable,
-    List,
-    NamedTuple,
-    Sequence,
-    Tuple,
-)
+    Any, Dict, Final, Iterable, List, NamedTuple,
+    Sequence, Tuple)
 
 # * ------------------------------------------- Common Constants
 

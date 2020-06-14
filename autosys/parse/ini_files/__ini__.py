@@ -81,11 +81,7 @@
 import io
 import re
 
-from dataclasses import (
-    Field,
-    dataclass,
-    field,
-)
+from dataclasses import Field, dataclass, field
 from pathlib import Path
 
 # 'package imports'

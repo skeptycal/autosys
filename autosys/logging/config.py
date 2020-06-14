@@ -43,10 +43,7 @@ import sys
 import threading
 import traceback
 
-from socketserver import (
-    StreamRequestHandler,
-    ThreadingTCPServer,
-)
+from socketserver import StreamRequestHandler, ThreadingTCPServer
 
 DEFAULT_LOGGING_CONFIG_PORT = 9030
 

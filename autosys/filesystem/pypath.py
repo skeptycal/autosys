@@ -16,10 +16,7 @@
 import pathlib
 
 # 'package imports'
-from autosys.debug import (
-    db_column_ruler,
-    dbprint,
-)
+from autosys.debug import db_column_ruler, dbprint
 
 # !---------------------------------------------- CONSTANTS
 _debug_: bool = True  # True => use Debug features

@@ -10,7 +10,6 @@ example_nums = [
     "f8f3k4j0.1383jfdfal9",
 ]
 
-
 # !---------------------------------------------- search functions
 
 

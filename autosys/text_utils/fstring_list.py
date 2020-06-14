@@ -3,11 +3,7 @@
 
 # 'Standard Library'
 from dataclasses import dataclass
-from enum import (
-    Enum,
-    IntEnum,
-    unique,
-)
+from enum import Enum, IntEnum, unique
 from time import sleep
 
 # 'package imports'
@@ -17,10 +13,7 @@ from cli.supports_color import SUPPORTS_COLOR
 # 'third party'
 import numpy as np
 
-from typing import (
-    Dict,
-    Iterable,
-)
+from typing import Dict, Iterable
 
 NAN = object()
 NUL = ""

@@ -30,11 +30,7 @@ import re
 import unicodedata
 
 from copy import copy
-from string import (
-    ascii_letters,
-    digits,
-    punctuation,
-)
+from string import ascii_letters, digits, punctuation
 
 # 'package imports'
 from hashed_index import *

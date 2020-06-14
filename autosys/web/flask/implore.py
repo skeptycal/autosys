@@ -29,25 +29,43 @@
     - Test for API functionality
     """
 
+# 'Standard Library'
+import cgitb
+import html.parser as html_parser
+import os
+import sys
+import traceback
 
-if True:  # Standard Library Dependencies
-    from collections import Counter, deque
-    from datetime import datetime
-    from pprint import pprint
-    from time import time, sleep, process_time, perf_counter, gmtime, localtime
-    from typing import Any, Dict, List, MutableSequence
-    import cgitb
-    import os
-    import sys
-    import traceback
+from collections import Counter, deque
+from dataclasses import Field, dataclass, field
+from datetime import datetime
+from pprint import pprint
+from time import gmtime, localtime, perf_counter, process_time, sleep, time
+
+# 'third party'
+import requests
+
+# 'package imports'
+from apscheduler.schedulers.blocking import BlockingScheduler
+from bs4 import BeautifulSoup
+
+from typing import Any, Dict, List, MutableSequence
+
+try:
+    import ujson as json  # faster json if available
+except:
+    import json
+
+DEFAULT_PARSER: str = ""
+XML: bool = False  # whether XML parsing is available at all
+XML_PARSER: str = ""
 
 SET_DEBUG: bool = True  # turn on for Dev Debugging
 if SET_DEBUG:  # enable detailed logging
     # cgitb.enable([display[, logdir[, context[, format]]]])
     DEFAULT_CGITB_DISPLAY: int = 1  # 0 to suppress messages
-    DEFAULT_CGITB_FILE_LOGDIR: str = os.path.join(
-        os.path.dirname(__file__), "LOGS"
-    )
+    DEFAULT_CGITB_FILE_LOGDIR: str = os.path.join(os.path.dirname(__file__),
+                                                  "LOGS")
     DEFAULT_CGITB_CONTEXT: int = 3  # 5 is the normal default
     DEFAULT_CGITB_FORMAT: str = "html"
 
@@ -60,34 +78,35 @@ if SET_DEBUG:  # enable detailed logging
 
     DEFAULT_CGITB_ERROR: sys.exc_info = ()
 
-if True:  # External Dependencies
-    from apscheduler.schedulers.blocking import BlockingScheduler
-    from bs4 import BeautifulSoup
-    import requests
 
-    try:
-        import ujson as json  # faster json if available
-    except:
-        import json
-
-if True:  # setup html parser
-    DEFAULT_PARSER: str = ""
-    XML: bool = False  # whether XML parsing is available at all
+def get_parser():
+    # setup html parser
     try:  # use <lxml> for speed (HTML and / or XML) (VERY fast)
         import lxml as parser
-
         DEFAULT_PARSER = "lxml"
         XML = True
-        XML_PARSER: str = "xml"
-    except:
+        XML_PARSER = "xml"
+        return parser
+    except ImportError:
         try:  # use <html5lib> for accuracy (VERY slow)
             import html5lib as parser
-
             DEFAULT_PARSER = "html5lib"
-        except:  # use <html5lib> Python's built-in html parser
+            return parser
+        except ImportError:  # use <html5lib> Python's built-in html parser
             import html.parser as parser
-
             DEFAULT_PARSER = "html.parser"
+            return parser
+
+
+parser = get_parser()
+
+
+
+@dataclass
+class WebParser(html_parser):
+    def __post_init__(self):
+        print(DEFAULT_PARSER)
+
 
 if True:  # Default constants
     # * time zones and scheduling
@@ -144,7 +163,6 @@ if __name__ == "__main__":
 
     # start_response('200 OK', [('Content-Type', 'text/html')])
     main()
-
 
 # References
 """ Choice of parser

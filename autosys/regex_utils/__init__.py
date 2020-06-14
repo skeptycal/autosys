@@ -20,26 +20,16 @@
 # 'Standard Library'
 import re
 
-from dataclasses import (
-    Field,
-    dataclass,
-    field,
-)
+from dataclasses import Field, dataclass, field
 from io import TextIOWrapper
 from os import linesep as NL
 from pathlib import Path
 
 # 'package imports'
-from autosys.exceptions.exceptions import (
-    Re_File_Error,
-    Re_Value_Error,
-)
+from autosys.exceptions.exceptions import Re_File_Error, Re_Value_Error
 from autosys.forks import logging
 
-from typing import (
-    Final,
-    List,
-)
+from typing import Final, List
 
 DEFAULT_RE_FLAGS: Final[int] = re.MULTILINE | re.IGNORECASE
 

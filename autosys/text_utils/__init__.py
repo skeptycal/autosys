@@ -17,17 +17,10 @@ import json
 import os
 import string
 
-from dataclasses import (
-    Field,
-    dataclass,
-    field,
-)
+from dataclasses import Field, dataclass, field
 from os import linesep as NL
 
-from typing import (
-    Dict,
-    List,
-)
+from typing import Dict, List
 
 NUL: str = chr(0)
 

@@ -7,10 +7,7 @@ import time
 
 from collections import deque
 
-from typing import (  # , Iterator,
-    Deque,
-    List,
-)
+from typing import Deque, List  # , Iterator,
 
 # TODO interesting features of patterns of numbers
 # when looking for primes, you first do the easy things:

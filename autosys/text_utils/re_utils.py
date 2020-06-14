@@ -33,25 +33,14 @@
 # 'Standard Library'
 import re
 
-from dataclasses import (
-    Field,
-    dataclass,
-    field,
-)
+from dataclasses import Field, dataclass, field
 
 # 'package imports'
 from autosys import debug
 from random_string import *
-from strang import (
-    Strang,
-    random_string,
-)
+from strang import Strang, random_string
 
-from typing import (
-    Final,
-    List,
-    Tuple,
-)
+from typing import Final, List, Tuple
 
 CASE_LIST: Tuple = ("upper", "lower", "title", "snake", "camel", "pascal")
 

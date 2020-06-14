@@ -9,10 +9,7 @@
 import os
 import shutil
 
-from dataclasses import (
-    dataclass,
-    field,
-)
+from dataclasses import dataclass, field
 from pathlib import Path
 
 # 'package imports'

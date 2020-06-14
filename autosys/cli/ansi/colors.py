@@ -7,10 +7,7 @@ import sys
 from functools import partial
 
 # 'package imports'
-from autosys.csscolors import (
-    css_colors,
-    parse_rgb,
-)
+from autosys.csscolors import css_colors, parse_rgb
 
 # _PY2 = sys.version_info[0] == 2
 # string_types = basestring if _PY2 else str

@@ -6,10 +6,7 @@
 # copyright (c) 2019 Michael Treanor
 # https://www.github.com/skeptycal
 # https://www.twitter.com/skeptycal
-from flask import (
-    current_app,
-    request,
-)
+from flask import current_app, request
 
 try:
     from ujson import dumps
@@ -29,16 +26,13 @@ def ultrajsonify(*args, **kwargs):
     ensure_ascii = current_app.config.get("JSON_AS_ASCII", True)
     mimetype = current_app.config.get("JSONIFY_MIMETYPE", "application/json")
 
-    if (
-        current_app.config["JSONIFY_PRETTYPRINT_REGULAR"]
-        and not request.is_xhr
-    ):
+    if (current_app.config["JSONIFY_PRETTYPRINT_REGULAR"]
+            and not request.is_xhr):
         indent = 2
 
     if args and kwargs:
         raise ValueError(
-            "ultrajsonify behavior undefined when passed both args and kwargs"
-        )
+            "ultrajsonify behavior undefined when passed both args and kwargs")
     elif len(args) == 1:
         data = args[0]
     else:

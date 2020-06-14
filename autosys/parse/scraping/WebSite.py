@@ -7,15 +7,11 @@ from contextlib import closing
 # from webpage import *
 import webpage
 
-from bs4 import BeautifulSoup
-
 # 'third party'
 import requests
 
-from requests import (
-    Response,
-    get,
-)
+from bs4 import BeautifulSoup
+from requests import Response, get
 from requests.exceptions import RequestException
 
 from typing import List

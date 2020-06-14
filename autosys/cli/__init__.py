@@ -20,40 +20,19 @@ import logging
 import re
 import sys
 
-from dataclasses import (
-    Field,
-    dataclass,
-    field,
-)
+from dataclasses import Field, dataclass, field
 from io import TextIOWrapper
-from os import (
-    environ as ENV,
-    linesep as NL,
-)
-from platform import platform
-from sys import (
-    argv,
-    path as PYTHON_PATH,
-    stderr,
-    stdout,
-)
+from os import environ as ENV, linesep as NL
+from sys import argv, path as PYTHON_PATH, stderr, stdout
+
+from typing import Any, Dict, List, NamedTuple, Sequence, Tuple
 
 # 'package imports'
-from autosys.cli.ansi_codes import AnsiCodes
-from autosys.cli.ascii_chars import *
-from autosys.cli.supports_color import SUPPORTS_COLOR
-from autosys.cli.terminal import *
+# from autosys.cli.ansi_codes import AnsiCodes
+# from autosys.cli.ascii_chars import *
+# from autosys.cli.supports_color import SUPPORTS_COLOR
+# from autosys.cli.terminal import *
 
-from typing import (
-    Any,
-    Dict,
-    List,
-    NamedTuple,
-    Sequence,
-    Tuple,
-)
-
-PLATFORM = platform()
 
 
 class CommandLineInterfaceException(Exception):

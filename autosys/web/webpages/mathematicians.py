@@ -27,7 +27,6 @@ if True:  # ! -- Third Party Imports
 
     # from autosys import *
 
-
 # !---------------------------------------------- Common CONSTANTS
 _debug_: bool = False
 _fuzzy_: bool = True
@@ -46,11 +45,8 @@ def is_good_response(resp):
     Returns True if the response seems to be HTML, False otherwise.
     """
     content_type = resp.headers["Content-Type"].lower()
-    return (
-        resp.status_code == 200
-        and content_type is not None
-        and content_type.find("html") > -1
-    )
+    return (resp.status_code == 200 and content_type is not None
+            and content_type.find("html") > -1)
 
 
 def log_error(e):
@@ -72,7 +68,7 @@ def soup(url):
 
 
 # !---------------------------------------------- Script Tests
-def __tests__(args) -> int:
+def __tests__(args) -> (int):
     """ Run Debug Tests for script if _debug_ = True. """
 
     print(f"{DEFAULT_PARSER=}")
@@ -83,7 +79,7 @@ def __tests__(args) -> int:
     return 0
 
 
-def __main__(args) -> int:
+def __main__(args) -> (int):
     """ CLI script main entry point. """
 
     #! script testing
@@ -94,8 +90,6 @@ def __main__(args) -> int:
 
 if __name__ == "__main__":  # if script is loaded directly from CLI
     __main__(sys.argv[1:])
-
-
 """ Notes
     from tutorial ... moved out of __test__()
 

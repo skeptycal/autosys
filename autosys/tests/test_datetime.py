@@ -8,10 +8,7 @@
 # 'Standard Library'
 import os
 
-from os import (
-    stat,
-    stat_result,
-)
+from os import stat, stat_result
 from pathlib import Path as _Path
 from sys import path as python_path
 from tempfile import NamedTemporaryFile

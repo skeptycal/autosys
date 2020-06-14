@@ -67,11 +67,7 @@ import struct
 import threading
 import time
 
-from stat import (
-    ST_DEV,
-    ST_INO,
-    ST_MTIME,
-)
+from stat import ST_DEV, ST_INO, ST_MTIME
 
 #
 # Some constants...

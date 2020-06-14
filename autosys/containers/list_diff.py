@@ -1,10 +1,7 @@
 # 'package imports'
 from autosys.text_utils.random_string import *
 
-from typing import (
-    List,
-    Sequence,
-)
+from typing import List, Sequence
 
 
 def difference(a: Sequence, b: Sequence) -> (List):
