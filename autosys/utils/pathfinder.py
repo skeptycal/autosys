@@ -1,8 +1,15 @@
+# 'Standard Library'
 import logging
 import os
-from dataclasses import dataclass
-from pathlib import Path, _posix_flavour, _windows_flavour
 
+from dataclasses import dataclass
+from pathlib import (
+    Path,
+    _posix_flavour,
+    _windows_flavour,
+)
+
+# 'package imports'
 from autosys.implore.text import TextMessaging
 
 

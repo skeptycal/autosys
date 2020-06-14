@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+# 'Standard Library'
 import time
+
 from time import perf_counter_ns as timer
 
+# 'third party'
 import numpy as np
 
 size_of_vec = 1000

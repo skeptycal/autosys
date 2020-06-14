@@ -6,10 +6,17 @@ Tests for Autosys package. For more information:
 https://docs.python-guide.org/writing/tests/
 """
 
-from typing import Iterable
-
+# 'package imports'
 # from autosys.debug import *
-from autosys.cli.debug import ARGS, NL, br, dbprint, hr
+from autosys.cli.debug import (
+    ARGS,
+    NL,
+    br,
+    dbprint,
+    hr,
+)
+
+from typing import Iterable
 
 _debug_: bool = True  # True => use Debug features
 __all__ = ["Lister"]

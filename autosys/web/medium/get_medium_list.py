@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
+# 'Standard Library'
 import re
+
 from collections import Counter
 
+# 'third party'
 import requests
 
 SET_DEBUG: bool = True

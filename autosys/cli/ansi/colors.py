@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 
+# 'Standard Library'
 import re
 import sys
+
 from functools import partial
 
-from autosys.csscolors import css_colors, parse_rgb
+# 'package imports'
+from autosys.csscolors import (
+    css_colors,
+    parse_rgb,
+)
 
 # _PY2 = sys.version_info[0] == 2
 # string_types = basestring if _PY2 else str

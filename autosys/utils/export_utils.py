@@ -1,6 +1,12 @@
+# 'Standard Library'
 from pathlib import Path
 from sys import argv
-from typing import Any, Iterable, List
+
+from typing import (
+    Any,
+    Iterable,
+    List,
+)
 
 
 def LOG_PATH(f: str = __name__) -> Path:

@@ -132,10 +132,18 @@
     - PEP 566 - Metadata for Python Software Packages 2.1 is used
     """
 
+# 'Standard Library'
 from os import linesep as NL
-from typing import List
 
-from requests import RequestException, Response, get, request
+# 'third party'
+from requests import (
+    RequestException,
+    Response,
+    get,
+    request,
+)
+
+from typing import List
 
 
 def troves() -> List[str]:

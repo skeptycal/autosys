@@ -1,9 +1,19 @@
 # -*- coding: utf-8 -*-
+# 'Standard Library'
 import time
-from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
 
+# 'package imports'
 # from autosys.as_trace_it import traceit
 from autosys.as_trace_it import traceit
+
+from typing import (
+    Any,
+    Dict,
+    FrozenSet,
+    List,
+    Sequence,
+    Tuple,
+)
 
 __all__ = ["timeit"]
 

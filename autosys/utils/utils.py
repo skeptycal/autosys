@@ -1,14 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# 'Standard Library'
 # !---------------------------------------------- Utilities
 import re
 import sys
-from pprint import pprint
-from typing import Dict, List
 
+from pprint import pprint
+
+# 'package imports'
 from autosys.cli.debug import *
 from autosys.defaults import _debug_
+
+from typing import (
+    Dict,
+    List,
+)
 
 # regex
 RE_SAFE_WORD_Pattern: re.Pattern = r"\w"

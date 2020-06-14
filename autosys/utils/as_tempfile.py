@@ -11,17 +11,34 @@
         `<https://opensource.org/licenses/MIT>`
     """
 
+# 'Standard Library'
 import shutil
 import sys
 import tempfile
-from dataclasses import Field, dataclass, field
+
+from dataclasses import (
+    Field,
+    dataclass,
+    field,
+)
 from io import TextIOWrapper
 from locale import getpreferredencoding
 from os import linesep as NL
 from pathlib import Path
-from typing import Any, Deque, Dict, Final, List, Sequence, Set, Tuple
 
+# 'package imports'
 from autosys.text_utils.nowandthen import now
+
+from typing import (
+    Any,
+    Deque,
+    Dict,
+    Final,
+    List,
+    Sequence,
+    Set,
+    Tuple,
+)
 
 _debug_: Final[bool] = True
 DEFAULT_ENCODING: Final[str] = getpreferredencoding(do_setlocale=True) or "utf-8"

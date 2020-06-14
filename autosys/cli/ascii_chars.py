@@ -1,8 +1,11 @@
+# 'Standard Library'
 from dataclasses import dataclass
 from os import linesep as NL
-from typing import List
 
+# 'package imports'
 from autosys.profile.autosys_time_it import time_me
+
+from typing import List
 
 
 @dataclass

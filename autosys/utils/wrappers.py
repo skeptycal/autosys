@@ -9,21 +9,26 @@
         `<https://opensource.org/licenses/MIT>`
     """
 
+# 'Standard Library'
 import functools
 import inspect
 import io
 import os
 import sys
+
 # from functools import lru_cache, wraps
 # from inspect import Parameter, signature
 # from io import StringIO
 # from os import fsync, path
 from dataclasses import dataclass
-from typing import List
 
+# 'package imports'
 import cli
 import file_ops
+
 from cli.terminal import hr
+
+from typing import List
 
 # from file_ops import *
 # from file_ops.pytemp_dirs import *

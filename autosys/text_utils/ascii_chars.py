@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# 'Standard Library'
 from pprint import pformat
 
+# 'package imports'
 import text_utils
+
 from text_utils import *
 
 

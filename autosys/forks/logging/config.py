@@ -32,6 +32,7 @@
     To use, simply 'import logging' and log away!
     """
 
+# 'Standard Library'
 import errno
 import io
 import logging
@@ -42,7 +43,10 @@ import sys
 import threading
 import traceback
 
-from socketserver import ThreadingTCPServer, StreamRequestHandler
+from socketserver import (
+    StreamRequestHandler,
+    ThreadingTCPServer,
+)
 
 DEFAULT_LOGGING_CONFIG_PORT = 9030
 

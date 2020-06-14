@@ -17,8 +17,10 @@
 # Supported Python versions: 2.7, 3.5+
 # https://devguide.python.org/#status-of-python-branches
 
+# 'future imports'
 from __future__ import print_function
 
+# 'Standard Library'
 import importlib
 import inspect
 import json

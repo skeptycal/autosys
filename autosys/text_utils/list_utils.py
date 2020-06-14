@@ -9,7 +9,12 @@
         `<https://opensource.org/licenses/MIT>`
     """
 
-from typing import Dict, List, Sequence, Tuple
+from typing import (
+    Dict,
+    List,
+    Sequence,
+    Tuple,
+)
 
 try:
     log.info("Loaded list_utils module.")

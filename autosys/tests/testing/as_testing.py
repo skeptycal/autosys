@@ -14,7 +14,14 @@
 # import time
 # import sys
 # import inspect
-from typing import Any, Dict, FrozenSet, List, Sequence, Tuple
+from typing import (
+    Any,
+    Dict,
+    FrozenSet,
+    List,
+    Sequence,
+    Tuple,
+)
 
 # Constants
 DEFAULT_DICT_DISPLAY_SEPARATOR: str = ": "

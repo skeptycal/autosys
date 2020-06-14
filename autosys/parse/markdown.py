@@ -6,16 +6,22 @@
 # Copyright (c) 2007-2008 ActiveState Corp.
 # License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
+# 'future imports'
 from __future__ import generators
 
+# 'Standard Library'
 import codecs
 import logging
 import optparse
 import os
 import re
 import sys
+
 from pprint import pprint
-from random import randint, random
+from random import (
+    randint,
+    random,
+)
 
 r"""A fast and complete Python implementation of Markdown.
 

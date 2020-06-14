@@ -10,10 +10,15 @@
     `AutoSys` is licensed under the `MIT License
         `<https://opensource.org/licenses/MIT>`
     """
+# 'Standard Library'
 from dataclasses import dataclass
 from datetime import date as _date
 from pprint import pprint
-from typing import Dict, List
+
+from typing import (
+    Dict,
+    List,
+)
 
 
 # print(dir(_date))

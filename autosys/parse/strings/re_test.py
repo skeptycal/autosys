@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
+# 'Standard Library'
 import re
 
 regex = r"\A[\w\s:\-<>\(\)\+\*]+\Z"

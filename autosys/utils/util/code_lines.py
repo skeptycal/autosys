@@ -2,11 +2,18 @@
 # -*- coding: utf-8 -*-
 """ py_code.py - print the number of lines
         of python code in a directory. """
+# 'Standard Library'
 import sys
-from pathlib import Path
-from typing import Dict, List
 
+from pathlib import Path
+
+# 'package imports'
 import autosys.as_ansi as ansi
+
+from typing import (
+    Dict,
+    List,
+)
 
 ce = ansi.color_encode
 cp = ansi.color_print

@@ -8,11 +8,18 @@
 # - Changes all directories (recursively!) to chmod 755
 ###############################################################################
 
+# 'Standard Library'
 import os
-from pathlib import Path
-from typing import List
 
-from autosys.as_ansi import color_encode as ce, color_print as cp
+from pathlib import Path
+
+# 'package imports'
+from autosys.as_ansi import (
+    color_encode as ce,
+    color_print as cp,
+)
+
+from typing import List
 
 # def color_encode(fg_color, bg_color, flags_color)
 # def color_print(color_code, *args, **kwargs):

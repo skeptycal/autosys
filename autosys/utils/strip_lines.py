@@ -11,13 +11,20 @@
         `<https://opensource.org/licenses/MIT>`
     """
 
+# 'Standard Library'
 from io import TextIOWrapper
 from locale import getpreferredencoding
 from logging import Logger
 from pathlib import Path
 from sys import argv
 from tempfile import NamedTemporaryFile
-from typing import Dict, Final, List, Tuple
+
+from typing import (
+    Dict,
+    Final,
+    List,
+    Tuple,
+)
 
 
 class FileSet(list):

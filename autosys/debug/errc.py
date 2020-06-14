@@ -1,4 +1,8 @@
-from enum import IntEnum, unique
+# 'Standard Library'
+from enum import (
+    IntEnum,
+    unique,
+)
 
 
 @unique

@@ -60,10 +60,24 @@
     To use, simply 'import logging' and log away!
     """
 
-import sys, os, time, io, re, traceback, warnings, weakref, collections.abc
+# 'Standard Library'
+#Let's try and shutdown automatically on application exit...
+import atexit
+import collections.abc
+import io
+import os
+import re
+import sys
+import threading
+import time
+import traceback
+import warnings
+import weakref
 
-from string import Template
-from string import Formatter as StrFormatter
+from string import (
+    Formatter as StrFormatter,
+    Template,
+)
 
 __all__ = [
     'BASIC_FORMAT', 'BufferingFormatter', 'CRITICAL', 'DEBUG', 'ERROR',
@@ -77,7 +91,6 @@ __all__ = [
     'raiseExceptions'
 ]
 
-import threading
 
 __author__ = "Vinay Sajip <vinay_sajip@red-dove.com>"
 __status__ = "production"
@@ -2255,8 +2268,6 @@ def shutdown(handlerList=_handlerList):
             #else, swallow
 
 
-#Let's try and shutdown automatically on application exit...
-import atexit
 atexit.register(shutdown)
 
 # Null handler

@@ -11,8 +11,10 @@
         `<https://opensource.org/licenses/MIT>`
     """
 
+# 'Standard Library'
 import string
 
+# 'package imports'
 from text_utils import *
 
 print(dir())

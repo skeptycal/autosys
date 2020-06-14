@@ -1,6 +1,40 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# 'future imports'
 from __future__ import absolute_import
+
+# 'Standard Library'
+import sys
+
+from collections import deque
+from contextlib import closing
+from dataclasses import dataclass
+from os import (
+    environ as ENV,
+    linesep as NL,
+)
+from pprint import pprint
+from sys import (
+    argv,
+    stderr,
+    stdout,
+)
+
+# 'package imports'
+from autosys.web.web_basics import *
+from bs4 import BeautifulSoup
+
+# 'third party'
+from requests import get
+from requests.exceptions import RequestException
+
+from typing import (
+    Any,
+    Deque,
+    Dict,
+    List,
+    Tuple,
+)
 
 """ scrape.py - web scraping utilities for python
     (reference: https://realpython.com/python-web-scraping-practical-introduction/)
@@ -10,29 +44,14 @@ from __future__ import absolute_import
         https://www.twitter.com/skeptycal
     """
 
-if True:  # ! -- System Imports
-    import sys
-    from collections import deque
-    from contextlib import closing
-    from dataclasses import dataclass
-    from os import linesep as NL, environ as ENV
-    from pprint import pprint
-    from sys import argv, stdout, stderr
-    from typing import Any, Deque, Dict, List, Tuple
 
-if True:  # ! -- Third Party Imports
-    from requests import get
-    from requests.exceptions import RequestException
-    from bs4 import BeautifulSoup
 
-    try:
-        import lxml as parser
+try:
+    import lxml as parser
 
-        DEFAULT_PARSER = "lxml"
-    except:
-        DEFAULT_PARSER = "html.parser"
-
-    from autosys.web.web_basics import *
+    DEFAULT_PARSER = "lxml"
+except:
+    DEFAULT_PARSER = "html.parser"
 
 
 # !---------------------------------------------- Custom Types
@@ -93,8 +112,7 @@ class ScrapeDocumentSet:
 
     def __append__(self, url):
         self._url_set.__append__(
-            ScrapeDocument(url=url, scrape_rules=self.scrape_rules_list)
-        )
+            ScrapeDocument(url=url, scrape_rules=self.scrape_rules_list))
 
 
 # !---------------------------------------------- Script Tests
@@ -120,8 +138,6 @@ def __main__(args) -> int:
 
 if __name__ == "__main__":  # if script is loaded directly from CLI
     __main__(sys.argv[1:])
-
-
 """ Notes
     from tutorial ... moved out of __test__()
 

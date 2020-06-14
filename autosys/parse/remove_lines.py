@@ -3,7 +3,10 @@
 # https://stackoverflow.com/a/5463419
 
 # import fileinput
-from typing import Dict, List
+from typing import (
+    Dict,
+    List,
+)
 
 
 def protected_exec(code: str):

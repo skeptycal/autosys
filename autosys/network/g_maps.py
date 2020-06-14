@@ -11,6 +11,7 @@
 # image of specified location using
 # Google Static Maps API
 
+# 'third party'
 # importing required modules
 import requests
 

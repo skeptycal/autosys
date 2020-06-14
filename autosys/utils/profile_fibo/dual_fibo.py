@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
+# 'Standard Library'
 import sys
 import time
+
 from collections import deque
-from typing import Deque, List  # , Iterator,
+
+from typing import (  # , Iterator,
+    Deque,
+    List,
+)
 
 # TODO interesting features of patterns of numbers
 # when looking for primes, you first do the easy things:

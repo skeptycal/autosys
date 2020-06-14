@@ -2,6 +2,7 @@
 # grep_some_condition.py
 # https://stackoverflow.com/a/5463419
 
+# 'package imports'
 from remove_lines import remove_line
 
 line = line.replace("test", "testZ")

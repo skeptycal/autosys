@@ -17,121 +17,118 @@
     [2]: https://www.twitter.com/skeptycal
     [3]: https://opensource.org/licenses/MIT
     """
-import re
-from dataclasses import dataclass
-from locale import getpreferredencoding
-from typing import AbstractSet, Dict, Final, List, Mapping, Tuple
 
-# import logging
-from autosys import log as logging  # modified fork from python 3.8.3
-from autosys.cli.terminal import SUPPORTS_COLOR, BasicColors
+# 'package imports'
+from autosys.forks.logging import *
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+# import re
+# from dataclasses import dataclass
+# from locale import getpreferredencoding
+# from typing import AbstractSet, Dict, Final, List, Mapping, Tuple
 
-DEFAULT_ENCODING: str = getpreferredencoding(True)
+# # import logging
+# from autosys import log as logging  # modified fork from python 3.8.3
+# from autosys.cli.terminal import SUPPORTS_COLOR, BasicColors
 
-DEFAULT_LOG_FORMAT = "%(levelname)-8s %(name)s:%(filename)s:%(lineno)d %(message)s"
-DEFAULT_LOG_DATE_FORMAT = "%H:%M:%S"
+# logger = logging.getLogger(__name__)
+# logger.setLevel(logging.INFO)
 
-RE_ANSI_ESCAPE_SEQ = re.compile(
-    r"\x1b\[[\d;]+m",
-    flags=re.IGNORECASE | re.DOTALL | re.MULTILINE,
-)
+# DEFAULT_ENCODING: str = getpreferredencoding(True)
 
+# DEFAULT_LOG_FORMAT = "%(levelname)-8s %(name)s:%(filename)s:%(lineno)d %(message)s"
+# DEFAULT_LOG_DATE_FORMAT = "%H:%M:%S"
 
-def _remove_ansi_escape_sequences(text):
-    return _ANSI_ESCAPE_SEQ.sub("", text)
+# RE_ANSI_ESCAPE_SEQ = re.compile(
+#     r"\x1b\[[\d;]+m",
+#     flags=re.IGNORECASE | re.DOTALL | re.MULTILINE,
+# )
 
+# def _remove_ansi_escape_sequences(text):
+#     return _ANSI_ESCAPE_SEQ.sub("", text)
 
-@dataclass
-class LogColors:
-    """ Level       Numeric value
-        -------------------------
-        CRITICAL        50
-        ERROR           40
-        WARNING         30
-        INFO            20
-        DEBUG           10
-        NOTSET           0
-        """
+# @dataclass
+# class LogColors:
+#     """ Level       Numeric value
+#         -------------------------
+#         CRITICAL        50
+#         ERROR           40
+#         WARNING         30
+#         INFO            20
+#         DEBUG           10
+#         NOTSET           0
+#         """
 
-    CRITICAL: str = BasicColors.WARN
-    ERROR: str = BasicColors.ATTN
-    WARNING: str = BasicColors.CANARY
-    INFO: str = BasicColors.GO
-    DEBUG: str = BasicColors.RAIN
-    NOTSET: str = BasicColors.RESET
+#     CRITICAL: str = BasicColors.WARN
+#     ERROR: str = BasicColors.ATTN
+#     WARNING: str = BasicColors.CANARY
+#     INFO: str = BasicColors.GO
+#     DEBUG: str = BasicColors.RAIN
+#     NOTSET: str = BasicColors.RESET
 
+# class VarTester:
+#     indent: int = 2
+#     indent_char: str = ' '
 
-class VarTester:
-    indent: int = 2
-    indent_char: str = ' '
+# def log_var(obj_name: str = '__name__', indent: int = 2):
+#     """ Log Variable
+#         ---
+#         *** variable name must be a string in quotes!! ***
 
+#         Quick logging tool to log:
 
-def log_var(obj_name: str = '__name__', indent: int = 2):
-    """ Log Variable
-        ---
-        *** variable name must be a string in quotes!! ***
+#         - variable name
+#         - variable type
+#         - variable contents
+#         """
+#     obj: object = f"{obj_name}"
+#     ind: str = ' ' * indent
+#     if hasattr(obj_name, 'iter'):
+#         print('iter')
+#     try:
+#         logger.info(
+#             f"{ind}Variable - {obj_name}({obj_name.__class__}): {eval(obj_name)}"
+#         )
+#     except:
+#         pass
+#     try:
+#         print(
+#             f"{ind}Variable - {obj_name}({obj_name.__class__}): {eval(obj_name)}"
+#         )
+#     except:
+#         pass
 
-        Quick logging tool to log:
+# def _test_log_var(*args):
+#     print('=' * 50)
+#     print('log_var testing')
+#     print('-' * 50)
+#     log_var('DEFAULT_ENCODING')
 
-        - variable name
-        - variable type
-        - variable contents
-        """
-    obj: object = f"{obj_name}"
-    ind: str = ' ' * indent
-    if hasattr(obj_name, 'iter'):
-        print('iter')
-    try:
-        logger.info(
-            f"{ind}Variable - {obj_name}({obj_name.__class__}): {eval(obj_name)}"
-        )
-    except:
-        pass
-    try:
-        print(
-            f"{ind}Variable - {obj_name}({obj_name.__class__}): {eval(obj_name)}"
-        )
-    except:
-        pass
+#     log_var()
+#     ind: int = 0
+#     for arg in args:
+#         ind += 2
+#         try:
+#             for sub in arg:
+#                 ind += 2
+#                 log_var(f"'{sub}'", indent=ind)
+#             ind -= 2
+#         except:
+#             log_var(f"'{arg}'")
+#         ind -= 2
+#     print('-' * 50)
 
+# def _test_logger(debug: bool = False):
+#     logger.debug("debug message")
+#     logger.info("info message")
+#     logger.warning("warn message")
+#     logger.error("error message")
+#     logger.critical("critical message")
 
-def _test_log_var(*args):
-    print('=' * 50)
-    print('log_var testing')
-    print('-' * 50)
-    log_var('DEFAULT_ENCODING')
+#     logger.debug(f"default encoding: {DEFAULT_ENCODING}")
+#     logger.warning(DEFAULT_ENCODING)
+#     _test_log_var()
 
-    log_var()
-    ind: int = 0
-    for arg in args:
-        ind += 2
-        try:
-            for sub in arg:
-                ind += 2
-                log_var(f"'{sub}'", indent=ind)
-            ind -= 2
-        except:
-            log_var(f"'{arg}'")
-        ind -= 2
-    print('-' * 50)
-
-
-def _test_logger(debug: bool = False):
-    logger.debug("debug message")
-    logger.info("info message")
-    logger.warning("warn message")
-    logger.error("error message")
-    logger.critical("critical message")
-
-    logger.debug(f"default encoding: {DEFAULT_ENCODING}")
-    logger.warning(DEFAULT_ENCODING)
-    _test_log_var()
-
-
-_test_logger(True)
+# _test_logger(True)
 
 # # from pytest.logging.py
 # class ColoredLevelFormatter(logging.Formatter):

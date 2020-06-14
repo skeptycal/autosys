@@ -19,10 +19,10 @@
 
 # from dataclasses import Field, dataclass, field
 # from io import TextIOWrapper
+# 'package imports'
 # from os import environ as ENV, linesep as NL
 # from platform import platform
-# from sys import stdout
-# from typing import NamedTuple, Sequence, Tuple
+from autosys.cli import *
 
 __all__ = [
     "BasicColors",
@@ -39,7 +39,7 @@ __all__ = [
     "vprint",
 ]
 
-# PLATFORM = platform()
+PLATFORM = platform()
 DEFAULT_COLOR = "MAIN"
 CR: str = "\r"
 

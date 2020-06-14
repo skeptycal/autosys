@@ -9,9 +9,12 @@
         `<https://opensource.org/licenses/MIT>`
     """
 
+# 'Standard Library'
 import string
+
 from os import linesep
 from random import choice
+
 from typing import List
 
 NUL: str = chr(0)

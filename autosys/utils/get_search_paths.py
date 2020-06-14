@@ -17,6 +17,7 @@
 __author__ = "Microsoft Corporation <ptvshelp@microsoft.com>"
 __version__ = "3.2"
 
+# 'Standard Library'
 import os
 import site
 import sys

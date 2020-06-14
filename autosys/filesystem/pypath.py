@@ -10,11 +10,16 @@
     """
 
 
+# 'Standard Library'
 # !---------------------------------------------- Imports
 # from autosys import *
 import pathlib
 
-from autosys.debug import db_column_ruler, dbprint
+# 'package imports'
+from autosys.debug import (
+    db_column_ruler,
+    dbprint,
+)
 
 # !---------------------------------------------- CONSTANTS
 _debug_: bool = True  # True => use Debug features

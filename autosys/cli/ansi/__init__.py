@@ -9,7 +9,9 @@
         `<https://opensource.org/licenses/MIT>`
     """
 
+# 'package imports'
 import cli.ansi
+
 from cli.ansi import *
 
 # __all__ = []

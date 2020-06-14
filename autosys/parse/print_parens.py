@@ -9,6 +9,7 @@
     The examples below use the module traceback_example.py (provided in the source package for PyMOTW). The contents are:
     """
 
+# 'Standard Library'
 import re
 import sys
 import traceback

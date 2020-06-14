@@ -7,11 +7,13 @@
     - TMP_HERE: temp file with name; created in the current directory
     """
 
+# 'Standard Library'
 import enum
 import os
 import sys
 import tempfile
 
+# 'package imports'
 import autosys.parsing.file_ops.file_class
 
 # from io import StringIO

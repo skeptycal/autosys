@@ -1,21 +1,40 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# 'future imports'
 from __future__ import absolute_import
 
+# 'Standard Library'
 import sys
+
 from collections import deque
 from contextlib import closing
 from dataclasses import dataclass
 from logging import Logger
-from os import environ as ENV, linesep as NL
+from os import (
+    environ as ENV,
+    linesep as NL,
+)
 from pprint import PrettyPrinter
-from sys import argv, stderr, stdout
-from typing import Any, Deque, Dict, List, Tuple
+from sys import (
+    argv,
+    stderr,
+    stdout,
+)
 
+# 'package imports'
+from bs4 import BeautifulSoup
+
+# 'third party'
 from requests import get
 from requests.exceptions import RequestException
 
-from bs4 import BeautifulSoup
+from typing import (
+    Any,
+    Deque,
+    Dict,
+    List,
+    Tuple,
+)
 
 """ web_basics.py - basic web scraping tools
 
@@ -23,8 +42,6 @@ from bs4 import BeautifulSoup
     https://www.github.com/skeptycal/autosys
     https://www.twitter.com/skeptycal
     """
-
-
 
 try:
     import lxml as parser
@@ -35,7 +52,6 @@ except:
 
 # from autosys import *
 
-
 # !---------------------------------------------- Common CONSTANTS
 _debug_: bool = True
 _fuzzy_: bool = True
@@ -43,9 +59,11 @@ _fuzzy_: bool = True
 DEFAULT_URL_HISTORY: int = 1000
 
 log_web = Logger(__file__)
-pp_web = PrettyPrinter(
-    indent=2, width=79, depth=5, stream=stdout, compact=False
-)
+pp_web = PrettyPrinter(indent=2,
+                       width=79,
+                       depth=5,
+                       stream=stdout,
+                       compact=False)
 
 # !---------------------------------------------- Custom Types
 
@@ -94,11 +112,8 @@ def is_good_response(resp):
     Returns True if the response seems to be HTML, False otherwise.
     """
     content_type = resp.headers["Content-Type"].lower()
-    return (
-        resp.status_code == 200
-        and content_type is not None
-        and content_type.find("html") > -1
-    )
+    return (resp.status_code == 200 and content_type is not None
+            and content_type.find("html") > -1)
 
 
 def log_error(e):
@@ -149,8 +164,6 @@ def __main__(args=argv[1:]) -> int:
 if __name__ == "__main__":  # if script is loaded directly from CLI
     print("hello world")
     __main__()
-
-
 """ Notes
     from tutorial ... moved out of __test__()
 

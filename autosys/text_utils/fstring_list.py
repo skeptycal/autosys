@@ -1,15 +1,26 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# 'Standard Library'
 from dataclasses import dataclass
-from enum import Enum, IntEnum, unique
+from enum import (
+    Enum,
+    IntEnum,
+    unique,
+)
 from time import sleep
-from typing import Dict, Iterable
 
-import numpy as np
-
+# 'package imports'
 from autosys import *
 from cli.supports_color import SUPPORTS_COLOR
+
+# 'third party'
+import numpy as np
+
+from typing import (
+    Dict,
+    Iterable,
+)
 
 NAN = object()
 NUL = ""

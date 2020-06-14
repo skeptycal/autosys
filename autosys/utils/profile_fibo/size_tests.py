@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
+# 'Standard Library'
 import math
 import sys
+
 from sys import stdin
 
 list_of_doubles = [math.sin(x) for x in range(10 * 1000 * 1000)]

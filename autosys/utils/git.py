@@ -3,15 +3,19 @@
 
 # from https://github.com/c4urself/bump2version
 
+# 'Standard Library'
 import errno
 import logging
 import os
 import subprocess
+
 from tempfile import NamedTemporaryFile
 
+# 'package imports'
 from autosys.exceptions import (
     MercurialDoesNotSupportSignedTagsException,
-    WorkingDirectoryIsDirtyException,)
+    WorkingDirectoryIsDirtyException,
+)
 from autosys.lister import *
 
 logger = logging.getLogger(__name__)

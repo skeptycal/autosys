@@ -13,6 +13,7 @@
 # make it possible to combine Python with other software that is released
 # under the GPL; the others don’t.
 
+# 'Standard Library'
 from collections import OrderedDict
 
 # matplotlib 'single letter colors' called BASE_COLORS

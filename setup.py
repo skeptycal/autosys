@@ -33,7 +33,7 @@ from autosys.regex_utils.re_extract import *
 from autosys.utils.readme import readme
 
 #! DEBUG - run some live tests ... set 'False' for production !!!
-_debug_: bool = True
+_debug_: bool = False
 here = Path(__file__).resolve().parent
 print(here)
 if here not in PYTHONPATH:

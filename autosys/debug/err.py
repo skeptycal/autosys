@@ -48,11 +48,23 @@ Usage: err [-dhtv] n
 
 """
 
+# 'Standard Library'
 import enum
-from enum import Enum, auto
-from typing import Dict, List, Sequence, Tuple
 
+from enum import (
+    Enum,
+    auto,
+)
+
+# 'package imports'
 import sentry_sdk
+
+from typing import (
+    Dict,
+    List,
+    Sequence,
+    Tuple,
+)
 
 sentry_sdk.init("https://853c4343706c4a139a7f1c43b7eb2a51@sentry.io/1887434")
 sentry_sdk.init(release="as-anansi@0.3.0")

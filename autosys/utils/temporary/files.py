@@ -1,6 +1,8 @@
+# 'Standard Library'
 import os
 import tempfile
 
+# 'package imports'
 import contextlib2 as contextlib
 import pathlib2 as pathlib
 import temporary.util

@@ -12,13 +12,20 @@
 
 # TODO - this is just a rough idea ... not yet implemented ... not functional
 
+# 'Standard Library'
 import sys
-from io import TextIOWrapper
-from typing import List
 
+from io import TextIOWrapper
+
+# 'package imports'
 from cli.anansi import *
-from dev.debug import log, logit
+from dev.debug import (
+    log,
+    logit,
+)
 from profiling.timeit import *
+
+from typing import List
 
 LOG_FILE: TextIOWrapper = sys.stdout
 __all__: List[str] = []

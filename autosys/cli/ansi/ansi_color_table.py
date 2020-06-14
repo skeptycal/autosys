@@ -3,7 +3,10 @@
 # colored text and background
 # https://www.geeksforgeeks.org/print-colors-python-terminal/
 
-from typing import Dict, List
+from typing import (
+    Dict,
+    List,
+)
 
 MAIN = "\u001b[38; 5; 229m"
 RESET = "\u001b[0m"

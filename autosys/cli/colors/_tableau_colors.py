@@ -9,6 +9,7 @@
         `<https://opensource.org/licenses/MIT>`
     """
 
+# 'Standard Library'
 from collections import OrderedDict
 
 # These colors are from Tableau

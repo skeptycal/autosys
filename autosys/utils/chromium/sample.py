@@ -1,5 +1,7 @@
+# 'Standard Library'
 import time
 
+# 'package imports'
 from selenium import webdriver
 
 _chrome_driver: str = "/path/to/chromedriver"  # Optional argument, if not specified will search path.

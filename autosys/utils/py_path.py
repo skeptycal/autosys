@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
+# 'Standard Library'
 import sys
+
 from pathlib import Path
+
 from typing import List
 
 PYTHON_PATH = sys.path

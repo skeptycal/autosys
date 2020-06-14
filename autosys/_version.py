@@ -10,17 +10,37 @@
     `AutoSys` is licensed under the `MIT License
         `<https://opensource.org/licenses/MIT>`
     """
+# 'Standard Library'
+import json
 # Standard Library
 import sys
-import json
+
+from dataclasses import (
+    Field,
+    dataclass,
+    field,
+)
 from io import TextIOWrapper
 from os import linesep as NL
-from typing import Any, Set, Dict, List, Final, Tuple, Optional, Sequence
 from pathlib import Path
-from tempfile import NamedTemporaryFile, mkstemp
-from dataclasses import Field, field, dataclass
+from tempfile import (
+    NamedTemporaryFile,
+    mkstemp,
+)
 
+# 'package imports'
 from autosys.text_utils.nowandthen import now
+
+from typing import (
+    Any,
+    Dict,
+    Final,
+    List,
+    Optional,
+    Sequence,
+    Set,
+    Tuple,
+)
 
 _debug_: Final[bool] = True
 copyright_symbol: Final[str] = "©"  # could be (c)

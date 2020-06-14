@@ -1,4 +1,6 @@
+# 'Standard Library'
 import re
+
 from os import linesep as NL
 
 RE_DEFAULT_BITE_SIZE = 5

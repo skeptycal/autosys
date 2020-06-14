@@ -1,6 +1,8 @@
+# 'Standard Library'
 import threading
 import time
 
+# 'package imports'
 import pyperclip
 
 

@@ -30,12 +30,23 @@
 
 # * --------------------------------- Imports and Constants
 
-from dataclasses import Field, dataclass, field
+# 'Standard Library'
+from dataclasses import (
+    Field,
+    dataclass,
+    field,
+)
 from os import linesep
-from typing import Final, List, Tuple
 
+# 'package imports'
 from autosys.debug.show_all import show_all
 from random_string import *
+
+from typing import (
+    Final,
+    List,
+    Tuple,
+)
 
 __all__: List[str] = [
     "CASE_LIST",

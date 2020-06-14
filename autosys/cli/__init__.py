@@ -15,20 +15,43 @@
 # Copyright (C) 2012-2019 Vinay Sajip.
 # Licensed to the Python Software Foundation under a contributor agreement.
 
+# 'Standard Library'
 import logging
 import re
 import sys
-from sys import argv, stderr, stdout, path as PYTHON_PATH
-from platform import platform
-from os import environ as ENV, linesep as NL
-from io import TextIOWrapper
-from dataclasses import Field, dataclass, field
-from typing import Any, Dict, List, NamedTuple, Sequence, Tuple
 
-from autosys.cli.terminal import *
+from dataclasses import (
+    Field,
+    dataclass,
+    field,
+)
+from io import TextIOWrapper
+from os import (
+    environ as ENV,
+    linesep as NL,
+)
+from platform import platform
+from sys import (
+    argv,
+    path as PYTHON_PATH,
+    stderr,
+    stdout,
+)
+
+# 'package imports'
 from autosys.cli.ansi_codes import AnsiCodes
 from autosys.cli.ascii_chars import *
 from autosys.cli.supports_color import SUPPORTS_COLOR
+from autosys.cli.terminal import *
+
+from typing import (
+    Any,
+    Dict,
+    List,
+    NamedTuple,
+    Sequence,
+    Tuple,
+)
 
 PLATFORM = platform()
 

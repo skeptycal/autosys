@@ -7,10 +7,16 @@ into class member fields so that we can access them easily.
 
 """
 
+# 'future imports'
 from __future__ import unicode_literals
 
+# 'Standard Library'
 import socket
-from abc import ABCMeta, abstractmethod
+
+from abc import (
+    ABCMeta,
+    abstractmethod,
+)
 from struct import unpack
 
 # A list of IP Protocol numbers, taken directly from IANA.

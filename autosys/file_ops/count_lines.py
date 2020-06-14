@@ -17,9 +17,11 @@
     [3]: https://opensource.org/licenses/MIT
     """
 
+# 'Standard Library'
 from os import argv
 from pathlib import Path
 
+# 'package imports'
 from autosys.file_ops import codec_open
 
 # (venv) ➜  autosys (dev) ✗)python3 -c "import sys; print(f'{sys.argv}'); n=0; with open(sys.argv[1]): n += 1; print(n);" 'pip list'

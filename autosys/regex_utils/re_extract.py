@@ -62,7 +62,9 @@
     [3]: https://opensource.org/licenses/MIT
     """
 
+# 'package imports'
 import autosys.regex_utils
+
 from autosys.regex_utils import *
 
 
@@ -136,8 +138,10 @@ class ReExtract:
     search_string: str = ""
     flags: int = DEFAULT_RE_FLAGS
     _result: Field = field(default="", init=False)
-    _path_name: Field = field(Path(), init = False)
+    _path_name: Field = field(init=False)
+
     def __post_init__(self):
+        self._path_name = Path(self.file_name)
         if not self.pattern:
             self.pattern = re.compile(pattern=self.pattern, flags=self.flags)
         self._path_name = Path(self.file_name).resolve()
@@ -157,7 +161,8 @@ class ReExtract:
                         f"Returning list of lines from text file '{self.file_name}'."
                     )
                     return fh.readlines()
-                log.info(f"Returning contents of text file '{self.file_name}'.")
+                log.info(
+                    f"Returning contents of text file '{self.file_name}'.")
                 return fh.read()
         except Exception as e:
             msg = f"File error while opening file '{self.file_name}'{NL}{e.args}"
@@ -174,8 +179,7 @@ class ReExtract:
             if self.default:
                 return self.default
             raise Re_Value_Error(
-                f"Pattern '{pattern}' not found in file '{file_name}'", e
-            )
+                f"Pattern '{pattern}' not found in file '{file_name}'", e)
         except Exception as e:
             log(e)
             raise Re_Value_Error(

@@ -6,14 +6,24 @@
     Requires Python 3.6+
     """
 
+# 'Standard Library'
 import json
 import locale
 import os
 import sys
-from typing import Any, Dict, List
 
+# 'package imports'
 from autosys import __version__ as version
-from autosys.bak.system import py_shell, pyver
+from autosys.bak.system import (
+    py_shell,
+    pyver,
+)
+
+from typing import (
+    Any,
+    Dict,
+    List,
+)
 
 # locale.setlocale(locale.LC_ALL, '')
 DEFAULT_ENCODING = locale.getpreferredencoding(do_setlocale=True)

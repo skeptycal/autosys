@@ -3,6 +3,7 @@
 Map of CSS color names to RGB integer values.
 """
 
+# 'Standard Library'
 import re
 import sys
 

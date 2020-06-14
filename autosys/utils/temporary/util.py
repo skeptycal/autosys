@@ -1,5 +1,7 @@
+# 'Standard Library'
 import errno
 
+# 'package imports'
 import contextlib2 as contextlib
 
 

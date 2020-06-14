@@ -1,6 +1,8 @@
-import autosys
+# 'package imports'
+# 'Standard Library'
+import json
 
 
-def json_prettyprint():
+def json_prettyprint(obj: object):
     """Pretty-print information as JSON."""
-    print(json.dumps(info(), sort_keys=True, indent=2))
+    print(json.dumps(obj, sort_keys=True, indent=2))

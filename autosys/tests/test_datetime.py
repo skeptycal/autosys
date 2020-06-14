@@ -5,15 +5,22 @@
 # https://www.github.com/skeptycal
 # https://www.twitter.com/skeptycal
 
+# 'Standard Library'
 import os
-from os import stat, stat_result
+
+from os import (
+    stat,
+    stat_result,
+)
 from pathlib import Path as _Path
 from sys import path as python_path
 from tempfile import NamedTemporaryFile
 
-import pytest
-
+# 'package imports'
 from autosys.filesystem.basefile import *
+
+# 'third party'
+import pytest
 
 
 def add_one(x):

@@ -8,6 +8,7 @@
     `AutoSys` is licensed under the `MIT License
         `<https://opensource.org/licenses/MIT>`
     """
+# 'local imports'
 from ._basic_colors import BasicColors
 from ._css4 import CSS4_COLORS
 from ._matplotlib import BASE_COLORS

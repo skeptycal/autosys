@@ -3,7 +3,6 @@
 
 # PythonTidy.py
 # 2006 Oct 27 . ccr
-
 """ PythonTidy.py cleans up, regularizes, and reformats the text of
 Python scripts.
 
@@ -115,26 +114,35 @@ Python scripts.
 
     """
 
-from __future__ import division
+# 'future imports'
+from __future__ import (
+    division,
+    print_function,
+)
+
+# 'Standard Library'
+import codecs
+import compiler
+import os
+import re
+import sys
+import textwrap  # 2007 May 25
+import tokenize
 
 DEBUG = False
 PERSONAL = False
 
 VERSION = "1.22"  # 2012 Mar 04
 
-if True:  # ! -- System Imports
-    import sys
-    import os
-    import codecs
-    import StringIO
-    import re
-    import textwrap  # 2007 May 25
 
-    if DEBUG:
-        import token
-        import doctest
-    import tokenize
-    import compiler
+if DEBUG:
+    import token
+    import doctest
+
+try:
+    import StringIO
+except:
+    from io import StringIO
 
 if True:  # ! -- Common CONSTANTS
     ZERO = 0
@@ -199,11 +207,8 @@ if True:  # ! -- Repertoire of name-transformation functions:
         return UNDERSCORE_PATTERN.sub("_\\1", str)
 
     def is_magic(str):
-        return (
-            str in ["self", "cls"]
-            or str.startswith("__")
-            and str.endswith("__")
-        )
+        return (str in ["self", "cls"]
+                or str.startswith("__") and str.endswith("__"))
 
     def underscore_to_camel_case(str, **attribs):
         if is_magic(str):
@@ -279,8 +284,7 @@ if PERSONAL:  # ! -- Author's preferences:
     LEFTJUST_DOC_STRINGS = True
     LOCAL_NAME_SCRIPT.extend([unmangle, camel_case_to_underscore])
     GLOBAL_NAME_SCRIPT.extend(
-        [unmangle, camel_case_to_underscore, all_upper_case]
-    )
+        [unmangle, camel_case_to_underscore, all_upper_case])
     CLASS_NAME_SCRIPT.extend([elide_c, underscore_to_camel_case])
     FUNCTION_NAME_SCRIPT.extend([camel_case_to_underscore])
     FORMAL_PARAM_NAME_SCRIPT.extend([elide_a, camel_case_to_underscore])
@@ -295,8 +299,7 @@ if True:  # ! -- Other global constants:
     PGRAPH_PATTERN = re.compile(r"\n{2,}")  # 2007 May 25
     UNIVERSAL_NEW_LINE_PATTERN = re.compile(r"((?:\r\n)|(?:\r)|(?:\n))")
     QUOTE_PATTERN = re.compile(
-        "([rRuU]{,2})((?:\"{3})|(?:'{3})|(?:\")|(?:'))"
-    )  # 2007 May 01
+        "([rRuU]{,2})((?:\"{3})|(?:'{3})|(?:\")|(?:'))")  # 2007 May 01
     ELIDE_C_PATTERN = re.compile("^c([A-Z])")
     ELIDE_A_PATTERN = re.compile("^a([A-Z])")
     ELIDE_F_PATTERN = re.compile("^f([A-Z])")
@@ -551,9 +554,8 @@ if True:  # ! -- Utility functions:
             prefix = NULL
             size = 1
         double_backslash_delimited_substrings = encoded.split(r"\\")
-        for (ndx, substring) in enumerate(
-            double_backslash_delimited_substrings
-        ):
+        for (ndx,
+             substring) in enumerate(double_backslash_delimited_substrings):
             substring = substring.replace(r"\"", '"').replace(r"\'", "'")
             if double:
                 substring = substring.replace('"', r"\"")
@@ -569,7 +571,6 @@ if True:  # ! -- Utility functions:
         return result
 
     def leftjust_lines(lines):  # 2007 May 25
-
         """Left justify lines of text.
 
         Lines is a Python list of strings *without* new-line terminators.
@@ -580,10 +581,10 @@ if True:  # ! -- Utility functions:
 
         return [line.strip() for line in lines]
 
-    def wrap_lines(
-        lines, width=COL_LIMIT, initial_indent=NULL, subsequent_indent=NULL
-    ):  # 2007 May 25
-
+    def wrap_lines(lines,
+                   width=COL_LIMIT,
+                   initial_indent=NULL,
+                   subsequent_indent=NULL):  # 2007 May 25
         """Wrap lines of text, preserving blank lines.
 
             Lines is a Python list of strings *without* new-line terminators.
@@ -630,11 +631,9 @@ if True:  # ! -- Utility functions:
 if True:  # ! -- File wrapper classes:
 
     class InputUnit(object):
-
         """File-buffered wrapper for sys.stdin.
 
         """
-
         def __init__(self, file_in):
             object.__init__(self)
             self.is_file_like = hasattr(file_in, "read")  # 2007 Jan 22
@@ -645,8 +644,7 @@ if True:  # ! -- File wrapper classes:
                 buffer = unit.read()  # 2006 Dec 05
                 unit.close()
             self.lines = UNIVERSAL_NEW_LINE_PATTERN.split(
-                buffer
-            )  # 2006 Dec 05
+                buffer)  # 2006 Dec 05
             if len(self.lines) > 2:
                 if OVERRIDE_NEWLINE is None:
                     self.newline = self.lines[1]  # ... the first delimiter.
@@ -709,20 +707,17 @@ if True:  # ! -- File wrapper classes:
             return str  # It will not do to feed Unicode to *compiler.parse*.
 
     class OutputUnit(object):
-
         """Line-buffered wrapper for sys.stdout.
 
         """
-
         def __init__(self, file_out):
             object.__init__(self)
             self.is_file_like = hasattr(file_out, "write")  # 2007 Jan 22
             if self.is_file_like:
                 self.unit = codecs.getwriter(CODING)(file_out)
             else:
-                self.unit = codecs.open(
-                    os.path.expanduser(file_out), "wb", CODING
-                )
+                self.unit = codecs.open(os.path.expanduser(file_out), "wb",
+                                        CODING)
             self.blank_line_count = 1
             self.margin = LEFT_MARGIN
             self.newline = INPUT.newline  # 2006 Dec 05
@@ -761,16 +756,14 @@ if True:  # ! -- File wrapper classes:
             can_split_after=False,
             can_break_after=False,
         ):  # 2007 Mar 06
-            self.chunks.append(
-                [
-                    chunk,
-                    tab_set,
-                    tab_clear,
-                    can_split_str,
-                    can_split_after,
-                    can_break_after,
-                ]
-            )
+            self.chunks.append([
+                chunk,
+                tab_set,
+                tab_clear,
+                can_split_str,
+                can_split_after,
+                can_break_after,
+            ])
             self.col += len(chunk)
             return self
 
@@ -778,8 +771,7 @@ if True:  # ! -- File wrapper classes:
             def is_split_needed(cumulative_width):
                 pos = self.pos
                 return ((pos + cumulative_width) > COL_LIMIT) and (
-                    pos > ZERO
-                )  # 2007 May 01
+                    pos > ZERO)  # 2007 May 01
 
             def drop_word(chunk, can_split_after):  # 2007 May 23
                 result = COL_LIMIT - self.pos
@@ -802,12 +794,12 @@ if True:  # ! -- File wrapper classes:
             chunk_lengths = []
             self.chunks.reverse()
             for (
-                chunk,
-                tab_set,
-                tab_clear,
-                can_split_str,
-                can_split_after,
-                can_break_after,
+                    chunk,
+                    tab_set,
+                    tab_clear,
+                    can_split_str,
+                    can_split_after,
+                    can_break_after,
             ) in self.chunks:  # 2007 May 01
                 if can_split_after or can_break_after:
                     cumulative_width = ZERO
@@ -825,13 +817,13 @@ if True:  # ! -- File wrapper classes:
                     ],
                 )
             for (
-                chunk,
-                cumulative_width,
-                tab_set,
-                tab_clear,
-                can_split_str,
-                can_split_after,
-                can_break_after,
+                    chunk,
+                    cumulative_width,
+                    tab_set,
+                    tab_clear,
+                    can_split_str,
+                    can_split_after,
+                    can_break_after,
             ) in chunk_lengths:  # 2007 May 01
                 if is_split_needed(cumulative_width):
                     if can_split_before:
@@ -888,8 +880,7 @@ if True:  # ! -- File wrapper classes:
             self.lineno += text.count(self.newline)
             self.buffer += text  # 2007 Jan 22
             if self.buffer.endswith("\n") or self.buffer.endswith(
-                "\r"
-            ):  # 2008 Jan 30
+                    "\r"):  # 2008 Jan 30
                 self.unit.write(self.buffer.rstrip())
                 self.unit.write(self.newline)  # 2008 Jan 30
                 self.buffer = NULL
@@ -927,16 +918,14 @@ if True:  # ! -- File wrapper classes:
             return self
 
         def dec_margin(self):
-            self.margin = (self.margin)[: -len(INDENTATION)]
+            self.margin = (self.margin)[:-len(INDENTATION)]
             return self
 
     class Comments(dict):
-
         """Collection of comments (blank lines) parsed out of the
         input Python code and indexed by line number.
 
         """
-
         def __init__(self):
             def quote_original(token_type, original):  # 2007 May 01
                 if token_type in [tokenize.STRING]:
@@ -961,7 +950,6 @@ if True:  # ! -- File wrapper classes:
                 return scol
 
             def merge_concatenated_strings(lines):  # 2010 Sep 08
-
                 """Save whole string in literal pool.
 
                 Python (and the *compiler* module) treat adjacent strings
@@ -1007,14 +995,11 @@ if True:  # ! -- File wrapper classes:
                                     next_line,
                                 ) = next_item
                                 if next_token_type in [tokenize.STRING]:
-                                    if (
-                                        prev_token_string[-1]
-                                        == next_token_string[ZERO]
-                                    ):
+                                    if (prev_token_string[-1] ==
+                                            next_token_string[ZERO]):
                                         prev_token_string = (
-                                            prev_token_string[:-1]
-                                            + next_token_string[1:]
-                                        )
+                                            prev_token_string[:-1] +
+                                            next_token_string[1:])
                                         on1 = False
                                 else:
                                     if on1:
@@ -1038,69 +1023,58 @@ if True:  # ! -- File wrapper classes:
             lines = merge_concatenated_strings(lines)  # 2010 Sep 08
             for (token_type, token_string, start, end, line) in lines:
                 if DEBUG:
-                    print (token.tok_name)[
-                        token_type
-                    ], token_string, start, end, line
+                    print(token.tok_name, [token_type], token_string, start,
+                          end, line)
                 (self.max_lineno, scol) = start
                 (erow, ecol) = end
                 if token_type in [tokenize.COMMENT, tokenize.NL]:
                     original = token_string
                     original = original.decode(INPUT.coding)
                     original = original.replace(
-                        "\t", DOC_TAB_REPLACEMENT
-                    )  # 2007 May 24
+                        "\t", DOC_TAB_REPLACEMENT)  # 2007 May 24
                     original = original.strip()
                     if SHEBANG_PATTERN.match(original) is not None:
                         pass
-                    elif (
-                        CODING_PATTERN.search(original) is not None
-                        and self.max_lineno <= 2
-                    ):
+                    elif (CODING_PATTERN.search(original) is not None
+                          and self.max_lineno <= 2):
                         pass
                     else:
                         scol = compensate_for_tabs(line, scol)  # 2007 May 25
-                        original = COMMENT_PATTERN.sub(
-                            NULL, original, 1
-                        )  # 2007 May 25
-                        if (token_type in [tokenize.COMMENT]) and (
-                            original in [NULL]
-                        ):
+                        original = COMMENT_PATTERN.sub(NULL, original,
+                                                       1)  # 2007 May 25
+                        if (token_type in [tokenize.COMMENT]) and (original
+                                                                   in [NULL]):
                             original = SPACE
                         if self.max_lineno in self:  # 2009 Jun 29
                             pass
                         else:
                             self[self.max_lineno] = [scol, original]
                 elif token_type in [
-                    tokenize.NUMBER,
-                    tokenize.STRING,
+                        tokenize.NUMBER,
+                        tokenize.STRING,
                 ]:  # 2007 Jan 14
                     try:
                         original = token_string.strip().decode(
-                            INPUT.coding, "backslashreplace"
-                        )
+                            INPUT.coding, "backslashreplace")
                         decoded = eval(original)  # 2007 May 01
                         encoded = repr(decoded)
-                        if (encoded == original) or (
-                            encoded == force_quote(original, double=False)
-                        ):
+                        if (encoded == original) or (encoded == force_quote(
+                                original, double=False)):
                             pass
                         else:
-                            original = quote_original(
-                                token_type, original
-                            )  # 2007 May 01
+                            original = quote_original(token_type,
+                                                      original)  # 2007 May 01
                             original_values = self.literal_pool.setdefault(
-                                encoded, []
-                            )  # 2010 Mar 10
+                                encoded, [])  # 2010 Mar 10
                             for (
-                                tok,
-                                lineno,
+                                    tok,
+                                    lineno,
                             ) in original_values:  # 2007 Jan 17
                                 if tok == original:
                                     break
                             else:
                                 original_values.append(
-                                    [original, self.max_lineno]
-                                )
+                                    [original, self.max_lineno])
                     except:
                         pass
             self.prev_lineno = -2  # 2010 Mar 10
@@ -1114,14 +1088,12 @@ if True:  # ! -- File wrapper classes:
 
             def is_blank_line_needed():
                 return ADD_BLANK_LINES_AROUND_COMMENTS and not (
-                    is_blank() and KEEP_BLANK_LINES
-                )
+                    is_blank() and KEEP_BLANK_LINES)
 
             def margin(scol):
                 (quotient, remainder) = divmod(scol, len(INDENTATION))
-                result = (
-                    INDENTATION * quotient + SPACE * remainder + COMMENT_PREFIX
-                )
+                result = (INDENTATION * quotient + SPACE * remainder +
+                          COMMENT_PREFIX)
                 return result
 
             def strip_blank_lines(text_lines):
@@ -1161,8 +1133,7 @@ if True:  # ! -- File wrapper classes:
                             # Output the Shebang and Coding-Spec.
 
                             OUTPUT.line_init().line_more(
-                                token_string
-                            ).line_term()
+                                token_string).line_term()
                         else:
                             text.append([scol, token_string])  # 2007 May 25
                     on1 = False
@@ -1206,9 +1177,8 @@ if True:  # ! -- File wrapper classes:
                 else:
                     OUTPUT.line_init()
                     margin_string = margin(scol)
-                    if (margin_string == "# ") and (
-                        line.startswith("#")
-                    ):  # 2010 Mar 10
+                    if (margin_string
+                            == "# ") and (line.startswith("#")):  # 2010 Mar 10
                         OUTPUT.line_more("#")  # 2010 Mar 10
                     else:
                         OUTPUT.line_more(margin(scol))
@@ -1259,11 +1229,9 @@ if True:  # ! -- File wrapper classes:
             return self
 
     class Name(list):  # 2006 Dec 14
-
         """Maps new name to old names.
 
         """
-
         def __init__(self, new):
             self.new = new
             self.is_reported = False
@@ -1284,9 +1252,8 @@ if True:  # ! -- File wrapper classes:
                 pass
             else:
                 sys.stderr.write(
-                    "Error:  %s ambiguously replaced by '%s' at line %i.\n"
-                    % (str(self), self.new, OUTPUT.lineno + 1)
-                )
+                    "Error:  %s ambiguously replaced by '%s' at line %i.\n" %
+                    (str(self), self.new, OUTPUT.lineno + 1))
                 self.is_reported = True
             return self
 
@@ -1302,19 +1269,16 @@ if True:  # ! -- File wrapper classes:
             else:
                 sys.stderr.write(
                     "Warning:  '%s.%s,' defined elsewhere, replaced by '.%s' at line %i.\n"
-                    % (expr, self[ZERO], self.new, OUTPUT.lineno + 1)
-                )
+                    % (expr, self[ZERO], self.new, OUTPUT.lineno + 1))
             return self
 
     class NameSpace(list):
-
         """Dictionary of names (variables).
 
         Actually a list of dictionaries.  The current scope is the top one
         (ZEROth member).
 
         """
-
         def push_scope(self):
             self.insert(ZERO, {})
             return self
@@ -1401,7 +1365,6 @@ if True:  # ! -- File wrapper classes:
         The kinds of nodes are a Python Version Dependency.
 
         """
-
         def isinstance_(node, class_name):  # 2006 Nov 30
             """Safe check against name of a node class rather than the
             class itself, which may or may not be supported at the current
@@ -1423,9 +1386,8 @@ if True:  # ! -- File wrapper classes:
         elif isinstance_(node, "And"):
             result = NodeAnd(indent, lineno, node.nodes)
         elif isinstance_(node, "AssAttr"):
-            result = NodeAsgAttr(
-                indent, lineno, node.expr, node.attrname, node.flags
-            )
+            result = NodeAsgAttr(indent, lineno, node.expr, node.attrname,
+                                 node.flags)
         elif isinstance_(node, "AssList"):
             result = NodeAsgList(indent, lineno, node.nodes)
         elif isinstance_(node, "AssName"):
@@ -1437,9 +1399,8 @@ if True:  # ! -- File wrapper classes:
         elif isinstance_(node, "Assign"):
             result = NodeAssign(indent, lineno, node.nodes, node.expr)
         elif isinstance_(node, "AugAssign"):
-            result = NodeAugAssign(
-                indent, lineno, node.node, node.op, node.expr
-            )
+            result = NodeAugAssign(indent, lineno, node.node, node.op,
+                                   node.expr)
         elif isinstance_(node, "Backquote"):
             result = NodeBackquote(indent, lineno, node.expr)
         elif isinstance_(node, "Bitand"):
@@ -1460,9 +1421,8 @@ if True:  # ! -- File wrapper classes:
                 node.dstar_args,
             )
         elif isinstance_(node, "Class"):
-            result = NodeClass(
-                indent, lineno, node.name, node.bases, node.doc, node.code
-            )
+            result = NodeClass(indent, lineno, node.name, node.bases, node.doc,
+                               node.code)
         elif isinstance_(node, "Compare"):
             result = NodeCompare(indent, lineno, node.expr, node.ops)
         elif isinstance_(node, "Const"):
@@ -1480,15 +1440,13 @@ if True:  # ! -- File wrapper classes:
         elif isinstance_(node, "Ellipsis"):
             result = NodeEllipsis(indent, lineno)
         elif isinstance_(node, "Exec"):
-            result = NodeExec(
-                indent, lineno, node.expr, node.locals, node.globals
-            )
+            result = NodeExec(indent, lineno, node.expr, node.locals,
+                              node.globals)
         elif isinstance_(node, "FloorDiv"):
             result = NodeFloorDiv(indent, lineno, node.left, node.right)
         elif isinstance_(node, "For"):
-            result = NodeFor(
-                indent, lineno, node.assign, node.list, node.body, node.else_
-            )
+            result = NodeFor(indent, lineno, node.assign, node.list, node.body,
+                             node.else_)
         elif isinstance_(node, "From"):
             result = NodeFrom(indent, lineno, node.modname, node.names)
         elif isinstance_(node, "Function"):
@@ -1506,9 +1464,8 @@ if True:  # ! -- File wrapper classes:
         elif isinstance_(node, "GenExpr"):
             result = NodeGenExpr(indent, lineno, node.code)
         elif isinstance_(node, "GenExprFor"):
-            result = NodeGenExprFor(
-                indent, lineno, node.assign, node.iter, node.ifs
-            )
+            result = NodeGenExprFor(indent, lineno, node.assign, node.iter,
+                                    node.ifs)
         elif isinstance_(node, "GenExprIf"):
             result = NodeGenExprIf(indent, lineno, node.test)
         elif isinstance_(node, "GenExprInner"):
@@ -1520,9 +1477,8 @@ if True:  # ! -- File wrapper classes:
         elif isinstance_(node, "If"):
             result = NodeIf(indent, lineno, node.tests, node.else_)
         elif isinstance_(node, "IfExp"):
-            result = NodeIfExp(
-                indent, lineno, node.test, node.then, node.else_
-            )
+            result = NodeIfExp(indent, lineno, node.test, node.then,
+                               node.else_)
         elif isinstance_(node, "Import"):
             result = NodeImport(indent, lineno, node.names)
         elif isinstance_(node, "Invert"):
@@ -1545,9 +1501,8 @@ if True:  # ! -- File wrapper classes:
         elif isinstance_(node, "ListComp"):
             result = NodeListComp(indent, lineno, node.expr, node.quals)
         elif isinstance_(node, "ListCompFor"):
-            result = NodeListCompFor(
-                indent, lineno, node.assign, node.list, node.ifs
-            )
+            result = NodeListCompFor(indent, lineno, node.assign, node.list,
+                                     node.ifs)
         elif isinstance_(node, "ListCompIf"):
             result = NodeListCompIf(indent, lineno, node.test)
         elif isinstance_(node, "Mod"):
@@ -1571,17 +1526,15 @@ if True:  # ! -- File wrapper classes:
         elif isinstance_(node, "Printnl"):
             result = NodePrintnl(indent, lineno, node.nodes, node.dest)
         elif isinstance_(node, "Raise"):
-            result = NodeRaise(
-                indent, lineno, node.expr1, node.expr2, node.expr3
-            )
+            result = NodeRaise(indent, lineno, node.expr1, node.expr2,
+                               node.expr3)
         elif isinstance_(node, "Return"):
             result = NodeReturn(indent, lineno, node.value)
         elif isinstance_(node, "RightShift"):
             result = NodeRightShift(indent, lineno, node.left, node.right)
         elif isinstance_(node, "Slice"):
-            result = NodeSlice(
-                indent, lineno, node.expr, node.flags, node.lower, node.upper
-            )
+            result = NodeSlice(indent, lineno, node.expr, node.flags,
+                               node.lower, node.upper)
         elif isinstance_(node, "Sliceobj"):
             result = NodeSliceobj(indent, lineno, node.nodes)
         elif isinstance_(node, "Stmt"):
@@ -1589,13 +1542,11 @@ if True:  # ! -- File wrapper classes:
         elif isinstance_(node, "Sub"):
             result = NodeSub(indent, lineno, node.left, node.right)
         elif isinstance_(node, "Subscript"):
-            result = NodeSubscript(
-                indent, lineno, node.expr, node.flags, node.subs
-            )
+            result = NodeSubscript(indent, lineno, node.expr, node.flags,
+                                   node.subs)
         elif isinstance_(node, "TryExcept"):
-            result = NodeTryExcept(
-                indent, lineno, node.body, node.handlers, node.else_
-            )
+            result = NodeTryExcept(indent, lineno, node.body, node.handlers,
+                                   node.else_)
         elif isinstance_(node, "TryFinally"):
             result = NodeTryFinally(indent, lineno, node.body, node.final)
         elif isinstance_(node, "Tuple"):
@@ -1605,9 +1556,8 @@ if True:  # ! -- File wrapper classes:
         elif isinstance_(node, "UnarySub"):
             result = NodeUnarySub(indent, lineno, node.expr)
         elif isinstance_(node, "While"):
-            result = NodeWhile(
-                indent, lineno, node.test, node.body, node.else_
-            )
+            result = NodeWhile(indent, lineno, node.test, node.body,
+                               node.else_)
         elif isinstance_(node, "With"):
             result = NodeWith(indent, lineno, node.expr, node.vars, node.body)
         elif isinstance_(node, "Yield"):
@@ -1624,7 +1574,6 @@ if True:  # ! -- File wrapper classes:
 if True:  # ! -- Node Classes:
 
     class Node(object):
-
         """Parent of parsed tokens.
 
         """
@@ -1668,9 +1617,8 @@ if True:  # ! -- Node Classes:
             return self
 
         def line_term(self, lineno=ZERO):
-            lineno = max(
-                self.get_hi_lineno(), self.get_lineno()
-            )  # , lineno)  # 2006 Dec 01
+            lineno = max(self.get_hi_lineno(),
+                         self.get_lineno())  # , lineno)  # 2006 Dec 01
             COMMENTS.put_inline(lineno)
             return self
 
@@ -1685,9 +1633,8 @@ if True:  # ! -- Node Classes:
 
             """
 
-            self.line_more(
-                " /* %s at line %i */ " % (self.tag, self.get_lineno())
-            )
+            self.line_more(" /* %s at line %i */ " %
+                           (self.tag, self.get_lineno()))
             return self
 
         def get_lineno(self):
@@ -1744,7 +1691,6 @@ if True:  # ! -- Node Classes:
             return result
 
     class NodeOprLeftAssoc(NodeOpr):  # 2010 Mar 10
-
         """Left-associative operator.
 
         """
@@ -1761,7 +1707,6 @@ if True:  # ! -- Node Classes:
             return result
 
     class NodeOprRightAssoc(NodeOpr):  # 2010 Mar 10
-
         """Right-associative operator.
 
         """
@@ -1781,7 +1726,6 @@ if True:  # ! -- Node Classes:
             return result
 
     class NodeStr(Node):
-
         """String value.
 
         """
@@ -1819,8 +1763,7 @@ if True:  # ! -- Node Classes:
 
         def get_as_repr(self):  # 2007 May 01
             original_values = COMMENTS.literal_pool.get(
-                repr(self.get_as_str()), []
-            )  # 2010 Mar 10
+                repr(self.get_as_str()), [])  # 2010 Mar 10
             if len(original_values) == 1:
                 (result, lineno) = original_values[ZERO]
             else:
@@ -1901,7 +1844,6 @@ if True:  # ! -- Node Classes:
             return self
 
     class NodeInt(Node):
-
         """Integer value.
 
         """
@@ -1918,9 +1860,8 @@ if True:  # ! -- Node Classes:
             return self
 
         def get_as_repr(self):
-            original_values = COMMENTS.literal_pool.get(
-                repr(self.int), []
-            )  # 2010 Mar 10
+            original_values = COMMENTS.literal_pool.get(repr(self.int),
+                                                        [])  # 2010 Mar 10
             if len(original_values) == 1:
                 (result, lineno) = original_values[ZERO]
             else:
@@ -1928,7 +1869,6 @@ if True:  # ! -- Node Classes:
             return result
 
     class NodeAdd(NodeOprAssoc):  # 2010 Mar 10
-
         """Add operation.
 
         """
@@ -1943,9 +1883,9 @@ if True:  # ! -- Node Classes:
 
         def put(self, can_split=False):
             self.put_expr(self.left, can_split=can_split)
-            self.line_more(
-                SPACE, can_split_after=can_split, can_break_after=True
-            )  # 2007 May 23
+            self.line_more(SPACE,
+                           can_split_after=can_split,
+                           can_break_after=True)  # 2007 May 23
             self.line_more("+ ")
             self.put_expr(self.right, can_split=can_split)
             return self
@@ -1954,7 +1894,6 @@ if True:  # ! -- Node Classes:
             return self.right.get_hi_lineno()
 
     class NodeAnd(NodeOprAssoc):  # 2010 Mar 10
-
         """Logical "and" operation.
 
         """
@@ -1970,9 +1909,9 @@ if True:  # ! -- Node Classes:
             for node in (self.nodes)[:1]:
                 self.put_expr(node, can_split=can_split)
             for node in (self.nodes)[1:]:
-                self.line_more(
-                    SPACE, can_split_after=can_split, can_break_after=True
-                )  # 2007 May 23
+                self.line_more(SPACE,
+                               can_split_after=can_split,
+                               can_break_after=True)  # 2007 May 23
                 self.line_more("and ")
                 self.put_expr(node, can_split=can_split)
             return self
@@ -1981,7 +1920,6 @@ if True:  # ! -- Node Classes:
             return (self.nodes)[-1].get_hi_lineno()
 
     class NodeAsgAttr(NodeOpr):
-
         """Assignment to a class attribute.
 
         """
@@ -2023,7 +1961,6 @@ if True:  # ! -- Node Classes:
             return self.expr.get_hi_lineno()
 
     class NodeAsgList(Node):
-
         """A list as a destination of an assignment operation.
 
         """
@@ -2072,7 +2009,6 @@ if True:  # ! -- Node Classes:
             return node[-1].get_hi_lineno()
 
     class NodeAsgName(Node):
-
         """Destination of an assignment operation.
 
         """
@@ -2110,7 +2046,6 @@ if True:  # ! -- Node Classes:
             return self.name.get_hi_lineno()
 
     class NodeAsgTuple(Node):
-
         """A tuple as a destination of an assignment operation.
 
         """
@@ -2139,9 +2074,8 @@ if True:  # ! -- Node Classes:
                     self.line_init()
                     self.dec_margin()
                 self.line_more(")", tab_clear=True)  # 2010 Mar 10
-            elif (
-                is_paren_required or PARENTHESIZE_TUPLE_DISPLAY
-            ):  # 2010 Mar 10
+            elif (is_paren_required
+                  or PARENTHESIZE_TUPLE_DISPLAY):  # 2010 Mar 10
                 self.line_more("(", tab_set=True)  # 2010 Mar 10
                 for node in (self.nodes)[:1]:
                     node.put(can_split=True)
@@ -2155,15 +2089,13 @@ if True:  # ! -- Node Classes:
             else:
                 for node in (self.nodes)[:1]:
                     node.put()
-                    self.line_more(
-                        LIST_SEP, can_break_after=True
-                    )  # 2010 Mar 10
+                    self.line_more(LIST_SEP,
+                                   can_break_after=True)  # 2010 Mar 10
                 for node in (self.nodes)[1:2]:
                     node.put()
                 for node in (self.nodes)[2:]:
-                    self.line_more(
-                        LIST_SEP, can_break_after=True
-                    )  # 2010 Mar 10
+                    self.line_more(LIST_SEP,
+                                   can_break_after=True)  # 2010 Mar 10
                     node.put()
             return self
 
@@ -2176,7 +2108,6 @@ if True:  # ! -- Node Classes:
             return (self.nodes)[-1].get_hi_lineno()
 
     class NodeAssert(Node):
-
         """Assertion.
 
         """
@@ -2210,7 +2141,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodeAssign(Node):
-
         """Set one or more destinations to the value of the expression.
 
         """
@@ -2227,9 +2157,8 @@ if True:  # ! -- Node Classes:
             self.line_init()
             for node in self.nodes:
                 if isinstance(node, NodeAsgTuple):
-                    node.put(
-                        can_split=can_split, is_paren_required=False
-                    )  # 2010 Mar 10
+                    node.put(can_split=can_split,
+                             is_paren_required=False)  # 2010 Mar 10
                 else:
                     node.put(can_split=can_split)
                 self.line_more(ASSIGNMENT, can_break_after=True)
@@ -2238,9 +2167,8 @@ if True:  # ! -- Node Classes:
                 self.expr.put(can_split=True)
                 self.line_more(")")
             elif isinstance(self.expr, NodeTuple):
-                self.expr.put(
-                    can_split=can_split, is_paren_required=False
-                )  # 2010 Mar 10
+                self.expr.put(can_split=can_split,
+                              is_paren_required=False)  # 2010 Mar 10
             else:
                 self.expr.put(can_split=can_split)
             self.line_term()
@@ -2255,7 +2183,6 @@ if True:  # ! -- Node Classes:
             return self.expr.get_hi_lineno()
 
     class NodeAugAssign(Node):
-
         """Augment the destination by the value of the expression.
 
         """
@@ -2286,7 +2213,6 @@ if True:  # ! -- Node Classes:
             return self.expr.get_hi_lineno()
 
     class NodeBackquote(Node):
-
         """String conversion a'la *repr*.
 
         """
@@ -2308,7 +2234,6 @@ if True:  # ! -- Node Classes:
             return self.expr.get_hi_lineno()
 
     class NodeBitAnd(NodeOprAssoc):  # 2010 Mar 10
-
         """Bitwise "and" operation (set union).
 
         """
@@ -2324,9 +2249,9 @@ if True:  # ! -- Node Classes:
             for node in (self.nodes)[:1]:
                 self.put_expr(node, can_split=can_split)
             for node in (self.nodes)[1:]:
-                self.line_more(
-                    SPACE, can_split_after=can_split, can_break_after=True
-                )  # 2007 May 23
+                self.line_more(SPACE,
+                               can_split_after=can_split,
+                               can_break_after=True)  # 2007 May 23
                 self.line_more("& ")
                 self.put_expr(node, can_split=can_split)
             return self
@@ -2335,7 +2260,6 @@ if True:  # ! -- Node Classes:
             return (self.nodes)[-1].get_hi_lineno()
 
     class NodeBitOr(NodeOprAssoc):  # 2010 Mar 01
-
         """Bitwise "or" operation (set intersection).
 
         """
@@ -2351,9 +2275,9 @@ if True:  # ! -- Node Classes:
             for node in (self.nodes)[:1]:
                 self.put_expr(node, can_split=can_split)
             for node in (self.nodes)[1:]:
-                self.line_more(
-                    SPACE, can_split_after=can_split, can_break_after=True
-                )  # 2007 May 23
+                self.line_more(SPACE,
+                               can_split_after=can_split,
+                               can_break_after=True)  # 2007 May 23
                 self.line_more("| ")
                 self.put_expr(node, can_split=can_split)
             return self
@@ -2362,7 +2286,6 @@ if True:  # ! -- Node Classes:
             return (self.nodes)[-1].get_hi_lineno()
 
     class NodeBitXor(NodeOprAssoc):  # 2010 Mar 01
-
         """Bitwise "xor" operation.
 
         """
@@ -2378,9 +2301,9 @@ if True:  # ! -- Node Classes:
             for node in (self.nodes)[:1]:
                 self.put_expr(node, can_split=can_split)
             for node in (self.nodes)[1:]:
-                self.line_more(
-                    SPACE, can_split_after=can_split, can_break_after=True
-                )  # 2007 May 23
+                self.line_more(SPACE,
+                               can_split_after=can_split,
+                               can_break_after=True)  # 2007 May 23
                 self.line_more("^ ")
                 self.put_expr(node, can_split=can_split)
             return self
@@ -2389,7 +2312,6 @@ if True:  # ! -- Node Classes:
             return (self.nodes)[-1].get_hi_lineno()
 
     class NodeBreak(Node):
-
         """Escape from a loop.
 
         """
@@ -2407,7 +2329,6 @@ if True:  # ! -- Node Classes:
             return self
 
     class NodeCallFunc(Node):
-
         """Function invocation.
 
         """
@@ -2491,9 +2412,8 @@ if True:  # ! -- Node Classes:
                     if self.star_args is None and self.dstar_args is None:
                         pass
                     else:
-                        self.line_more(
-                            FUNCTION_PARAM_SEP, can_split_after=True
-                        )
+                        self.line_more(FUNCTION_PARAM_SEP,
+                                       can_split_after=True)
                 if self.star_args is None:
                     pass
                 else:
@@ -2502,9 +2422,8 @@ if True:  # ! -- Node Classes:
                     if self.dstar_args is None:
                         pass
                     else:
-                        self.line_more(
-                            FUNCTION_PARAM_SEP, can_split_after=True
-                        )
+                        self.line_more(FUNCTION_PARAM_SEP,
+                                       can_split_after=True)
                 if self.dstar_args is None:
                     pass
                 else:
@@ -2531,7 +2450,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodeClass(Node):
-
         """Class declaration.
 
         """
@@ -2595,7 +2513,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodeCompare(NodeOprNotAssoc):
-
         """Logical comparison.
 
         """
@@ -2605,17 +2522,16 @@ if True:  # ! -- Node Classes:
         def __init__(self, indent, lineno, expr, ops):
             Node.__init__(self, indent, lineno)
             self.expr = transform(indent, lineno, expr)
-            self.ops = [
-                (op, transform(indent, lineno, ex)) for (op, ex) in ops
-            ]
+            self.ops = [(op, transform(indent, lineno, ex))
+                        for (op, ex) in ops]
             return
 
         def put(self, can_split=False):
             self.put_expr(self.expr, can_split=can_split)
             for (op, ex) in self.ops:
-                self.line_more(
-                    SPACE, can_split_after=can_split, can_break_after=True
-                )  # 2007 May 23
+                self.line_more(SPACE,
+                               can_split_after=can_split,
+                               can_break_after=True)  # 2007 May 23
                 self.line_more("%s " % op)
                 self.put_expr(ex, can_split=can_split)
             return self
@@ -2625,7 +2541,6 @@ if True:  # ! -- Node Classes:
             return ex.get_hi_lineno()
 
     class NodeConst(Node):
-
         """Literal or expression.
 
         """
@@ -2653,9 +2568,8 @@ if True:  # ! -- Node Classes:
             return isinstance(self.value, NodeStr)
 
         def get_as_repr(self):  # 2007 May 01
-            original_values = COMMENTS.literal_pool.get(
-                repr(self.value), []
-            )  # 2010 Mar 10
+            original_values = COMMENTS.literal_pool.get(repr(self.value),
+                                                        [])  # 2010 Mar 10
             if len(original_values) == 1:
                 (result, lineno) = original_values[ZERO]
             else:
@@ -2663,7 +2577,6 @@ if True:  # ! -- Node Classes:
             return result
 
     class NodeContinue(Node):
-
         """Start a new trip through a loop.
 
         """
@@ -2681,12 +2594,10 @@ if True:  # ! -- Node Classes:
             return self
 
     class NodeDecorators(Node):
-
         """Functions that take a class method (the next) and a return
         callable object, e.g., *classmethod*.
 
         """
-
         def __init__(self, indent, lineno, nodes):
             Node.__init__(self, indent, lineno)
             self.nodes = [transform(indent, lineno, node) for node in nodes]
@@ -2705,7 +2616,6 @@ if True:  # ! -- Node Classes:
             return (self.nodes)[-1].get_hi_lineno()
 
     class NodeDict(Node):
-
         """Declaration of a map (dictionary).
 
         """
@@ -2714,13 +2624,10 @@ if True:  # ! -- Node Classes:
 
         def __init__(self, indent, lineno, items):
             Node.__init__(self, indent, lineno)
-            self.items = [
-                (
-                    transform(indent, lineno, key),
-                    transform(indent, lineno, value),
-                )
-                for (key, value) in items
-            ]
+            self.items = [(
+                transform(indent, lineno, key),
+                transform(indent, lineno, value),
+            ) for (key, value) in items]
             return
 
         def put(self, can_split=False):
@@ -2762,7 +2669,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodeDiscard(Node):
-
         """Evaluate an expression (function) without saving the result.
 
         """
@@ -2776,8 +2682,7 @@ if True:  # ! -- Node Classes:
 
         def put(self, can_split=False):
             if isinstance(self.expr, NodeConst) and (
-                not KEEP_UNASSIGNED_CONSTANTS
-            ):  # 2010 Mar 10
+                    not KEEP_UNASSIGNED_CONSTANTS):  # 2010 Mar 10
                 pass
             else:
                 self.line_init()
@@ -2796,7 +2701,6 @@ if True:  # ! -- Node Classes:
             return self.expr.get_hi_lineno()
 
     class NodeDiv(NodeOprLeftAssoc):  # 2010 Mar 10
-
         """Division operation.
 
         """
@@ -2810,16 +2714,14 @@ if True:  # ! -- Node Classes:
             return
 
         def put(self, can_split=False):
-            self.put_expr(
-                self.left, can_split=can_split, pos="left"
-            )  # 2010 Mar 10
-            self.line_more(
-                SPACE, can_split_after=can_split, can_break_after=True
-            )  # 2007 May 23
+            self.put_expr(self.left, can_split=can_split,
+                          pos="left")  # 2010 Mar 10
+            self.line_more(SPACE,
+                           can_split_after=can_split,
+                           can_break_after=True)  # 2007 May 23
             self.line_more("/ ")
-            self.put_expr(
-                self.right, can_split=can_split, pos="right"
-            )  # 2010 Mar 10
+            self.put_expr(self.right, can_split=can_split,
+                          pos="right")  # 2010 Mar 10
             return self
 
         def get_hi_lineno(self):
@@ -2838,7 +2740,6 @@ if True:  # ! -- Node Classes:
             return self
 
     class NodeExec(Node):
-
         """Execute a given string of Python code in a specified namespace.
 
         """
@@ -2882,7 +2783,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodeFor(Node):
-
         """For loop.
 
         """
@@ -2901,16 +2801,14 @@ if True:  # ! -- Node Classes:
             self.line_init()
             self.line_more("for ")
             if isinstance(self.assign, NodeAsgTuple):
-                self.assign.put(
-                    can_split=can_split, is_paren_required=False
-                )  # 2010 Mar 10
+                self.assign.put(can_split=can_split,
+                                is_paren_required=False)  # 2010 Mar 10
             else:
                 self.assign.put(can_split=can_split)
             self.line_more(" in ", can_break_after=True)
             if isinstance(self.list, NodeTuple):
-                self.list.put(
-                    can_split=can_split, is_paren_required=False
-                )  # 2010 Mar 10
+                self.list.put(can_split=can_split,
+                              is_paren_required=False)  # 2010 Mar 10
             else:
                 self.list.put(can_split=can_split)
             self.line_more(":")
@@ -2938,7 +2836,6 @@ if True:  # ! -- Node Classes:
             return self.list.get_hi_lineno()
 
     class NodeFloorDiv(NodeOprLeftAssoc):  # 2010 Mar 10
-
         """Floor division operation.
 
         """
@@ -2952,23 +2849,20 @@ if True:  # ! -- Node Classes:
             return
 
         def put(self, can_split=False):
-            self.put_expr(
-                self.left, can_split=can_split, pos="left"
-            )  # 2010 Mar 10
-            self.line_more(
-                SPACE, can_split_after=can_split, can_break_after=True
-            )  # 2007 May 23
+            self.put_expr(self.left, can_split=can_split,
+                          pos="left")  # 2010 Mar 10
+            self.line_more(SPACE,
+                           can_split_after=can_split,
+                           can_break_after=True)  # 2007 May 23
             self.line_more("// ")
-            self.put_expr(
-                self.right, can_split=can_split, pos="right"
-            )  # 2010 Mar 10
+            self.put_expr(self.right, can_split=can_split,
+                          pos="right")  # 2010 Mar 10
             return self
 
         def get_hi_lineno(self):
             return self.right.get_hi_lineno()
 
     class NodeFrom(Node):
-
         """Import a name space.
 
         """
@@ -2978,13 +2872,10 @@ if True:  # ! -- Node Classes:
         def __init__(self, indent, lineno, modname, names):
             Node.__init__(self, indent, lineno)
             self.modname = transform(indent, lineno, modname)
-            self.names = [
-                (
-                    transform(indent, lineno, identifier),
-                    transform(indent, lineno, name),
-                )
-                for (identifier, name) in names
-            ]
+            self.names = [(
+                transform(indent, lineno, identifier),
+                transform(indent, lineno, name),
+            ) for (identifier, name) in names]
             return
 
         def put(self, can_split=False):
@@ -3027,7 +2918,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodeFunction(Node):
-
         """Function declaration.
 
         """
@@ -3229,7 +3119,6 @@ if True:  # ! -- Node Classes:
             return self
 
     class NodeGenExpr(Node):
-
         """Generator expression, which needs its own parentheses.
 
         """
@@ -3254,7 +3143,6 @@ if True:  # ! -- Node Classes:
             return self.code.get_hi_lineno()
 
     class NodeGenExprInner(Node):
-
         """Generator expression inside parentheses.
 
         """
@@ -3294,7 +3182,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodeGenExprFor(Node):
-
         """"For" of a generator expression.
 
         """
@@ -3329,7 +3216,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodeGenExprIf(Node):
-
         """"If" of a generator expression.
 
         """
@@ -3351,7 +3237,6 @@ if True:  # ! -- Node Classes:
             return self.test.get_hi_lineno()
 
     class NodeGetAttr(NodeOpr):
-
         """Class attribute (method).
 
         """
@@ -3410,7 +3295,6 @@ if True:  # ! -- Node Classes:
             return (self.names)[-1].get_hi_lineno()
 
     class NodeIf(Node):
-
         """True/False test.
 
         """
@@ -3419,13 +3303,10 @@ if True:  # ! -- Node Classes:
 
         def __init__(self, indent, lineno, tests, else_):
             Node.__init__(self, indent, lineno)
-            self.tests = [
-                (
-                    transform(indent, lineno, expr),
-                    transform(indent + 1, lineno, stmt),
-                )
-                for (expr, stmt) in tests
-            ]
+            self.tests = [(
+                transform(indent, lineno, expr),
+                transform(indent + 1, lineno, stmt),
+            ) for (expr, stmt) in tests]
             self.else_ = transform(indent + 1, lineno, else_)
             return
 
@@ -3467,7 +3348,6 @@ if True:  # ! -- Node Classes:
             return expr.get_hi_lineno()
 
     class NodeIfExp(Node):
-
         """Conditional assignment.  (Ternary expression.)
 
         """
@@ -3500,13 +3380,10 @@ if True:  # ! -- Node Classes:
 
         def __init__(self, indent, lineno, names):
             Node.__init__(self, indent, lineno)
-            self.names = [
-                (
-                    transform(indent, lineno, identifier),
-                    transform(indent, lineno, name),
-                )
-                for (identifier, name) in names
-            ]
+            self.names = [(
+                transform(indent, lineno, identifier),
+                transform(indent, lineno, name),
+            ) for (identifier, name) in names]
             return
 
         def put(self, can_split=False):
@@ -3544,7 +3421,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodeInvert(NodeOpr):
-
         """Unary bitwise complement.
 
         """
@@ -3565,7 +3441,6 @@ if True:  # ! -- Node Classes:
             return self.expr.get_hi_lineno()
 
     class NodeKeyword(Node):
-
         """Formal parameter on a function invocation.
 
         """
@@ -3588,7 +3463,6 @@ if True:  # ! -- Node Classes:
             return self.expr.get_hi_lineno()
 
     class NodeLeftShift(NodeOprLeftAssoc):  # 2010 Mar 01
-
         """Bitwise shift left.
 
         """
@@ -3602,23 +3476,20 @@ if True:  # ! -- Node Classes:
             return
 
         def put(self, can_split=False):
-            self.put_expr(
-                self.left, can_split=can_split, pos="left"
-            )  # 2010 Mar 10
-            self.line_more(
-                SPACE, can_split_after=can_split, can_break_after=True
-            )  # 2007 May 23
+            self.put_expr(self.left, can_split=can_split,
+                          pos="left")  # 2010 Mar 10
+            self.line_more(SPACE,
+                           can_split_after=can_split,
+                           can_break_after=True)  # 2007 May 23
             self.line_more("<< ")
-            self.put_expr(
-                self.right, can_split=can_split, pos="right"
-            )  # 2010 Mar 10
+            self.put_expr(self.right, can_split=can_split,
+                          pos="right")  # 2010 Mar 10
             return self
 
         def get_hi_lineno(self):
             return self.right.get_hi_lineno()
 
     class NodeList(Node):
-
         """Declaration of a mutable list.
 
         """
@@ -3662,7 +3533,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodeListComp(Node):
-
         """List comprehension.
 
         """
@@ -3704,7 +3574,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodeListCompFor(Node):
-
         """"For" of a list comprehension.
 
         """
@@ -3739,7 +3608,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodeListCompIf(Node):
-
         """"If" of a list comprehension.
 
         """
@@ -3761,7 +3629,6 @@ if True:  # ! -- Node Classes:
             return self.test.get_hi_lineno()
 
     class NodeMod(NodeOprLeftAssoc):  # 2010 Mar 10
-
         """Modulus (string formatting) operation.
 
         """
@@ -3775,23 +3642,20 @@ if True:  # ! -- Node Classes:
             return
 
         def put(self, can_split=False):
-            self.put_expr(
-                self.left, can_split=can_split, pos="left"
-            )  # 2010 Mar 10
-            self.line_more(
-                SPACE, can_split_after=can_split, can_break_after=True
-            )  # 2007 May 23
+            self.put_expr(self.left, can_split=can_split,
+                          pos="left")  # 2010 Mar 10
+            self.line_more(SPACE,
+                           can_split_after=can_split,
+                           can_break_after=True)  # 2007 May 23
             self.line_more("% ")
-            self.put_expr(
-                self.right, can_split=can_split, pos="right"
-            )  # 2010 Mar 10
+            self.put_expr(self.right, can_split=can_split,
+                          pos="right")  # 2010 Mar 10
             return self
 
         def get_hi_lineno(self):
             return self.right.get_hi_lineno()
 
     class NodeModule(Node):
-
         """A whole script.
 
         Contains a doc string and a statement.
@@ -3837,7 +3701,6 @@ if True:  # ! -- Node Classes:
             return self.node.get_lineno()
 
     class NodeMul(NodeOprLeftAssoc):  # 2010 Mar 10
-
         """Multiply operation.
 
         """
@@ -3851,23 +3714,20 @@ if True:  # ! -- Node Classes:
             return
 
         def put(self, can_split=False):
-            self.put_expr(
-                self.left, can_split=can_split, pos="left"
-            )  # 2010 Mar 10
-            self.line_more(
-                SPACE, can_split_after=can_split, can_break_after=True
-            )  # 2007 May 23
+            self.put_expr(self.left, can_split=can_split,
+                          pos="left")  # 2010 Mar 10
+            self.line_more(SPACE,
+                           can_split_after=can_split,
+                           can_break_after=True)  # 2007 May 23
             self.line_more("* ")
-            self.put_expr(
-                self.right, can_split=can_split, pos="right"
-            )  # 2010 Mar 10
+            self.put_expr(self.right, can_split=can_split,
+                          pos="right")  # 2010 Mar 10
             return self
 
         def get_hi_lineno(self):
             return self.right.get_hi_lineno()
 
     class NodeName(Node):
-
         """Variable.
 
         """
@@ -3894,7 +3754,6 @@ if True:  # ! -- Node Classes:
             return self.name.get_hi_lineno()
 
     class NodeNot(NodeOpr):
-
         """Logical negation.
 
         """
@@ -3915,7 +3774,6 @@ if True:  # ! -- Node Classes:
             return self.expr.get_hi_lineno()
 
     class NodeOr(NodeOprAssoc):  # 2010 Mar 10
-
         """Logical "or" operation.
 
         """
@@ -3931,9 +3789,9 @@ if True:  # ! -- Node Classes:
             for node in (self.nodes)[:1]:
                 self.put_expr(node, can_split=can_split)
             for node in (self.nodes)[1:]:
-                self.line_more(
-                    SPACE, can_split_after=can_split, can_break_after=True
-                )  # 2007 May 23
+                self.line_more(SPACE,
+                               can_split_after=can_split,
+                               can_break_after=True)  # 2007 May 23
                 self.line_more("or ")
                 self.put_expr(node, can_split=can_split)
             return self
@@ -3942,7 +3800,6 @@ if True:  # ! -- Node Classes:
             return (self.nodes)[-1].get_hi_lineno()
 
     class NodePass(Node):
-
         """No-op.
 
         """
@@ -3960,7 +3817,6 @@ if True:  # ! -- Node Classes:
             return self
 
     class NodePower(NodeOprRightAssoc):  # 2010 Mar 10
-
         """Exponentiation.
 
         """
@@ -3974,23 +3830,20 @@ if True:  # ! -- Node Classes:
             return
 
         def put(self, can_split=False):
-            self.put_expr(
-                self.left, can_split=can_split, pos="left"
-            )  # 2010 Mar 10
-            self.line_more(
-                SPACE, can_split_after=can_split, can_break_after=True
-            )  # 2007 May 23
+            self.put_expr(self.left, can_split=can_split,
+                          pos="left")  # 2010 Mar 10
+            self.line_more(SPACE,
+                           can_split_after=can_split,
+                           can_break_after=True)  # 2007 May 23
             self.line_more("** ")
-            self.put_expr(
-                self.right, can_split=can_split, pos="right"
-            )  # 2010 Mar 10
+            self.put_expr(self.right, can_split=can_split,
+                          pos="right")  # 2010 Mar 10
             return self
 
         def get_hi_lineno(self):
             return self.right.get_hi_lineno()
 
     class NodePrint(Node):
-
         """The print statement with optional chevron and trailing comma.
 
         """
@@ -4030,7 +3883,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodePrintnl(Node):
-
         """The print statement with optional chevron and without trailing comma.
 
         """
@@ -4072,7 +3924,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodeRaise(Node):
-
         """Raise an exception.
 
         """
@@ -4123,7 +3974,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodeReturn(Node):
-
         """Return a value from a function.
 
         """
@@ -4136,18 +3986,16 @@ if True:  # ! -- Node Classes:
             return
 
         def has_value(self):
-            return not (
-                isinstance(self.value, NodeConst) and self.value.is_none()
-            )
+            return not (isinstance(self.value, NodeConst)
+                        and self.value.is_none())
 
         def put(self, can_split=False):
             self.line_init()
             self.line_more("return ")
             if self.has_value():
                 if isinstance(self.value, NodeTuple):
-                    self.value.put(
-                        can_split=can_split, is_paren_required=False
-                    )  # 2010 Mar 10
+                    self.value.put(can_split=can_split,
+                                   is_paren_required=False)  # 2010 Mar 10
                 else:
                     self.value.put(can_split=can_split)
             self.line_term()
@@ -4160,7 +4008,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodeRightShift(NodeOprLeftAssoc):  # 2010 Mar 10
-
         """Bitwise shift right.
 
         """
@@ -4174,23 +4021,20 @@ if True:  # ! -- Node Classes:
             return
 
         def put(self, can_split=False):
-            self.put_expr(
-                self.left, can_split=can_split, pos="left"
-            )  # 2010 Mar 10
-            self.line_more(
-                SPACE, can_split_after=can_split, can_break_after=True
-            )  # 2007 May 23
+            self.put_expr(self.left, can_split=can_split,
+                          pos="left")  # 2010 Mar 10
+            self.line_more(SPACE,
+                           can_split_after=can_split,
+                           can_break_after=True)  # 2007 May 23
             self.line_more(">> ")
-            self.put_expr(
-                self.right, can_split=can_split, pos="right"
-            )  # 2010 Mar 10
+            self.put_expr(self.right, can_split=can_split,
+                          pos="right")  # 2010 Mar 10
             return self
 
         def get_hi_lineno(self):
             return self.right.get_hi_lineno()
 
     class NodeSlice(NodeOpr):
-
         """A slice of a series.
 
         """
@@ -4206,9 +4050,8 @@ if True:  # ! -- Node Classes:
             return
 
         def has_value(self, node):
-            return not (
-                node is None or isinstance(node, NodeConst) and node.is_none()
-            )
+            return not (node is None
+                        or isinstance(node, NodeConst) and node.is_none())
 
         def put(self, can_split=False):
             is_del = self.flags.get_as_str() in ["OP_DELETE"]
@@ -4216,8 +4059,7 @@ if True:  # ! -- Node Classes:
                 self.line_init()
                 self.line_more("del ")
             if isinstance(self.expr, NodeGetAttr) or isinstance(
-                self.expr, NodeAsgAttr
-            ):  # 2007 May 23
+                    self.expr, NodeAsgAttr):  # 2007 May 23
                 self.expr.put(can_split=can_split)
             else:
                 self.put_expr(self.expr, can_split=can_split)
@@ -4249,7 +4091,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodeSliceobj(Node):
-
         """A subscript range.
 
         This is used for multi-dimensioned arrays.
@@ -4264,9 +4105,8 @@ if True:  # ! -- Node Classes:
             return
 
         def has_value(self, node):
-            return not (
-                node is None or isinstance(node, NodeConst) and node.is_none()
-            )
+            return not (node is None
+                        or isinstance(node, NodeConst) and node.is_none())
 
         def put(self, can_split=False):
             for node in (self.nodes)[:1]:
@@ -4286,7 +4126,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodeStmt(Node):
-
         """A list of nodes..
 
         """
@@ -4318,7 +4157,6 @@ if True:  # ! -- Node Classes:
             return self
 
     class NodeSub(NodeOprLeftAssoc):  # 2010 Mar 10
-
         """Subtract operation.
 
         """
@@ -4332,23 +4170,20 @@ if True:  # ! -- Node Classes:
             return
 
         def put(self, can_split=False):
-            self.put_expr(
-                self.left, can_split=can_split, pos="left"
-            )  # 2010 Mar 10
-            self.line_more(
-                SPACE, can_split_after=can_split, can_break_after=True
-            )  # 2007 May 23
+            self.put_expr(self.left, can_split=can_split,
+                          pos="left")  # 2010 Mar 10
+            self.line_more(SPACE,
+                           can_split_after=can_split,
+                           can_break_after=True)  # 2007 May 23
             self.line_more("- ")
-            self.put_expr(
-                self.right, can_split=can_split, pos="right"
-            )  # 2010 Mar 10
+            self.put_expr(self.right, can_split=can_split,
+                          pos="right")  # 2010 Mar 10
             return self
 
         def get_hi_lineno(self):
             return self.right.get_hi_lineno()
 
     class NodeSubscript(NodeOpr):
-
         """A subscripted sequence.
 
         """
@@ -4368,8 +4203,7 @@ if True:  # ! -- Node Classes:
                 self.line_init()
                 self.line_more("del ")
             if isinstance(self.expr, NodeGetAttr) or isinstance(
-                self.expr, NodeAsgAttr
-            ):  # 2007 May 23
+                    self.expr, NodeAsgAttr):  # 2007 May 23
                 self.expr.put(can_split=can_split)
             else:
                 self.put_expr(self.expr, can_split=can_split)
@@ -4399,7 +4233,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodeTryExcept(Node):
-
         """Define exception handlers.
 
         """
@@ -4409,14 +4242,11 @@ if True:  # ! -- Node Classes:
         def __init__(self, indent, lineno, body, handlers, else_):
             Node.__init__(self, indent, lineno)
             self.body = transform(indent + 1, lineno, body)
-            self.handlers = [
-                (
-                    transform(indent, lineno, expr),
-                    transform(indent, lineno, target),
-                    transform(indent + 1, lineno, suite),
-                )
-                for (expr, target, suite) in handlers
-            ]
+            self.handlers = [(
+                transform(indent, lineno, expr),
+                transform(indent, lineno, target),
+                transform(indent + 1, lineno, suite),
+            ) for (expr, target, suite) in handlers]
             self.else_ = transform(indent + 1, lineno, else_)
             self.has_finally = False
             return
@@ -4465,7 +4295,6 @@ if True:  # ! -- Node Classes:
             return self
 
     class NodeTryFinally(Node):
-
         """Force housekeeping code to execute even after an unhandled
         except is raised and before the default handling takes care of it.
 
@@ -4500,7 +4329,6 @@ if True:  # ! -- Node Classes:
             return self
 
     class NodeTuple(Node):
-
         """Declaration of an immutable tuple.
 
         """
@@ -4529,11 +4357,8 @@ if True:  # ! -- Node Classes:
                     self.line_init()
                     self.dec_margin()
                 self.line_more(")", tab_clear=True)  # 2010 Mar 10
-            elif (
-                (len(self.nodes) == ZERO)
-                or is_paren_required
-                or PARENTHESIZE_TUPLE_DISPLAY
-            ):  # 2010 Mar 10
+            elif ((len(self.nodes) == ZERO) or is_paren_required
+                  or PARENTHESIZE_TUPLE_DISPLAY):  # 2010 Mar 10
                 self.line_more("(", tab_set=True)  # 2010 Mar 10
                 for node in (self.nodes)[:1]:
                     node.put(can_split=True)
@@ -4547,15 +4372,13 @@ if True:  # ! -- Node Classes:
             else:
                 for node in (self.nodes)[:1]:
                     node.put()
-                    self.line_more(
-                        LIST_SEP, can_break_after=True
-                    )  # 2010 Mar 10
+                    self.line_more(LIST_SEP,
+                                   can_break_after=True)  # 2010 Mar 10
                 for node in (self.nodes)[1:2]:
                     node.put()
                 for node in (self.nodes)[2:]:
-                    self.line_more(
-                        LIST_SEP, can_break_after=True
-                    )  # 2010 Mar 10
+                    self.line_more(LIST_SEP,
+                                   can_break_after=True)  # 2010 Mar 10
                     node.put()
             return self
 
@@ -4566,7 +4389,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodeUnaryAdd(NodeOpr):
-
         """Algebraic positive.
 
         """
@@ -4587,7 +4409,6 @@ if True:  # ! -- Node Classes:
             return self.expr.get_hi_lineno()
 
     class NodeUnarySub(NodeOpr):
-
         """Algebraic negative.
 
         """
@@ -4608,7 +4429,6 @@ if True:  # ! -- Node Classes:
             return self.expr.get_hi_lineno()
 
     class NodeWhile(Node):
-
         """While loop.
 
         """
@@ -4650,7 +4470,6 @@ if True:  # ! -- Node Classes:
             return self.test.get_hi_lineno()
 
     class NodeWith(Node):
-
         """Context manager.
 
         """
@@ -4695,7 +4514,6 @@ if True:  # ! -- Node Classes:
             return lineno
 
     class NodeYield(Node):
-
         """Yield a generator value.
 
         """
@@ -4725,28 +4543,32 @@ if True:  # ! -- AST:
     # This is a Python Version Dependency.
 
     OPERATOR_PRECEDENCE = [
-        (NodeIfExp,),
-        (NodeLambda,),
-        (NodeOr,),
-        (NodeAnd,),
-        (NodeNot,),
-        (NodeCompare,),
-        (NodeBitOr,),
-        (NodeBitXor,),
-        (NodeBitAnd,),
+        (NodeIfExp, ),
+        (NodeLambda, ),
+        (NodeOr, ),
+        (NodeAnd, ),
+        (NodeNot, ),
+        (NodeCompare, ),
+        (NodeBitOr, ),
+        (NodeBitXor, ),
+        (NodeBitAnd, ),
         (NodeLeftShift, NodeRightShift),
         (NodeAdd, NodeSub),
         (NodeMul, NodeDiv, NodeFloorDiv, NodeMod),
-        (NodeUnaryAdd, NodeUnarySub, NodeInvert,),  # 2010 Mar 10
-        (NodePower,),
+        (
+            NodeUnaryAdd,
+            NodeUnarySub,
+            NodeInvert,
+        ),  # 2010 Mar 10
+        (NodePower, ),
         (NodeAsgAttr, NodeGetAttr),
-        (NodeSubscript,),
-        (NodeSlice,),
-        (NodeCallFunc,),
-        (NodeTuple,),
-        (NodeList,),
-        (NodeDict,),
-        (NodeBackquote,),
+        (NodeSubscript, ),
+        (NodeSlice, ),
+        (NodeCallFunc, ),
+        (NodeTuple, ),
+        (NodeList, ),
+        (NodeDict, ),
+        (NodeBackquote, ),
     ]
     OPERATORS = []
     OPERATOR_TRUMPS = {}
@@ -4760,7 +4582,6 @@ if True:  # ! -- AST:
 if True:  # ! -- Primary CLI function:
 
     def tidy_up(file_in=sys.stdin, file_out=sys.stdout):  # 2007 Jan 22
-
         """Clean up, regularize, and reformat the text of a Python script.
 
         File_in is a file name or a file-like object with a *read* method,
@@ -4788,9 +4609,9 @@ if True:  # ! -- Primary CLI function:
 
 if __name__ == "__main__":  # 2007 Jan 22
     if DEBUG:
-        print "Begin doctests."
+        print("Begin doctests.")
         doctest.testmod()
-        print "  End doctests."
+        print("  End doctests.")
     if len(sys.argv) > 1:
         file_in = sys.argv[1]
     else:
@@ -4806,7 +4627,6 @@ if __name__ == "__main__":  # 2007 Jan 22
     tidy_up(file_in, file_out)
 
 # Fin
-
 """ # Notes:
 
     # 2012 Mar 04 . v1.22 . ccr . For Sakae Kobayashi: Fixed wrong default

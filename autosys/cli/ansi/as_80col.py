@@ -6,13 +6,16 @@
 # https://www.twitter.com/skeptycal
 
 
+# 'Standard Library'
 import fileinput
 import pathlib
 import sys
 import textwrap
-from typing import List
 
+# 'package imports'
 from autosys.as_constants import DEFAULT
+
+from typing import List
 
 
 def create_test_file(

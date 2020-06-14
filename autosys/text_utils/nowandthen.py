@@ -3,8 +3,8 @@ from os import linesep as NL
 from typing import Dict, Final, Tuple
 
 from autosys.text_utils.datetime import *
-from autosys.text_utils.datetime import (
-    _check_date_fields, _check_tzinfo_arg, datetime as dt,)
+from autosys.text_utils.datetime import _check_date_fields, _check_tzinfo_arg
+from autosys.text_utils.datetime import datetime as dt
 
 
 class NowAndThenError(Exception):

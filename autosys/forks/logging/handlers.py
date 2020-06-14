@@ -55,11 +55,23 @@ Copyright (C) 2001-2016 Vinay Sajip. All Rights Reserved.
 To use, simply 'import logging.handlers' and log away!
 """
 
-import logging, socket, os, pickle, struct, time, re
-from stat import ST_DEV, ST_INO, ST_MTIME
-import queue
-import threading
+# 'Standard Library'
 import copy
+import logging
+import os
+import pickle
+import queue
+import re
+import socket
+import struct
+import threading
+import time
+
+from stat import (
+    ST_DEV,
+    ST_INO,
+    ST_MTIME,
+)
 
 #
 # Some constants...

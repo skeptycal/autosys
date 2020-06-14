@@ -10,11 +10,20 @@ backported to Python 2.
 
 """
 
+# 'Standard Library'
 import logging
 import time
-from logging import FileHandler, StreamHandler
 
-from logutils.queue import QueueHandler, QueueListener
+from logging import (
+    FileHandler,
+    StreamHandler,
+)
+
+# 'package imports'
+from logutils.queue import (
+    QueueHandler,
+    QueueListener,
+)
 
 
 def _get_formatter():

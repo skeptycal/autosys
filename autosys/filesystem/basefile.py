@@ -5,11 +5,17 @@
 # https://www.github.com/skeptycal
 # https://www.twitter.com/skeptycal
 
+# 'Standard Library'
 import os
 import shutil
-from dataclasses import dataclass, field
+
+from dataclasses import (
+    dataclass,
+    field,
+)
 from pathlib import Path
 
+# 'package imports'
 from autosys.exceptions import BaseFileError
 
 

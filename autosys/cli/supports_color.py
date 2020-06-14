@@ -11,10 +11,19 @@
         `<https://opensource.org/licenses/MIT>`
     """
 
+# 'Standard Library'
 from os import environ as ENV
 from platform import platform as PLATFORM
-from sys import path as PYTHONPATH, stderr, stdout
-from typing import Dict, List
+from sys import (
+    path as PYTHONPATH,
+    stderr,
+    stdout,
+)
+
+from typing import (
+    Dict,
+    List,
+)
 
 
 def _SUPPORTS_COLOR() -> (bool):

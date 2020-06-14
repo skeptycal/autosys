@@ -6,9 +6,11 @@
 # https://www.twitter.com/skeptycal
 # from __future__ import absolute_import, print_function
 
+# 'Standard Library'
 import os
 import sys
 
+# 'third party'
 import requests
 
 CONNECT_ERRORS = (
