@@ -12,10 +12,9 @@ __license__ = "MIT"
 # 'Standard Library'
 import os
 import sys
+from os import linesep as NL
 
 # !---------------------------------------------- String Utilities
-
-NL: str = os.linesep
 
 
 def arg_str(*args, sep=" ") -> (str):
