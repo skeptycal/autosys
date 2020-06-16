@@ -1,3 +1,21 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+""" readme.py
+
+    locate and return the project's readme file
+
+    ---
+    Part of the [AutoSys][1] package
+
+    Copyright (c) 2018 [Michael Treanor][2]
+
+    AutoSys is licensed under the [MIT License][3]
+
+    [1]: https://www.github.com/skeptycal/autosys
+    [2]: https://www.twitter.com/skeptycal
+    [3]: https://opensource.org/licenses/MIT
+    """
+
 # 'Standard Library'
 from pathlib import Path
 

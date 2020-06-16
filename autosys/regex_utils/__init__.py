@@ -25,9 +25,9 @@ from io import TextIOWrapper
 from os import linesep as NL
 from pathlib import Path
 
+from autosys import logging
 # 'package imports'
 from autosys.exceptions.exceptions import Re_File_Error, Re_Value_Error
-from autosys.forks import logging
 
 from typing import Final, List
 

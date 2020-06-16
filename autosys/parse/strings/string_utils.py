@@ -11,10 +11,16 @@ __license__ = "MIT"
 
 # 'Standard Library'
 import os
+import re
 import sys
+
 from os import linesep as NL
 
 # !---------------------------------------------- String Utilities
+
+
+def split_it(s: str, delimiter: str = "\s"):
+    return re.split(pattern=s, string=delimiter)
 
 
 def arg_str(*args, sep=" ") -> (str):
@@ -33,27 +39,12 @@ def arg_str(*args, sep=" ") -> (str):
             _.append(str(arg))
         except:
             try:
-                dbprint(
+                log.error(
                     f"An argument could not be converted to a string for display - {arg}"
                 )
             except:
                 pass  # skip debug output if not available
-            pass  # skip args that cannot be converted to strings
     return sep.join(_)
-
-
-def br(n: int = 1) -> (int):
-    """ Yes, this is a CLI version of a <br /> tag ...
-
-        n : int - number of line breaks to print
-
-        return int 0 for success else 1
-        """
-    try:
-        print(NL * n, end="", sep="")
-        return 0
-    except:
-        return 1
 
 
 def brerr(n: int = 1) -> (int):
@@ -68,14 +59,3 @@ def brerr(n: int = 1) -> (int):
         return 0
     except:
         return 1
-
-
-def hr(s: str = "-", n: int = 79) -> (str):
-    """ Print a string duplicated <n> times.
-
-        This can act as a page break. Yes, this is a CLI version of an <hr /> tag
-
-        s : str  - string to repeat (default '-')
-        n : int  - number of times to repeat (default 79)
-        """
-    print(s * n)

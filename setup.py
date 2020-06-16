@@ -25,22 +25,31 @@ from pathlib import Path
 from shutil import rmtree as _rmtree
 from sys import argv as _argv, path as PYTHONPATH
 
-from autosys.regex_utils.re_extract import *
-from autosys.utils.readme import readme
+# from autosys.regex_utils.re_extract import *
+# from autosys.utils.readme import readme
 
-from setuptools import find_namespace_packages as find_packages, setup
+from setuptools import find_namespace_packages, setup
 
 from typing import Dict, Final, List, Optional, Tuple
+
+try:
+    DEFAULT_ENCODING
+except:
+    from locale import getpreferredencoding
+    DEFAULT_ENCODING: str = getpreferredencoding(do_setlocale=True) or "utf-8"
+
 
 #! DEBUG - run some live tests ... set 'False' for production !!!
 _debug_: bool = False
 here = Path(__file__).resolve().parent
-print(here)
+# print(here)
 if here not in PYTHONPATH:
     PYTHONPATH.insert(0, here)
     PYTHONPATH.append(here)
 
 # log = logging.getLogger(__name__)
+
+__version__ = '0.4.4'
 
 # ? #################################### packaging utilities.
 
@@ -50,27 +59,52 @@ def pip_safe_name(s: str):
     return s.lower().replace("-", "_").replace(" ", "_")
 
 
-def split_it(s: str, delimiter: str = "\s"):
-    return re.split(pattern=s, string=delimiter)
+def readme(file_name: str = "readme.md"):
+    """ Returns the text of the README file
 
+        The default file is `README.md` and is *NOT* case sensitive. (e.g. `README` is the same as `readme`)
+        Can load *any* text file, but the default search path is setup for readme files
 
-def table_dict(_vars: Dict, width=60, divider=": ", indent=2, key_size=15):
-    print("-" * width)
-    key_size = (key_size := width // 4) < min_width or True
-    print(key_size)
-    value_size = width - key_size - indent - len(divider) - 1
-    for k, v in _vars.items():
-        val = str(v)[:value_size]
-        print(f"{indent*' '}{k:<{key_size}.{key_size}}{divider}{val}")
+        ```
+        Search path = ["readme.md", "readme.rst", "readme", "readme.txt"]
+        ```
 
+        Example:
 
-version = str(
-    ReExtract(file_name="VERSION.txt", pattern=RE_VERSION, default="0.0.1"))
+        ```
+        long_description=readme()
+        ```
+        """
+
+    search_list = ["readme.md", "readme.rst", "readme", "readme.txt"]
+    if file_name not in search_list:
+        search_list.insert(0, file_name)
+    found: bool = False
+    for searchfile in search_list:
+        for parent in Path(__file__).resolve().parents:
+            find_path = Path(parent / searchfile)
+            if find_path.exists():
+                found = True
+                # print(find_path)
+                break
+        if found:
+            break
+    if found:
+        try:
+            with open(find_path, mode="r", encoding=DEFAULT_ENCODING) as f:
+                return f.read()
+        except IOError as e:
+            raise IOError(f"Cannot read from the 'readme' file '{find_path}'")
+    else:
+        raise FileNotFoundError(
+            f"Cannot find project 'readme' file in project tree. Search list = {search_list}"
+        )
+
 
 # ? #################################### package meta-data.
 NAME: str = pip_safe_name("AutoSys")
 
-VERSION: str = version  # "0.4.4"
+VERSION: str = __version__  # "0.4.4"
 VERSION_INFO: Tuple[int] = VERSION.split(".")
 DESCRIPTION: str = "System utilities for Python on macOS."
 EMAIL: str = "skeptycal@gmail.com"
@@ -86,8 +120,8 @@ DOWNLOAD_URL = f"https://github.com/skeptycal/{NAME}/archive/{VERSION}.tar.gz"
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    "colorama>=0.3.4 ; sys_platform=='win32'",
     "aiocontextvars>=0.2.0 ; python_version<'3.7'",
+    "colorama>=0.3.4 ; sys_platform=='win32'",
     "win32-setctime>=1.0.0 ; sys_platform=='win32'",
 ]
 
@@ -96,7 +130,6 @@ EXTRAS = {
     "dev": [
         "black>=19.3b0 ; python_version>='3.8'",
         "codecov>=2.0.15",
-        "colorama>=0.3.4",
         "flake8>=3.7.7",
         "isort>=4.3.20",
         "tox>=3.9.0",
@@ -181,7 +214,6 @@ def main(args=_argv[1:], ):  # ? ############################## Setup!
         print(f"{version=}")
         print(f"{type(version)=}")
         print(f"{VERSION=}")
-        # print(table_dict(_vars))
 
     else:  # run setup ...
         setup(
@@ -189,8 +221,8 @@ def main(args=_argv[1:], ):  # ? ############################## Setup!
             version=VERSION,
             description=DESCRIPTION,
             python_requires=REQUIRES_PYTHON,
-            packages=find_packages(),
-            py_modules=[f"{NAME}"],
+            packages=find_namespace_packages(),
+            # py_modules=[f"{NAME}"],
             license=LICENSE,
             long_description=readme(),
             long_description_content_type=LONG_DESCRIPTION_CONTENT_TYPE,
@@ -203,7 +235,7 @@ def main(args=_argv[1:], ):  # ? ############################## Setup!
             download_url=DOWNLOAD_URL,
             zip_safe=False,
             include_package_data=True,
-            setup_requires=["isort"],
+            # setup_requires=["isort"],
             package_data=PACKAGE_DATA,
             project_urls=PROJECT_URLS,
             install_requires=REQUIRED,
