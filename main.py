@@ -8,11 +8,13 @@
     `AutoSys` is licensed under the `MIT License
         `<https://opensource.org/licenses/MIT>`
     """
-import typer
 import autosys
-from colorama import Fore, Back, Style
 
 from autosys import *
+
+import typer
+
+from colorama import Back, Fore, Style
 
 
 def main(name: str):

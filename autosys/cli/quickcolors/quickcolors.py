@@ -36,9 +36,9 @@ from os import linesep as NL
 # from shutil import rmtree as _rmtree
 from sys import stdout
 
-from typing import Dict, Final, List
-
 import setup
+
+from typing import Dict, Final, List
 
 # from colorama import Back, Fore, Style
 

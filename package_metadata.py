@@ -14,6 +14,7 @@
     """
 
 from setup import pip_safe_name, readme
+
 from typing import Dict, List, Tuple
 
 __version__: str = '0.4.4'

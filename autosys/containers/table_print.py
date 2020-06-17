@@ -1,4 +1,5 @@
 from os import linesep as NL
+
 from typing import Dict, Sequence
 
 

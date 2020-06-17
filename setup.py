@@ -20,20 +20,19 @@ import logging
 import os
 import re
 
+from functools import lru_cache
 # from dataclasses import Field, dataclass, field
 from os import linesep as NL
 from pathlib import Path
 # from shutil import rmtree as _rmtree
-from sys import stdout, argv as _argv, path as PYTHONPATH
+from sys import argv as _argv, path as PYTHONPATH, stdout
 
 from package_metadata import *
 
 from colorama import Back, Fore, Style
 from setuptools import find_namespace_packages, setup
-from functools import lru_cache
 
 from typing import Dict, Final, List, Optional, Sequence, Tuple
-
 
 try:
     DEFAULT_ENCODING
