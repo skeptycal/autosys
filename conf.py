@@ -10,9 +10,11 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
+import os
+import sys
 # sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('./venv/lib/python3.8/site-packages'))
+
 
 # -- Project information -----------------------------------------------------
 
@@ -22,6 +24,7 @@ author = 'Michael Treanor'
 
 # The full version, including alpha/beta/rc tags
 release = '0.4.4'
+
 
 # -- General configuration ---------------------------------------------------
 
@@ -39,6 +42,16 @@ extensions = [
     'sphinxcontrib-serializinghtml',
 ]
 
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.txt': 'restructuredtext',
+    '.md': 'markdown',
+}
+
+rst_epilog = """
+.. |psf| replace:: Python Software Foundation
+"""
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -46,9 +59,12 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = [
+    '**/*bak*',
+    '**/*private*',
     '_build',
-    'Thumbs.db',
-    '.DS_Store',
+    '_dist',
+    '**/Thumbs.db',
+    '**/.DS_Store',
     '.git',
     '.tox',
     'bak_ideas',

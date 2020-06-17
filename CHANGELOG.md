@@ -8,6 +8,13 @@
 
 ## autosys 0.4.4
 
+-   Refactor Setup to include sphinx and package_metadata
+-   streamline CI path (add Azure and Github hooks)
+-   added twine_setup script file to run twine outside of setup.py
+    -   advantages here:
+
+## autosys 0.4.4
+
 -   Refactor all code by category
 -   Continue Python 3.9 support testing
 -   Finalize Python 3.8 support

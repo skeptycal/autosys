@@ -8,7 +8,15 @@
     `AutoSys` is licensed under the `MIT License
         `<https://opensource.org/licenses/MIT>`
     """
-
+import typer
 import autosys
 
 from autosys import *
+
+
+def main(name: str):
+    typer.echo(f"Hello {name}")
+
+
+if __name__ == "__main__":
+    typer.run(main)
