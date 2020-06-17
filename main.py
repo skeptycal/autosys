@@ -10,12 +10,13 @@
     """
 import typer
 import autosys
+from colorama import Fore, Back, Style
 
 from autosys import *
 
 
 def main(name: str):
-    typer.echo(f"Hello {name}")
+    typer.echo(f"{Fore.GREEN}Hello, {Fore.CYAN}{name}")
 
 
 if __name__ == "__main__":
