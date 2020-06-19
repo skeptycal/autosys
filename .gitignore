@@ -3,6 +3,7 @@ TODO.md
 **/package-py
 **/py_template
 **/data
+logs/
 
 # dev files
 .coveragerc

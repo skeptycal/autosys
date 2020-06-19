@@ -11,21 +11,23 @@ import shutil
 
 from dataclasses import dataclass, field
 from pathlib import Path
+from pathlib.sys import stat_result
 
 # 'package imports'
-from autosys.exceptions import BaseFileError
+from autosys.exceptions.exceptions import BaseFileError
 
 
 @dataclass
 class BaseFile:
     file_name: str
-    _path: Path = None
+    _path: Path = field(init=False)
 
     def __post_init__(self):
         try:
             self._path = Path(self.file_name).resolve()
         except:
-            raise BaseFileError(f"Unable to initialize file '{self.file_name}' ...")
+            raise BaseFileError(
+                f"Unable to initialize file '{self.file_name}' ...")
 
     @property
     def basename(self) -> (str):
@@ -54,7 +56,7 @@ class BaseFile:
         return self._path.as_posix()
 
     @property
-    def stat(self) -> (str):
+    def stat(self) -> (stat_result):
         """ Return os.stat type information.
 
             e.g.
@@ -75,7 +77,7 @@ class BaseFile:
 
 
 class TextFile(BaseFile):
-    def get_line_count(filename) -> int:
+    def get_line_count(self, filename) -> (int):
         with open(filename) as f:
             return sum(True for line in f)
 

@@ -1,65 +1,77 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-
-if True:  # * >>-------------------------------->> Exception utilities.
-
-    def produce_exception(recursion_level=2):
-        sys.stdout.flush()
-        if recursion_level:
-            produce_exception(recursion_level - 1)
-        else:
-            raise RuntimeError()
-
-    def call_function(f, recursion_level=2):
-        if recursion_level:
-            return call_function(f, recursion_level - 1)
-        else:
-            return f()
+import sys
 
 
-if True:  # * >>-------------------------------->> Base Package Exception
+# * >>-------------------------------->> Exception utilities.
 
-    class Error(Exception):
-        """ Base error class for subclassign. """
-
-        def __init__(self, message):
-            self.message = message
-
-            Exception.__init__(self, message)
-
-
-if True:  # * >>-------------------------------->> Specific Package Exceptions
-
-    class SetupError(ValueError):
-        """ An error occurred with the module setup parameters. """
-
-    class Re_File_Error(ValueError):
-        """ There was a file error while attempting to match the pattern. """
-
-    class Re_Value_Error(ValueError):
-        """ A regex matching error occurred. """
-
-    class BaseFileError(IOError):
-        """ There was a problem initializing the file object. """
-
-        pass
+def produce_exception(recursion_level=2):
+    sys.stdout.flush()
+    if recursion_level:
+        produce_exception(recursion_level - 1)
+    else:
+        raise RuntimeError()
 
 
-if True:  # * >>----------------------------------->> bump2version exceptions
-    # from https://github.com/c4urself/bump2version
+def call_function(f, recursion_level=2):
+    if recursion_level:
+        return call_function(f, recursion_level - 1)
+    else:
+        return f()
 
-    class IncompleteVersionRepresentationException(Error):
-        pass
 
-    class MissingValueForSerializationException(Error):
-        pass
+# * >>-------------------------------->> Base Package Exception
 
-    class WorkingDirectoryIsDirtyException(Error):
-        pass
 
-    class MercurialDoesNotSupportSignedTagsException(Error):
-        pass
+class Error(Exception):
+    """ Base error class for subclassign. """
+
+    def __init__(self, message):
+        self.message = message
+
+        Exception.__init__(self, message)
+
+
+# * >>-------------------------------->> Specific Package Exceptions
+
+class SetupError(ValueError):
+    """ An error occurred with the module setup parameters. """
+    pass
+
+
+class Re_File_Error(ValueError):
+    """ There was a file error while attempting to match the pattern. """
+    pass
+
+
+class Re_Value_Error(ValueError):
+    """ A regex matching error occurred. """
+    pass
+
+
+class BaseFileError(IOError):
+    """ There was a problem initializing the file object. """
+    pass
+
+
+# * >>----------------------------------->> bump2version exceptions
+# from https://github.com/c4urself/bump2version
+
+class IncompleteVersionRepresentationException(Error):
+    pass
+
+
+class MissingValueForSerializationException(Error):
+    pass
+
+
+class WorkingDirectoryIsDirtyException(Error):
+    pass
+
+
+class MercurialDoesNotSupportSignedTagsException(Error):
+    pass
 
 
 if True:  # * >>---------------------------->> python 3.8 regex base exception

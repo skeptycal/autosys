@@ -40,9 +40,6 @@ if True:  # TODO -- done (MT) - imports
     import math as _math
     import sys
 
-    # TODO -- MT -- print test output if _debug_ == True
-    from autosys.debug import dbprint
-
     _debug_: bool = False
 
 if True:  # TODO -- done (MT) - minor changes only
@@ -90,23 +87,30 @@ if _debug_:
     print("days before month")
     print("old: [-1, 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]")
     print(f"new: {_DAYS_BEFORE_MONTH}")
-"""
+""" # TODO - this is a convoluted method ...
 
- # TODO - this is a convoluted method ...
+    -- Tests ------------------------------------
 
-it produces this output:
-[-1, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-[-1, 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]
+    days in month
 
-and seems like a mess
+    old: [-1, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    new: [-1, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
-dbm = 0
+    days before month
+    old: [-1, 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]
+    new: [-1, 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]
 
-for dim in _DAYS_IN_MONTH[1:]:
-    _DAYS_BEFORE_MONTH.append(dbm)
-    dbm += dim
-del dbm, dim
-"""
+    -- Tests ------------------------------------
+
+    and seems like a mess
+
+    dbm = 0
+
+    for dim in _DAYS_IN_MONTH[1:]:
+        _DAYS_BEFORE_MONTH.append(dbm)
+        dbm += dim
+    del dbm, dim
+    """
 
 
 def _is_leap(year):
@@ -143,8 +147,8 @@ def _ymd2ord(year, month, day):
 
 
 _DI400Y = _days_before_year(401)  # number of days in 400 years
-_DI100Y = _days_before_year(101)  #    "    "   "   " 100   "
-_DI4Y = _days_before_year(5)  #    "    "   "   "   4   "
+_DI100Y = _days_before_year(101)  # "    "   "   " 100   "
+_DI4Y = _days_before_year(5)  # "    "   "   "   4   "
 
 # A 4-year cycle has an extra leap day over what we'd get from pasting
 # together 4 single years.
