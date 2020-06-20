@@ -18,14 +18,11 @@
 
 import logging
 import os
-import re
 
-from functools import lru_cache
 from os import linesep as NL
 from pathlib import Path
-from sys import argv as _argv, path as PYTHONPATH, stdout
+from sys import argv as _argv, path as PYTHONPATH
 
-# from colorama import Back, Fore, Style
 from setuptools import find_namespace_packages, setup
 
 from typing import Dict, Final, List, Optional, Sequence, Tuple
@@ -231,17 +228,12 @@ CLASSIFIERS: List = [
 
 
 def main(args=_argv[1:], ):  # ? ############################## Setup!
-    # print(f"{Fore.YELLOW}setup for '{Fore.GREEN}{NAME}{Fore.YELLOW}' version {Fore.RED}{VERSION}{Fore.RESET}")
     global _debug_
     if 'debug' in args:
         _debug_ = True
     if _debug_:  # do some live tests if setup process has changed ...
-        from autosys.cli.quickcolors.quickcolors import QuickColor
-        p = QuickColor()
-        pass
         print(f"{NAME=}")
         print(f"{VERSION=}")
-        p.rint("<b>Blue <r>Red")
         # table_print(_vars)
     else:  # run setup ...
         setup(
