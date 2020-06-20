@@ -74,6 +74,7 @@ PACKAGE_DATA: Dict = {
         "*.ini",
         "*.png",
         "*.jpg",
+        "*.py",
         "__init__.pyi",
         "py.typed",
     ]

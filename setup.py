@@ -21,18 +21,16 @@ import os
 import re
 
 from functools import lru_cache
-# from dataclasses import Field, dataclass, field
 from os import linesep as NL
 from pathlib import Path
-# from shutil import rmtree as _rmtree
 from sys import argv as _argv, path as PYTHONPATH, stdout
 
-from package_metadata import *
-
-from colorama import Back, Fore, Style
+# from colorama import Back, Fore, Style
 from setuptools import find_namespace_packages, setup
 
 from typing import Dict, Final, List, Optional, Sequence, Tuple
+
+# ? #################################### config
 
 try:
     DEFAULT_ENCODING
@@ -41,7 +39,7 @@ except:
     DEFAULT_ENCODING: str = getpreferredencoding(do_setlocale=True) or "utf-8"
 
 #! DEBUG - run some live tests ... set 'False' for production !!!
-_debug_: bool = True
+_debug_: bool = False
 
 
 here = Path(__file__).resolve().parent
@@ -116,127 +114,134 @@ def readme(file_name: str = "readme.md"):
         )
 
 
-quick_colors: Dict[str, str] = {
-    '<K>': '\x1b[30m',  # K is black
-    '<B>': '\x1b[34m',  # Blue
-    '<C>': '\x1b[36m',  # Cyan
-    '<G>': '\x1b[32m',  # Green
-    '<M>': '\x1b[35m',  # Magenta
-    '<R>': '\x1b[31m',  # Red
-    '<W>': '\x1b[37m',  # White
-    '<Y>': '\x1b[33m',  # Yellow
-    '<LK>': '\x1b[90m',  # light colors
-    '<LB>': '\x1b[94m',
-    '<LC>': '\x1b[96m',
-    '<LG>': '\x1b[92m',
-    '<LM>': '\x1b[95m',
-    '<LR>': '\x1b[91m',
-    '<LW>': '\x1b[97m',
-    '<LY>': '\x1b[93m',
-    '<k>': '\x1b[30m',  # lowercase ...
-    '<b>': '\x1b[34m',
-    '<c>': '\x1b[36m',
-    '<g>': '\x1b[32m',
-    '<m>': '\x1b[35m',
-    '<r>': '\x1b[31m',
-    '<w>': '\x1b[37m',
-    '<y>': '\x1b[33m',
-    '<lk>': '\x1b[90m',  # lowercase light colors
-    '<lb>': '\x1b[94m',
-    '<lc>': '\x1b[96m',
-    '<lg>': '\x1b[92m',
-    '<lm>': '\x1b[95m',
-    '<lr>': '\x1b[91m',
-    '<lw>': '\x1b[97m',
-    '<ly>': '\x1b[93m',
-    '<x>': '\x1b[39m',  # x is for reset
-    '<X>': '\x1b[39m',  # X is for reset
+# ? #################################### package metadata.
+__version__: str = '0.4.4'
+
+
+NAME: str = pip_safe_name("AutoSys")
+
+VERSION: str = __version__  # "0.4.4"
+VERSION_INFO: Tuple[int] = VERSION.split(".")
+DESCRIPTION: str = "System utilities for Python on macOS."
+REQUIRES_PYTHON: str = ">=3.8.0"
+PACKAGE_DIR: Dict = {'': f'{NAME}'}
+PACKAGE_EXCLUDE: List[str] = ['*test*', '*bak*']
+LICENSE: str = "MIT"
+LONG_DESCRIPTION: str = readme()
+LONG_DESCRIPTION_CONTENT_TYPE: str = "text/markdown"
+# LONG_DESCRIPTION_CONTENT_TYPE="text/x-rst",
+AUTHOR: str = "Michael Treanor"
+AUTHOR_EMAIL: str = "skeptycal@gmail.com"
+MAINTAINER: str = ""
+MAINTAINER_EMAIL: str = ""
+URL: str = f"https://skeptycal.github.io/{NAME}/"
+DOWNLOAD_URL: str = f"https://github.com/skeptycal/{NAME}/archive/{VERSION}.tar.gz"
+ZIP_SAFE: bool = False
+INCLUDE_PACKAGE_DATA: bool = True
+# What packages are required for this module to be executed?
+REQUIRED: List[str] = [
+    "aiocontextvars>=0.2.0 ; python_version<'3.7'",
+    "colorama>=0.3.4 ; sys_platform=='win32'",
+    "win32-setctime>=1.0.0 ; sys_platform=='win32'",
+]
+
+# What packages are optional?
+EXTRAS: Dict = {
+    ":python_version < '3.5'": ["typing==3.6.1", ],
+    "dev": [
+        "black>=19.3b0 ; python_version>='3.8'",
+        "codecov>=2.0.15",
+        "flake8>=3.7.7",
+        "isort>=4.3.20",
+        "tox>=3.9.0",
+        "tox-travis>=0.12",
+        "pytest>=4.6.2",
+        "pytest-cov>=2.7.1",
+        "Sphinx>=2.2.1",
+        "sphinx-autobuild>=0.7.1",
+        "sphinx-rtd-theme>=0.4.3",
+    ]
 }
 
-RE_QUICK_COLOR_TAG: re.Pattern = re.compile(r'<\w{1,2}>')
-RESET_ALL = '\x1b[0m'
+PACKAGE_DATA: Dict = {
+    # If any package contains these files, include them:
+    "": [
+        "*.txt",
+        "*.rst",
+        "*.md",
+        "*.ini",
+        "*.png",
+        "*.jpg",
+        "*.py",
+        "__init__.pyi",
+        "py.typed",
+    ]
+}
 
+PROJECT_URLS: Dict = {
+    "Website": f"https://skeptycal.github.io/{NAME}/",
+    "Documentation": f"https://skeptycal.github.io/{NAME}/docs",
+    "Source Code": f"https://www.github.com/skeptycal/{NAME}/",
+    "Changelog":
+    f"https://github.com/skeptycal/{NAME}/blob/master/CHANGELOG.md",
+}
 
-def re_quick_color(s: str) -> (re.Match, None):
-    ''' return the next regex match or None'''
-    try:
-        return re.search(RE_QUICK_COLOR_TAG, s)[0]
-    except TypeError:
-        return None
-
-
-@lru_cache
-def quick_color(s: str) -> (str):
-    ''' replace 'quick codes' with ansi escaped sequences from
-        Colorama foreground codes
-
-        example:
-        ```
-        # instead of typing:
-        print(f"{Fore.GREEN}{Back.WHITE}{Styles.BOLD}OK{Fore.RESET}{Back.RESET}")
-
-        # you can type:
-        qprint("<g>OK")
-        ```
-
-        The 'quick codes' are inline literal strings that are similar to
-        html tags and are used as placeholders for regex replacement with
-        Colorama ansi codes.
-
-        They may be upper or lower case. The trailing 'reset' code is added
-        automatically to eliminate color bleeding to upcoming lines.
-
-            # standard colors
-            <K>  or  <k>    # K is black
-            <B>  or  <b>    # Blue
-            <C>  or  <c>    # Cyan
-            <G>  or  <g>    # Green
-            <M>  or  <m>    # Magenta
-            <R>  or  <r>    # Red
-            <W>  or  <w>    # White
-            <Y>  or  <y>    # Yellow
-
-            # light colors
-            <LK> or <lk>    # light black
-            <LB> or <lb>    # light Blue
-            <LC> or <lc>    # light Cyan
-            <LG> or <lg>    # light Green
-            <LM> or <lm>    # light Magenta
-            <LR> or <lr>    # light Red
-            <LW> or <lw>    # light White
-            <LY> or <ly>    # light Yellow
-
-            <x> or <X>    # X is for reset
-        '''
-
-    while (tag := re_quick_color(s)):
-        s = re.sub(pattern=tag, repl=quick_colors[tag], string=s)
-    return s
-
-
-@lru_cache
-def qprint(*args, reset_color=True, sep=' ',  end=NL, file=stdout, flush=False):
-    tmp: List[str] = []
-    for arg in args:
-        tmp.append(quick_color(arg))
-    if reset_color:
-        tmp.append(RESET_ALL)
-    print(*tmp, sep=sep, end=end, file=file, flush=flush)
-
-
-_vars = vars()
+KEYWORDS: List = [
+    "application",
+    "macOS",
+    "dev",
+    "devops",
+    "cache",
+    "utilities",
+    "cli",
+    "python",
+    "cython",
+    "text",
+    "console",
+    "log",
+    "debug",
+    "test",
+    "testing",
+    "logging",
+    "logger",
+]
+CLASSIFIERS: List = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Environment :: Console",
+    "Environment :: MacOS X",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Operating System :: MacOS",
+    "Operating System :: OS Independent",
+    "Programming Language :: Cython",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3",
+    # These are the Python versions tested; it may work on others
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Utilities",
+]
 
 
 def main(args=_argv[1:], ):  # ? ############################## Setup!
-    print(f"{Fore.YELLOW}setup for '{Fore.GREEN}{NAME}{Fore.YELLOW}' version {Fore.RED}{VERSION}{Fore.RESET}")
+    # print(f"{Fore.YELLOW}setup for '{Fore.GREEN}{NAME}{Fore.YELLOW}' version {Fore.RED}{VERSION}{Fore.RESET}")
     global _debug_
     if 'debug' in args:
         _debug_ = True
     if _debug_:  # do some live tests if setup process has changed ...
+        from autosys.cli.quickcolors.quickcolors import QuickColor
+        p = QuickColor()
         pass
         print(f"{NAME=}")
         print(f"{VERSION=}")
-        qprint("<b>Blue <r>Red")
+        p.rint("<b>Blue <r>Red")
         # table_print(_vars)
     else:  # run setup ...
         setup(
@@ -273,6 +278,8 @@ if __name__ == "__main__":
     main()
 
 else:
+    pass
+    '''
     # references ...
     colorama_Fore: Dict[str, str] = {
         'BLACK': '\x1b[30m',
@@ -318,3 +325,4 @@ else:
         'NORMAL': '\x1b[22m',
         'RESET_ALL': '\x1b[0m'
     }
+    '''
