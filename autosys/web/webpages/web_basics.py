@@ -17,7 +17,7 @@ from sys import argv, stderr, stdout
 # 'package imports'
 from bs4 import BeautifulSoup
 # 'third party'
-from requests import get
+from requests import get, Response
 from requests.exceptions import RequestException
 
 from typing import Any, Deque, Dict, List, Tuple
