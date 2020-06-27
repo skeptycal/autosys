@@ -12,14 +12,8 @@ import autosys
 
 from autosys import *
 
-import typer
-
-from colorama import Back, Fore, Style
-
-
-def main(name: str):
-    typer.echo(f"{Fore.GREEN}Hello, {Fore.CYAN}{name}")
-
 
 if __name__ == "__main__":
-    typer.run(main)
+    pass
+    # typer.run(main)
+    print(dir(autosys))
