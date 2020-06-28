@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" dict_tools.py - utilities for Python directories.
+""" quicktime.py - timer for profiling python code.
     Reference: https://stackoverflow.com/a/26853961
     ---
     Copyright (c) 2018 [Michael Treanor][2]
@@ -12,12 +12,16 @@
     [3]: https://opensource.org/licenses/MIT
     """
 
-from pathlib import Path
-from sys import path as PYTHONPATH
-from dataclasses import dataclass, field, Field
-from sys import version_info
-from os import linesep as NL
 import timeit
+from dataclasses import dataclass, field, Field
+from sys import path as PYTHONPATH
+from os import linesep as NL
+from pathlib import Path
+
+here = Path(__file__).resolve().parent
+
+if here not in PYTHONPATH:
+    PYTHONPATH.insert(0, here)
 
 colors = {
     'K': '\x1b[30m',  # K is black
@@ -38,11 +42,6 @@ colors = {
     'LY': '\x1b[93m',
     'X': '\x1b[0m',  # X is for reset
 }
-
-here = Path(__file__).resolve().parent
-
-if here not in PYTHONPATH:
-    PYTHONPATH.insert(0, here)
 
 
 @dataclass
@@ -69,8 +68,8 @@ class QuickTime:
         $ 0.0554
         ```
         '''
+    statement: str
     number: int = 20000
-    statement: str = True
     _repeat: int = 5
     _speedup: int = 5
     _autorange: bool = True
@@ -126,10 +125,13 @@ class QuickTime:
 
             Return the min time from the timeit.repeat function using all
             parameters supplied (or defaults). <Min> is documented to be more appropriate than <average> in most cases. '''
-        return min(self.t.repeat(repeat=self._repeat, number=self.autorange))
+        x = min(self.t.repeat(repeat=self._repeat, number=self.autorange))
+        a = f"{x:.4f}"
+        type(a)
+        return 'fake'
 
     def __str__(self):
-        return f"{self.march:.4f}"
+        return self.march
 
     def _doc_it(self):
         ''' Format and return class docstring. '''
@@ -153,80 +155,22 @@ class QuickTime:
     def example(self):
         ''' Print an example of the quicktime class. '''
         code = '''
-        # ------------------------------------------------
-        t = QuickTime
+# ------------------------------------------------
+t = QuickTime
 
-        # print formatted class instance
-        example_timer = QuickTime('def timer_example():
-        ')
-        print('str value (default): ', example_timer)
+# print formatted class instance
+example_timer = t('def timer_example()'
+print('str value (default): ', example_timer)
 
-        # get and print unformatted minimum value from the repeats method
-        print(f'march method: {example_timer.march=}')
+# get and print unformatted minimum value from the repeats method
+print(f'march method: {example_timer.march=}')
 
-        # 'on the fly' setup, just to grab the value
-        print(t('lambda: {**x, **y}'))
-        '''
+# 'on the fly' setup, just to grab the value
+print(t('lambda: {**x, **y}'))
+'''
         print(self._doc_it())
         self.code_it(code)
 
 
-def merge_two_dicts(x, y):
-    print('merge')
-    try:
-        assert version_info > (3, 5)
-
-        def merge_two_dicts_new(x, y):
-            print('new_version')
-            return {**x, **y}
-        return merge_two_dicts_new(x, y)
-
-    except AssertionError:
-        def merge_two_dicts_old(x, y):
-            """Given two dictionaries, merge them into a new dict as a shallow copy."""
-            print('old_version')
-            z = x.copy()
-            z.update(y)
-            return z
-        return merge_two_dicts_old(x, y)
-
-
-def merge_dicts(*dict_args):
-    """
-    Given any number of dictionaries, shallow copy and merge into a new dict,
-    precedence goes to key value pairs in latter dictionaries.
-    """
-    result = {}
-    for dictionary in dict_args:
-        result.update(dictionary)
-    return result
-
-
-def main():
-    global version_info
-
-    x = dict(a=1, b=2, c=3)
-    y = dict(d=4, e=5, f=6)
-
-    t = QuickTime
-
-    version_info = 4
-    new = t('merge_two_dicts(x,y)', _autorange=False)
-    version_info = 2
-    old = t('merge_two_dicts(x,y)', _autorange=False)
-
-    print(old)
-    print(new)
-
-
-if __name__ == '__main__':
-    main()
-
-
-'''
-old_version
-{'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6}
-new_version
-{'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6}
-
-'''
+# q = QuickTime('lambda: {**x, **y}')
+# QuickTime('lambda: {**x, **y}').example()
