@@ -8,9 +8,8 @@ from dataclasses import dataclass, field, Field
 from functools import lru_cache
 from os import linesep as NL
 from time import perf_counter_ns as timer
-from typing import Deque, Dict, List, Tuple
+from typing import Any, Deque, Dict, List, Tuple
 
-time_list = []
 
 log = logging.getLogger(__file__)
 
@@ -19,7 +18,7 @@ class TimeItError(Exception):
     pass
 
 
-class TimerDeque(deque):
+class TimeItDeque(deque):
     def __init__(self, iterable, maxlen, flush=False):
         self.flush = flush
         super().__init__(iterable, maxlen)
@@ -38,6 +37,21 @@ class TimerDeque(deque):
 
 @dataclass
 class TimeIt:
+    ''' TimeIt - an accurate timer and logger for profiling code. The main functionality is a decorator for functions that uses the timer directly and does not rely on a wrapper for the timeit builtin.
+
+    To use:
+    ```
+    t = TimeIt()
+
+    @t.timeit()
+    ```
+
+    To see examples:
+    ```
+    t = TimeIt()
+    t.example()
+    ```
+    '''
     reps: int = 100
     history_size: int = 32768
     save_on_full: bool = False
@@ -62,7 +76,7 @@ class TimeIt:
 
             UNIT_DICT - a dict of allowed time unit multipliers along with other info (assuming the perf_counter_ns is used so times are initially reported in integer ns)
             '''
-        self.time_list: TimerDeque[str] = TimerDeque(
+        self.time_list: TimeItDeque[Any] = TimeItDeque(
             [], maxlen=self.history_size, flush=self.save_on_full)
         self.UNIT_DICT: Dict[int, Tuple] = {
             0: ('nanoseconds', 'ns', 10**0),
@@ -70,7 +84,7 @@ class TimeIt:
             6: ('milliseconds', 'ms', 10**6),
             9: ('seconds', 's', 10**9),
         }
-        self._n = self.reps
+        self._n: int = self.reps
         self.dt = 0
         self._unit_index: int = 0
         if self._n < 5 or self._n > 2000:
@@ -154,12 +168,17 @@ class TimeIt:
 
     def _log(self, name):
         ''' Log data to stdout and/or log file. '''
-        tf = f"{name}\n avg: {self.avg} {self.unit} (n={self._n})"
+        tf = f"{name}\n avg: {self.avg:.3f} {self.unit} (n={self.n})"
+        tup: Tuple = (name, self.avg, self.unit, self.n)
         if self.cli_output:
             print(tf)
             print()
         if self.log_output:
-            self.time_list.append(tf)
+            self.time_list.append(tup)
+
+    def show_log(self):
+        for tup in self.time_list:
+            print("{tup[0]}\n avg: {tup[1]:.3f} {tup[2]} (n={tup[3]})")
 
     def timeit(self, method):
         ''' Decorator to time method code execution.
@@ -184,30 +203,27 @@ class TimeIt:
             return result
         return timed
 
+    def example(self):
+        @self.timeit
+        @lru_cache
+        def time_range_example(reps):
+            f = 1
+            for i in range(reps):
+                f += f ** 2
+            return f
 
-t = TimeIt(reps=400)
+        MAX_TIME = 30000.0
+        print(t)
+        reps = 20
+        print('-'*40)
+        print()
 
-reps = 20
-# print(t)
-print('-'*40)
-print()
-
-
-@t.timeit
-@lru_cache
-def time_range_example(reps):
-    f = 1
-    for i in range(reps):
-        f += i
-    return f
+        for i in range(20):
+            time_range_example(reps=i)
+            if self.dt > MAX_TIME:
+                print(self.dt)
+                break
 
 
-# print(time_range_example(reps=2))
-# print(time_range_example(reps=20))
-time_range_example(reps=50)
-time_range_example(reps=120)
-time_range_example(reps=1200)
-# print(time_range_example(reps=12000))
-# print(time_range_example(reps=120000))
-# print(time_range_example(reps=1200000))
-# print(time_range_example(reps=12000000))
+t = TimeIt()
+t.example()

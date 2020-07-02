@@ -34,7 +34,7 @@ while True:
 if True:
     from wsgiref import simple_server, util
 
-    import make_html
+    import autosys.web.webpages.make_html_index
 
 try:
     DEFAULT_ENCODING
@@ -58,6 +58,7 @@ def app(environ, respond):
 
 
 if __name__ == '__main__':
+    makehtmlindex()
     # print(f"{get_html_file()}")
     pass
 if True:
