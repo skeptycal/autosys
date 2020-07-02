@@ -4,10 +4,6 @@
 # Backups and trials
 bak/
 *bak*
-TODO_organization.md
-
-# Project settings
-.gitmodules
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -37,8 +33,6 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-.ignore
-
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -53,7 +47,7 @@ pip-delete-this-directory.txt
 # Unit test / coverage reports
 test_*
 **/test[s]/
-testing/
+**/testing/
 htmlcov/
 .tox/
 .nox/

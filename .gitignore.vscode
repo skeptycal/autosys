@@ -1,0 +1,72 @@
+# Project-specific files
+TODO.md 
+
+# dev files
+.coveragerc
+.git*
+.netrc
+.npmrc
+.pre-commit-config.yaml
+.pylintrc
+.vsce
+.vuerc
+**/__pycache__/
+**/.gitconfig
+**/.gitmodules
+**/.mypy_cache/
+**/.pytest_cache/
+**/.vscode/
+**/gists/
+**/node_modules/
+
+# Python build files
+.coveralls.yml
+.pypirc
+.tox/
+**/.env/
+**/*.egg-ignore
+**/*.egg-info
+**/*.py[cod]
+**/build/
+**/dist/
+**/env/
+**/venv/
+MANIFEST
+pyproject.toml
+pytest.ini
+
+# general ignore files
+.ignore
+.viminfo*
+.vscode/
+*.wakatime*
+*goobook*
+*private*
+*wakatime*
+medium_token
+
+# temp, scratch, bak, etc
+**/*/bak/
+**/*/temp/
+**/*/tmp/
+*bak*
+*temp*
+*tmp*
+
+# security
+*history*
+config.py
+config.json
+sftp.json
+*/*.key
+*/*.suo
+.pass
+*/*.user
+*/*.userosscache
+database_connect.py
+multi_db_connect.py
+*/.extra
+/setup/
+*/[Pp]rivate/*
+*[Pp]rivate
+crypto.*
