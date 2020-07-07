@@ -1,10 +1,14 @@
 
 # Project specific exceptions
+TODO_organization.md
+
+
+# Security and privacy
+*private*
 
 # Backups and trials
 bak/
 *bak*
-TODO_organization.md
 
 # Project settings
 .gitmodules
