@@ -12,5 +12,5 @@
     """
 
 # 'package imports'
-from autosys.log import autosys_logger
-from autosys.log.autosys_logger import *
+# from autosys.log import autosys_logger
+# from autosys.log.autosys_logger import *
