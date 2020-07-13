@@ -3,4 +3,4 @@
 	url = https://www.github.com/skeptycal/setup_utils
 [submodule "autosys/file_ops/pathpack"]
 	path = autosys/file_ops/pathpack
-	url = https://github.com/skeptycal/pathpack.git
+	url = https://www.github.com/skeptycal/pathpack.git
