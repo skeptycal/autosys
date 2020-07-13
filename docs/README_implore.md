@@ -50,7 +50,7 @@ _Tell your computer what to do!"_
 
 > Copyright © 2018-2020 [Michael Treanor](https:/skeptycal.github.com) | [MIT License](https://opensource.org/licenses/MIT) - enjoy ...
 
-[![License](https://img.shields.io/badge/License-MIT-darkblue)](https://skeptycal.mit-license.org/1976/) [![macOS Version](https://img.shields.io/badge/macOS-10.15%20Catalina-orange?logo=apple)](https://www.apple.com) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?logo=prettier)](https://github.com/prettier/prettier)
+[![License](https://img.shields.io/badge/License-MIT-darkblue)](https://skeptycal.mit-license.org/1976/) [![macOS Version](https://img.shields.io/badge/macOS-10.16%20Big%20Sur-orange?logo=apple)](https://www.apple.com) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?logo=prettier)](https://github.com/prettier/prettier)
 
 ---
 

@@ -19,7 +19,7 @@
 
 ---
 
-### _If computers can do so much, why can't we do any of the things we want to do?_ That is the question that we seek to answer with **_Implore_**.
+### _If computers can do so much, why can't we do any of the things we want to do?_ That is the question that we seek to answer with **_AutoSys_**.
 
 ---
 
@@ -50,11 +50,11 @@ _Tell your computer what to do!"_
 
 > Copyright © 2018-2020 [Michael Treanor](https:/skeptycal.github.com) | [MIT License](https://opensource.org/licenses/MIT) - enjoy ...
 
-[![License](https://img.shields.io/badge/License-MIT-darkblue)](https://skeptycal.mit-license.org/1976/) [![macOS Version](https://img.shields.io/badge/macOS-10.15%20Catalina-orange?logo=apple)](https://www.apple.com) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?logo=prettier)](https://github.com/prettier/prettier)
+[![License](https://img.shields.io/badge/License-MIT-darkblue)](https://skeptycal.mit-license.org/1976/) [![macOS Version](https://img.shields.io/badge/macOS-10.16%20Big%20Sur-orange?logo=apple)](https://www.apple.com) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?logo=prettier)](https://github.com/prettier/prettier)
 
 ---
 
-## Implore (with Autosys) version 0.4.4
+## AutoSys version 0.4.4
 
 ### Features include:
 
@@ -85,7 +85,7 @@ _Tell your computer what to do!"_
 -   **BibTex**
 -   **Time**
 
-_Implore requires Python 3.8+ and works best with **lxml** (fast html) and **ujson** (fast json) installed. Text messaging requires macOS._
+_AutoSys requires Python 3.8+ and works best with **lxml** (fast html) and **ujson** (fast json) installed. Text messaging requires macOS._
 
 [![GitHub Pipenv locked Python version](https://img.shields.io/badge/Python-3.8-yellow?color=3776AB&logo=python&logoColor=yellow)](https://www.python.org/) ![Django v3](https://img.shields.io/badge/Django-v3-%23092E20?logo=django&color=#339933)
 
@@ -101,7 +101,7 @@ _Implore requires Python 3.8+ and works best with **lxml** (fast html) and **ujs
 
 ## A solid foundation
 
-> Implore uses _Requests_ and _Beautiful Soup_ to parse html and scrape web data. Website output if mostly _Flask_ based. The majority of other functionality is original code.
+> AutoSys uses _Requests_ and _Beautiful Soup_ to parse html and scrape web data. Website output if mostly _Flask_ based. The majority of other functionality is original code.
 
 ---
 
