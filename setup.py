@@ -1,8 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """ AutoSys Setup
-    ---
-    Part of the [AutoSys][1] package
+
+    Usage:  Setup [-dv] [--setname=<name>] [--setver=<version>] <setup_args>
+            Setup [-h | --help] [--version]
+
+    Arguments:
+        setup_args              Python Setup Commands
+
+    Options:
+        --setname=<name>        Set Package Name
+        --setver=<version>      Set Version Name
+        -d --debug              Set Debug Mode [default=True]
+        -v --verbose            Set Verbose Mode [default=True]
+        -h --help               Show this screen.
+        --version               Show version.
+    """
+""" Part of the [AutoSys][1] package
 
     Copyright (c) 2018 [Michael Treanor][2]
 
@@ -15,39 +29,121 @@
 
 # Note: To use the 'upload' functionality of this file, you must:
 #   $ pip install twine
-if True:  # ? #################################### system imports
-    import logging
-    import os
 
-    from os import linesep as NL
-    from pathlib import Path
-    from sys import argv as _argv, path as PYTHONPATH
+import logging
+import os
+from dataclasses import Field, dataclass, field
+from locale import getpreferredencoding
+from os import linesep as NL
+from pathlib import Path
+from sys import argv as _argv, path as PYTHONPATH, stderr, stdout
+from docopt import docopt
+from setuptools import find_namespace_packages, setup
+from typing import Dict, Final, List, Optional, Sequence, Tuple
+if True:
+    from package_metadata import *
+    __version__: str = '0.4.4'
+    _debug_: bool = True
 
-    from setuptools import find_namespace_packages, setup
 
-    from typing import Dict, Final, List, Optional, Sequence, Tuple
+@dataclass
+class SetupConfig:
+    _file_: str = __file__
+    _version_: str = __version__
+    _debug_: bool = _debug_
+    _verbose_: bool = False
+    encoding: str = getpreferredencoding(do_setlocale=True) or "utf-8"
+    _parents_: List = field(init=False)
+    here: Path = field(init=False)
+    _logging_: bool = True
+    _logger_: Field = None
+    _opt_: Field = None
+    name: str = ''
+    setup_args: str = ''
 
-#! DEBUG - run some live tests ... set 'False' for production !!!
-_debug_: bool = True
+    def __post_init__(self):
+        self._parents_: List = Path(self._file_).resolve().parents
+        self.here = self._parents_[0]
 
-if True:  # ? #################################### config
-    # get encoding if necessary
-    try:
-        DEFAULT_ENCODING
-    except:
-        from locale import getpreferredencoding
-        DEFAULT_ENCODING: str = getpreferredencoding(
-            do_setlocale=True) or "utf-8"
+        # 'name' must be set before the 'logger' is initialized
+        # CLI argument overides hard coded or default value
+        if self.arg('--setname'):
+            self.name = self.arg('--setname')
+        # if no arg and no hard coded value, use default (parent folder)
+        elif not self.name:
+            self.name = self.here.name
 
-    # add the path of this file to the PYTHONPATH
-    here = Path(__file__).resolve().parent
-    if here not in PYTHONPATH:
-        PYTHONPATH.insert(0, here)
+        # initialize logger by logging package name
+        self.info(f'Begin logging: SetupConfig for package: {self.name}')
+        self.info(f"Setup Path (here): {self.here}")
 
-    # add basic logging
-    logger = logging.getLogger(__name__)
+        if self.arg('--setver'):
+            self._version_ = self.arg('--setver')
+        if not self._version_:
+            self._version_ = '0.0.1'
+        self.info(f"Package version is set to '{self._version_}'")
 
-if True:  # ? #################################### packaging utilities.
+        if self.arg('--debug'):
+            self._debug_ = self.arg('--debug')
+        self.info(f"Debug value is set to '{self._debug_}'")
+
+        if self.arg('--verbose'):
+            self._verbose_ = self.arg('--verbose')
+        self.info(f"Verbose value is set to '{self._verbose_}'")
+
+        if self.arg('<setup_args>'):
+            self.setup_args = self.arg('<setup_args>')
+        self.info(f"Setup Arguments set to '{self.setup_args}'")
+
+        # make sure script path is in Python's path
+        if self.here.as_posix() not in PYTHONPATH:
+            PYTHONPATH.insert(0, self.here.as_posix())
+
+    def dbprint(self, *args, **kwargs):
+        ''' Print Debug Output '''
+        if self.debug:
+            print(*args, file=stderr, **kwargs)
+
+    def info(self, *args):
+        msg: str = ''
+        for arg in args:
+            # msg += str(arg)
+            msg = f"{msg}{str(arg)} "
+        self.logger.info(msg.rstrip())
+
+    @property
+    def debug(self):
+        return self._debug_
+
+    @property
+    def opt(self):
+        if not self._opt_:
+            self._opt_ = docopt(
+                __doc__, version=f'{self.name} version {self._version_}')
+        return self._opt_
+
+    def arg(self, name: str = ''):
+        try:
+            return self.opt[name]
+        except KeyError:
+            return None
+
+    @property
+    def logger(self):
+        if not self._logger_:
+            if not self._logging_:
+                self._logger_ = self.dbprint
+            else:
+                self._logger_ = logging.getLogger(self.name)
+                logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)-8s %(message)s',
+                                    datefmt='%a, %d %b %Y %H:%M:%S', filename=f'Logs/{self.name}.log', filemode='w')
+        return self._logger_
+
+    def load_fake_args(self, tmp: List = _argv[1:]):
+        tmp.extend(['--debug', '--setname=stuff'])
+        return tmp
+
+    @staticmethod
     def table_print(data: (Dict, Sequence), **kwargs):
         ''' Pretty Print sequences or dictionaries.
         '''
@@ -72,15 +168,17 @@ if True:  # ? #################################### packaging utilities.
                 'Parameter must be an iterable Mapping or Sequence (Strings are excluded).')
         print(NL.join(tmp), **kwargs)
 
+    @staticmethod
     def pip_safe_name(s: str):
         """ Return a name that is converted to pypi safe format.
             ####
-            (Returns a lowercase string has no spaces or underscores)
+            (Returns a lowercase string has no spaces or dashes)
             """
         return s.lower().replace("-", "_").replace(" ", "_")
 
-    def readme(file_name: str = "readme.md"):
-        """ Returns the text of the README file
+    @staticmethod
+    def readme(file_name: str = "readme.md", search_list: List[str] = ["readme.md", "readme.rst", "readme", "readme.txt"]):
+        """ Returns the text of the file (defaults to README files)
 
             The default file is `README.md` and is *NOT* case sensitive. (e.g. `README` is the same as `readme`)
             Can load *any* text file, but the default search path is setup for readme files
@@ -96,22 +194,23 @@ if True:  # ? #################################### packaging utilities.
             ```
             """
 
-        search_list = ["readme.md", "readme.rst", "readme", "readme.txt"]
+        # make sure 'file_name' is in 'search_list' at index 0
         if file_name not in search_list:
             search_list.insert(0, file_name)
         found: bool = False
+        # traverse up through directory tree searching for each file in 'search_list'
         for searchfile in search_list:
-            for parent in Path(__file__).resolve().parents:
+            # search in this script's path and above
+            for parent in Path(file_name).resolve().parents:
                 find_path = Path(parent / searchfile)
                 if find_path.exists():
                     found = True
-                    # print(find_path)
                     break
             if found:
                 break
         if found:
             try:
-                with open(find_path, mode="r", encoding=DEFAULT_ENCODING) as f:
+                with open(find_path, mode="r", encoding=SetupConfig.encoding) as f:
                     return f.read()
             except IOError as e:
                 raise IOError(
@@ -121,56 +220,46 @@ if True:  # ? #################################### packaging utilities.
                 f"Cannot find project 'readme' file in project tree. Search list = {search_list}"
             )
 
-if True: # ? #################################### package metadata.
-    __version__: str = '0.4.4'
-    NAME: str = pip_safe_name("AutoSys")
-    # import metadata for this project
-    from package_metadata import *
 
-def main(args=_argv[1:], ):  # ? ############################## Setup!
-    global _debug_
-    if 'debug' in args:
-        _debug_ = True
-    if _debug_:  # do some live tests if setup process has changed ...
-        print(f"{NAME=}")
-        print(f"{VERSION=}")
-        # table_print(_vars)
-    else:  # run setup ...
-        setup(
-            name=NAME,
-            version=VERSION,
-            description=DESCRIPTION,
-            python_requires=REQUIRES_PYTHON,
-            package_dir=PACKAGE_DIR,
-            packages=find_namespace_packages(
-                f'{NAME}', exclude=PACKAGE_EXCLUDE),
-            # py_modules=[f"{NAME}"],
-            license=LICENSE,
-            long_description=LONG_DESCRIPTION,
-            long_description_content_type=LONG_DESCRIPTION_CONTENT_TYPE,
-            author=AUTHOR,
-            author_email=AUTHOR_EMAIL,
-            maintainer=MAINTAINER or AUTHOR,
-            maintainer_email=MAINTAINER_EMAIL or AUTHOR_EMAIL,
-            url=URL,
-            download_url=DOWNLOAD_URL,
-            zip_safe=ZIP_SAFE,
-            include_package_data=INCLUDE_PACKAGE_DATA,
-            # setup_requires=["isort"],
-            install_requires=REQUIRED,
-            extras_require=EXTRAS,
-            package_data=PACKAGE_DATA,
-            project_urls=PROJECT_URLS,
-            keywords=KEYWORDS,
-            classifiers=CLASSIFIERS,
-        )
+# ? ############################## Setup!
 
 
 if __name__ == "__main__":
-    main()
+    s = SetupConfig()
+    print(s.opt)
+    if s.debug:  # do some live tests if setup process has changed ...
+        print('debug mode ...')
+        s.info('This debug message is used in place of the actual "setup" program.')
+    # else:  # run setup ...
+        # setup(**meta_data)
+        setup(name=NAME,
+              version=VERSION,
+              description=DESCRIPTION,
+              python_requires=REQUIRES_PYTHON,
+              package_dir=PACKAGE_DIR,
+              packages=find_namespace_packages(
+                  f'{NAME}', exclude=PACKAGE_EXCLUDE),
+              # py_modules=[f"{NAME}"],
+              license=LICENSE,
+              long_description=LONG_DESCRIPTION,
+              long_description_content_type=LONG_DESCRIPTION_CONTENT_TYPE,
+              author=AUTHOR,
+              author_email=AUTHOR_EMAIL,
+              maintainer=MAINTAINER or AUTHOR,
+              maintainer_email=MAINTAINER_EMAIL or AUTHOR_EMAIL,
+              url=URL,
+              download_url=DOWNLOAD_URL,
+              zip_safe=ZIP_SAFE,
+              include_package_data=INCLUDE_PACKAGE_DATA,
+              # setup_requires=["isort"],
+              install_requires=REQUIRED,
+              extras_require=EXTRAS,
+              package_data=PACKAGE_DATA,
+              project_urls=PROJECT_URLS,
+              keywords=KEYWORDS,
+              classifiers=CLASSIFIERS,
+              )
 
-else:
-    pass
     '''
     # references ...
     colorama_Fore: Dict[str, str] = {

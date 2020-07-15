@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env false python3
 # -*- coding: utf-8 -*-
 """ AutoSys Package Metadata
     ---
@@ -13,13 +13,12 @@
     [3]: https://opensource.org/licenses/MIT
     """
 
-from setup import pip_safe_name, readme
-
 from typing import Dict, List, Tuple
+from setup import SetupConfig
 
 __version__: str = '0.4.4'
 
-NAME: str = pip_safe_name("AutoSys")
+NAME: str = SetupConfig.pip_safe_name("AutoSys")
 
 VERSION: str = __version__  # "0.4.4"
 VERSION_INFO: Tuple[int] = VERSION.split(".")
@@ -28,7 +27,7 @@ REQUIRES_PYTHON: str = ">=3.8.0"
 PACKAGE_DIR: Dict = {'': f'{NAME}'}
 PACKAGE_EXCLUDE: List[str] = ['*test*', '*bak*']
 LICENSE: str = "MIT"
-LONG_DESCRIPTION: str = readme()
+LONG_DESCRIPTION: str = SetupConfig.readme()
 LONG_DESCRIPTION_CONTENT_TYPE: str = "text/markdown"
 # LONG_DESCRIPTION_CONTENT_TYPE="text/x-rst",
 AUTHOR: str = "Michael Treanor"
@@ -83,7 +82,7 @@ EXTRAS: Dict = {
         "pathspec>=0.8.0",
         "pydash>=4.8.0",
         "pygments-pytest>=2.0.0",
-        "pylint" >=
+        "pylint>=2.5.3",
         "pytest-bench>=0.3.0",
         "pytest-cov>=2.10.0",
         "pytest-pydocstyle>=2.1.3",
@@ -172,3 +171,11 @@ CLASSIFIERS: List = [
     "Topic :: Software Development :: Testing",
     "Topic :: Utilities",
 ]
+
+meta_data: Dict = {}
+meta_exclude: List = ['__name__', '__doc__', '__package__', '__loader__',
+                      '__spec__', '__file__', '__cached__', '__builtins__', '__annotations__', 'Dict', 'List', 'Tuple', 'SetupConfig', 'meta_exclude']
+
+meta_data = {k: v for k, v in locals().items()
+             if k not in meta_exclude}
+__all__ = [k for k in meta_data.keys()]
