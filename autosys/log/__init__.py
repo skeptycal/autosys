@@ -20,4 +20,4 @@
 
 # 'package imports'
 # fake redirect while experimenting with the logging package`
-from autosys.forks.logging import *
+from autosys.logging import *

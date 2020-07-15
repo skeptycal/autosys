@@ -47,7 +47,7 @@ pytest.ini
 .vscode/
 *.wakatime*
 *goobook*
-*private*
+**/*private*
 *wakatime*
 medium_token
 
