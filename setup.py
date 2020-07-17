@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" AutoSys Setup
+""" #### AutoSys Setup
 
+    ```
     Usage:  Setup [-dv] [--setname=<name>] [--setver=<version>] <setup_args>
             Setup [-h | --help] [--version]
 
     Arguments:
-        setup_args              Python Setup Commands
+        setup_args              passed through to Python Setup (*)
 
     Options:
         --setname=<name>        Set Package Name
@@ -15,6 +16,21 @@
         -v --verbose            Set Verbose Mode [default=True]
         -h --help               Show this screen.
         --version               Show version.
+
+    * Use single quotes around setup_args that contain dashes in order to
+    pass them through to the Python Setup utility.
+
+    ```
+    e.g. Use these:
+    ```
+    python3 -m setup build '-vn'
+    python3 -m setup '--help-commands'
+    ```
+    instead of these:
+    ```
+    python3 -m setup build -vn
+    python3 -m setup --help-commands
+    ```
     """
 """ Part of the [AutoSys][1] package
 
@@ -30,20 +46,134 @@
 # Note: To use the 'upload' functionality of this file, you must:
 #   $ pip install twine
 
-import logging
+
+# import logging
 import os
+import sys
+
 from dataclasses import Field, dataclass, field
-from locale import getpreferredencoding
 from os import linesep as NL
 from pathlib import Path
 from sys import argv as _argv, path as PYTHONPATH, stderr, stdout
+
 from docopt import docopt
+from loguru import logger
 from setuptools import find_namespace_packages, setup
+
 from typing import Dict, Final, List, Optional, Sequence, Tuple
+
 if True:
     from package_metadata import *
-    __version__: str = '0.4.4'
+
+    __version__: str = "0.4.4"
     _debug_: bool = True
+
+    PY3 = sys.version_info.major > 2
+
+    PY_INTERPRETER_PATH = os.path.abspath(sys.executable)
+    # FYI, when in a Jupyter notebook, this gives the path to the kernel launcher script.
+    PY_INTERPRETER_PATH_ALT = os.environ["_"]
+    # if not run from virtual environment, this will be wrong...
+    try:
+        PY_VENV_PATH = os.environ["VIRTUAL_ENV"]
+    except KeyError:
+        PY_VENV_PATH = None
+    stream = os.popen("pip show pip")
+    PY_PACKAGES_LOCATION = stream.read()
+    stream.close()
+    # print(PY3)
+    # print(PY_INTERPRETER_PATH)
+    # print(PY_PACKAGES_LOCATION)
+    # print(PY_VENV_PATH)
+
+    sys.path.insert(0, os.path.abspath("."))
+    sys.path.insert(0, os.path.abspath(PY_INTERPRETER_PATH))
+    if PY3:
+        pass
+
+
+def readme(
+    file_name: str = "readme.md",
+    search_list: List[str] = ["readme.md", "readme.rst", "readme", "readme.txt"],
+):
+    """ Returns the text of the file (defaults to README files)
+
+        The default file is `README.md` and is *NOT* case sensitive. (e.g. `README` is the same as `readme`)
+        Can load *any* text file, but the default search path is setup for readme files
+
+        ```
+        Search path = ["readme.md", "readme.rst", "readme", "readme.txt"]
+        ```
+
+        Example:
+
+        ```
+        long_description=readme()
+        ```
+        """
+
+    # make sure 'file_name' is in 'search_list' at index 0
+    if file_name not in search_list:
+        search_list.insert(0, file_name)
+    found: bool = False
+    # traverse up through directory tree searching for each file in 'search_list'
+    for searchfile in search_list:
+        # search in this script's path and above
+        for parent in Path(file_name).resolve().parents:
+            find_path = Path(parent / searchfile)
+            if find_path.exists():
+                found = True
+                break
+        if found:
+            break
+    if found:
+        try:
+            with open(find_path, mode="r", encoding=SetupConfig().encoding) as f:
+                return f.read()
+        except IOError as e:
+            raise IOError(f"Cannot read from the 'readme' file '{find_path}'")
+    else:
+        raise FileNotFoundError(
+            f"Cannot find project 'readme' file in project tree. Search list = {search_list}"
+        )
+
+
+def pip_safe_name(s: str):
+    """ Return a name that is converted to pypi safe format.
+        ####
+        (Returns a lowercase string has no spaces or dashes)
+        """
+    return s.lower().replace("-", "_").replace(" ", "_")
+
+
+def table_print(data: (Dict, Sequence), **kwargs):
+    """ Pretty Print sequences or dictionaries.
+    """
+    tmp: List = []
+    if isinstance(data, (str, bytes)):
+        raise TypeError(
+            'Strings and bytes cannot be used for "table_print". Try another form of iterable'
+        )
+
+    elif isinstance(data, dict):
+        key_width = len(max(data.keys()))
+        print(f"key_width = {key_width}.")
+        tmp.extend([f"{str(k):<15.15} :  {repr(v):<45.45}" for k, v in data.items()])
+    elif isinstance(data, (list, tuple, set)):
+        for x in data:
+            try:
+                tmp.append(f"{str(x):<15.15} :  {repr(f'{x}'):<45.45}")
+            except:
+                tmp.append(f"{str(x)}")
+    else:
+        raise TypeError(
+            "Parameter must be an iterable Mapping or Sequence (Strings are excluded)."
+        )
+    print(NL.join(tmp), **kwargs)
+
+
+class SetupConfigError(Exception):
+    """ An error occurred in SetupConfig. """
 
 
 @dataclass
@@ -52,215 +182,204 @@ class SetupConfig:
     _version_: str = __version__
     _debug_: bool = _debug_
     _verbose_: bool = False
-    encoding: str = getpreferredencoding(do_setlocale=True) or "utf-8"
-    _parents_: List = field(init=False)
-    here: Path = field(init=False)
     _logging_: bool = True
     _logger_: Field = None
     _opt_: Field = None
-    name: str = ''
-    setup_args: str = ''
+    _encoding_: str = ""
+    name: str = ""
+    setup_args: str = ""
 
     def __post_init__(self):
         self._parents_: List = Path(self._file_).resolve().parents
         self.here = self._parents_[0]
 
-        # 'name' must be set before the 'logger' is initialized
         # CLI argument overides hard coded or default value
-        if self.arg('--setname'):
-            self.name = self.arg('--setname')
+        if self.arg("--setname"):
+            self.name = self.arg("--setname")
         # if no arg and no hard coded value, use default (parent folder)
         elif not self.name:
             self.name = self.here.name
 
-        # initialize logger by logging package name
-        self.info(f'Begin logging: SetupConfig for package: {self.name}')
-        self.info(f"Setup Path (here): {self.here}")
+        # self._logger_: logging.Logger = logging.getLogger(self.name)
+        logger.info(f"Begin logging: SetupConfig for package: {self.name}")
+        logger.info(f"Setup Path (here): {self.here}")
 
-        if self.arg('--setver'):
-            self._version_ = self.arg('--setver')
+        if self.arg("--setver"):
+            self._version_ = self.arg("--setver")
         if not self._version_:
-            self._version_ = '0.0.1'
-        self.info(f"Package version is set to '{self._version_}'")
+            self._version_ = "0.0.1"
+        logger.info(f"Package version is set to '{self.version}'")
 
-        if self.arg('--debug'):
-            self._debug_ = self.arg('--debug')
-        self.info(f"Debug value is set to '{self._debug_}'")
+        if self.arg("--debug"):
+            self._debug_ = self.arg("--debug")
+        logger.info(f"Debug value is set to '{self.debug}'")
 
-        if self.arg('--verbose'):
-            self._verbose_ = self.arg('--verbose')
-        self.info(f"Verbose value is set to '{self._verbose_}'")
+        if self.arg("--verbose"):
+            self._verbose_ = self.arg("--verbose")
+        logger.info(f"Verbose value is set to '{self.verbose}'")
 
-        if self.arg('<setup_args>'):
-            self.setup_args = self.arg('<setup_args>')
-        self.info(f"Setup Arguments set to '{self.setup_args}'")
+        if self.arg("<setup_args>"):
+            self.setup_args = self.arg("<setup_args>")
+        logger.info(f"Setup Arguments set to '{self.setup_args}'")
 
         # make sure script path is in Python's path
         if self.here.as_posix() not in PYTHONPATH:
             PYTHONPATH.insert(0, self.here.as_posix())
 
+    @property
+    def encoding(self):
+        """ Return file encoding (or lazy load defaults) """
+        if not self._encoding_:
+            from locale import getpreferredencoding
+
+            self._encoding_ = getpreferredencoding(do_setlocale=True) or "utf-8"
+            del getpreferredencoding
+        return self._encoding_
+
     def dbprint(self, *args, **kwargs):
-        ''' Print Debug Output '''
+        """ Print Debug Output to stderr. """
         if self.debug:
             print(*args, file=stderr, **kwargs)
 
     def info(self, *args):
-        msg: str = ''
+        """ Join args into a single string 'info' message and log it. """
+        msg: str = ""
+        # TODO - ' '.join(args) had issues
         for arg in args:
-            # msg += str(arg)
+            # msg += str(arg) # TODO - is this better than fstrings? ...
             msg = f"{msg}{str(arg)} "
-        self.logger.info(msg.rstrip())
+        logger.info(msg.rstrip())
 
     @property
     def debug(self):
+        """ Return debug flag. """
         return self._debug_
 
     @property
     def opt(self):
+        """ Return CLI arguments from 'docopt' package (or lazy load) """
         if not self._opt_:
             self._opt_ = docopt(
-                __doc__, version=f'{self.name} version {self._version_}')
+                __doc__, version=f"{self.name} version {self._version_}"
+            )
         return self._opt_
 
-    def arg(self, name: str = ''):
+    @property
+    def err(self):
+        """ Log last exception. """
+        logger.error("Exception occurred", exc_info=True)
+
+    def arg(self, name: str = "") -> (str, None):
+        """ Return a specific CLI argument from 'docopt' package (or None). """
         try:
             return self.opt[name]
-        except KeyError:
+        except KeyError as e:
+            self.err
             return None
+
+    # def _set_log_handler(
+    #     self,
+    #     formatter_: logging.Formatter,
+    #     handler_: logging.Handler,
+    #     level_: int = logging.DEBUG,
+    # ) -> logging.Handler:
+    # _h: logging.Handler = handler_
+    # _h.setLevel(level_)
+    # _h.setFormatter(formatter_)
+    # return _h
+    # self._logger_.addHandler(handler_)
 
     @property
     def logger(self):
+        # omg logging is a pain ... I'm using the 'loguru' package for now
+        # I do eventually want to make my own, for learning purposes,
+        #   but for now, I just want to use some logging ...
         if not self._logger_:
-            if not self._logging_:
-                self._logger_ = self.dbprint
-            else:
-                self._logger_ = logging.getLogger(self.name)
-                logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)-8s %(message)s',
-                                    datefmt='%a, %d %b %Y %H:%M:%S', filename=f'Logs/{self.name}.log', filemode='w')
+            self._logger_ = logger  # TODO - replacement for my work in progress
+
+            # # lazy load a custom logger
+            # datefmt = "%a, %d %b %Y %H:%M:%S"
+
+            # # add stderr output if 'verbose' is set
+            # if self.verbose:
+            #     stream_format = logging.Formatter(
+            #         "%(name)s - %(levelname)s - %(message)s"
+            #     )
+            #     self._logger_.addHandler(
+            #         self._set_log_handler(stream_format, logging.StreamHandler(),)
+            #     )
+
+            # # add log file output if 'logging' is set
+            # if self.logging:
+            #     log_file_name: str = f"Logs/{self.name}.log"
+            #     print(log_file_name)
+            #     file_format = logging.Formatter(
+            #         "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+            #     )
+            #     print(file_format)
+
+            #     self._logger_.addHandler(
+            #         self._set_log_handler(
+            #             file_format, logging.FileHandler(log_file_name),
+            #         )
+            #     )
+            #     print(self._logger_)
         return self._logger_
 
-    def load_fake_args(self, tmp: List = _argv[1:]):
-        tmp.extend(['--debug', '--setname=stuff'])
-        return tmp
+    @property
+    def logging(self):
+        """ Return logging flag. """
+        return self._logging_
 
-    @staticmethod
-    def table_print(data: (Dict, Sequence), **kwargs):
-        ''' Pretty Print sequences or dictionaries.
-        '''
-        tmp: List = []
-        if isinstance(data, (str, bytes)):
-            raise TypeError(
-                'Strings and bytes cannot be used for "table_print". Try another form of iterable')
+    @property
+    def verbose(self):
+        """ Return verbose flag. """
+        return self._verbose_
 
-        elif isinstance(data, dict):
-            key_width = len(max(data.keys()))
-            print(f'key_width = {key_width}.')
-            tmp.extend(
-                [f"{str(k):<15.15} :  {repr(v):<45.45}" for k, v in data.items()])
-        elif isinstance(data, (list, tuple, set)):
-            for x in data:
-                try:
-                    tmp.append(f"{str(x):<15.15} :  {repr(f'{x}'):<45.45}")
-                except:
-                    tmp.append(f"{str(x)}")
-        else:
-            raise TypeError(
-                'Parameter must be an iterable Mapping or Sequence (Strings are excluded).')
-        print(NL.join(tmp), **kwargs)
-
-    @staticmethod
-    def pip_safe_name(s: str):
-        """ Return a name that is converted to pypi safe format.
-            ####
-            (Returns a lowercase string has no spaces or dashes)
-            """
-        return s.lower().replace("-", "_").replace(" ", "_")
-
-    @staticmethod
-    def readme(file_name: str = "readme.md", search_list: List[str] = ["readme.md", "readme.rst", "readme", "readme.txt"]):
-        """ Returns the text of the file (defaults to README files)
-
-            The default file is `README.md` and is *NOT* case sensitive. (e.g. `README` is the same as `readme`)
-            Can load *any* text file, but the default search path is setup for readme files
-
-            ```
-            Search path = ["readme.md", "readme.rst", "readme", "readme.txt"]
-            ```
-
-            Example:
-
-            ```
-            long_description=readme()
-            ```
-            """
-
-        # make sure 'file_name' is in 'search_list' at index 0
-        if file_name not in search_list:
-            search_list.insert(0, file_name)
-        found: bool = False
-        # traverse up through directory tree searching for each file in 'search_list'
-        for searchfile in search_list:
-            # search in this script's path and above
-            for parent in Path(file_name).resolve().parents:
-                find_path = Path(parent / searchfile)
-                if find_path.exists():
-                    found = True
-                    break
-            if found:
-                break
-        if found:
-            try:
-                with open(find_path, mode="r", encoding=SetupConfig.encoding) as f:
-                    return f.read()
-            except IOError as e:
-                raise IOError(
-                    f"Cannot read from the 'readme' file '{find_path}'")
-        else:
-            raise FileNotFoundError(
-                f"Cannot find project 'readme' file in project tree. Search list = {search_list}"
-            )
+    @property
+    def version(self):
+        """ Return verbose flag. """
+        return self._version_
 
 
 # ? ############################## Setup!
 
 
 if __name__ == "__main__":
-    s = SetupConfig()
-    print(s.opt)
-    if s.debug:  # do some live tests if setup process has changed ...
-        print('debug mode ...')
-        s.info('This debug message is used in place of the actual "setup" program.')
-    # else:  # run setup ...
-        # setup(**meta_data)
-        setup(name=NAME,
-              version=VERSION,
-              description=DESCRIPTION,
-              python_requires=REQUIRES_PYTHON,
-              package_dir=PACKAGE_DIR,
-              packages=find_namespace_packages(
-                  f'{NAME}', exclude=PACKAGE_EXCLUDE),
-              # py_modules=[f"{NAME}"],
-              license=LICENSE,
-              long_description=LONG_DESCRIPTION,
-              long_description_content_type=LONG_DESCRIPTION_CONTENT_TYPE,
-              author=AUTHOR,
-              author_email=AUTHOR_EMAIL,
-              maintainer=MAINTAINER or AUTHOR,
-              maintainer_email=MAINTAINER_EMAIL or AUTHOR_EMAIL,
-              url=URL,
-              download_url=DOWNLOAD_URL,
-              zip_safe=ZIP_SAFE,
-              include_package_data=INCLUDE_PACKAGE_DATA,
-              # setup_requires=["isort"],
-              install_requires=REQUIRED,
-              extras_require=EXTRAS,
-              package_data=PACKAGE_DATA,
-              project_urls=PROJECT_URLS,
-              keywords=KEYWORDS,
-              classifiers=CLASSIFIERS,
-              )
+    sc = SetupConfig()
+    print(f"Setup for {sc.name} version {sc.version}.")
+    if sc.debug:  # do some live tests if setup process has changed ...
+        print(f"debug mode set to {sc.debug}")
+    else:  # run setup ...
+        setup(
+            name=NAME,
+            version=VERSION,
+            description=DESCRIPTION,
+            python_requires=REQUIRES_PYTHON,
+            package_dir=PACKAGE_DIR,
+            packages=find_namespace_packages(f"{NAME}", exclude=PACKAGE_EXCLUDE),
+            # py_modules=[f"{NAME}"],
+            license=LICENSE,
+            long_description=LONG_DESCRIPTION,
+            long_description_content_type=LONG_DESCRIPTION_CONTENT_TYPE,
+            author=AUTHOR,
+            author_email=AUTHOR_EMAIL,
+            maintainer=MAINTAINER or AUTHOR,
+            maintainer_email=MAINTAINER_EMAIL or AUTHOR_EMAIL,
+            url=URL,
+            download_url=DOWNLOAD_URL,
+            zip_safe=ZIP_SAFE,
+            include_package_data=INCLUDE_PACKAGE_DATA,
+            # setup_requires=["isort"],
+            install_requires=REQUIRED,
+            extras_require=EXTRAS,
+            package_data=PACKAGE_DATA,
+            project_urls=PROJECT_URLS,
+            keywords=KEYWORDS,
+            classifiers=CLASSIFIERS,
+        )
 
-    '''
+    """
     # references ...
     colorama_Fore: Dict[str, str] = {
         'BLACK': '\x1b[30m',
@@ -306,4 +425,4 @@ if __name__ == "__main__":
         'NORMAL': '\x1b[22m',
         'RESET_ALL': '\x1b[0m'
     }
-    '''
+    """

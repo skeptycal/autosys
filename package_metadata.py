@@ -14,20 +14,20 @@
     """
 
 from typing import Dict, List, Tuple
-from setup import SetupConfig
+from setup import readme, pip_safe_name
 
-__version__: str = '0.4.4'
+__version__: str = "0.4.4"
 
-NAME: str = SetupConfig.pip_safe_name("AutoSys")
+NAME: str = pip_safe_name("AutoSys")
 
 VERSION: str = __version__  # "0.4.4"
 VERSION_INFO: Tuple[int] = VERSION.split(".")
 DESCRIPTION: str = "System utilities for Python on macOS."
 REQUIRES_PYTHON: str = ">=3.8.0"
-PACKAGE_DIR: Dict = {'': f'{NAME}'}
-PACKAGE_EXCLUDE: List[str] = ['*test*', '*bak*']
+PACKAGE_DIR: Dict = {"": f"{NAME}"}
+PACKAGE_EXCLUDE: List[str] = ["*test*", "*bak*"]
 LICENSE: str = "MIT"
-LONG_DESCRIPTION: str = SetupConfig.readme()
+LONG_DESCRIPTION: str = readme()
 LONG_DESCRIPTION_CONTENT_TYPE: str = "text/markdown"
 # LONG_DESCRIPTION_CONTENT_TYPE="text/x-rst",
 AUTHOR: str = "Michael Treanor"
@@ -66,7 +66,7 @@ REQUIRED: List[str] = [
 
 # What packages are optional?
 EXTRAS: Dict = {
-    ":python_version < '3.5'": ["typing==3.6.1", ],
+    ":python_version < '3.5'": ["typing==3.6.1",],
     "dev": [
         "APScheduler>=3.6.3",
         "autopep8>=1.5.3",
@@ -104,7 +104,7 @@ EXTRAS: Dict = {
         "typer>=0.2.1",
         "ujson>=3.0.0",
         "yfinance>=0.1.54",
-    ]
+    ],
 }
 
 PACKAGE_DATA: Dict = {
@@ -126,8 +126,7 @@ PROJECT_URLS: Dict = {
     "Website": f"https://skeptycal.github.io/{NAME}/",
     "Documentation": f"https://skeptycal.github.io/{NAME}/docs",
     "Source Code": f"https://www.github.com/skeptycal/{NAME}/",
-    "Changelog":
-    f"https://github.com/skeptycal/{NAME}/blob/master/CHANGELOG.md",
+    "Changelog": f"https://github.com/skeptycal/{NAME}/blob/master/CHANGELOG.md",
 }
 
 KEYWORDS: List = [
@@ -173,9 +172,22 @@ CLASSIFIERS: List = [
 ]
 
 meta_data: Dict = {}
-meta_exclude: List = ['__name__', '__doc__', '__package__', '__loader__',
-                      '__spec__', '__file__', '__cached__', '__builtins__', '__annotations__', 'Dict', 'List', 'Tuple', 'SetupConfig', 'meta_exclude']
+meta_exclude: List = [
+    "__name__",
+    "__doc__",
+    "__package__",
+    "__loader__",
+    "__spec__",
+    "__file__",
+    "__cached__",
+    "__builtins__",
+    "__annotations__",
+    "Dict",
+    "List",
+    "Tuple",
+    "SetupConfig",
+    "meta_exclude",
+]
 
-meta_data = {k: v for k, v in locals().items()
-             if k not in meta_exclude}
+meta_data = {k: v for k, v in locals().items() if k not in meta_exclude}
 __all__ = [k for k in meta_data.keys()]
