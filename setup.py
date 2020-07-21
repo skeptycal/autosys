@@ -377,35 +377,33 @@ if __name__ == "__main__":
     if sc.debug:  # do some live tests if setup process has changed ...
         print(f"debug mode set to {sc.debug}")
     else:  # run setup ...
-        params = ()
-        setup(**meta_data)
-        # setup(
-        #     name=NAME,
-        #     version=VERSION,
-        #     description=DESCRIPTION,
-        #     python_requires=REQUIRES_PYTHON,
-        #     package_dir=PACKAGE_DIR,
-        #     packages=find_namespace_packages(f"{NAME}", exclude=PACKAGE_EXCLUDE),
-        #     # py_modules=[f"{NAME}"],
-        #     license=LICENSE,
-        #     long_description=LONG_DESCRIPTION,
-        #     long_description_content_type=LONG_DESCRIPTION_CONTENT_TYPE,
-        #     author=AUTHOR,
-        #     author_email=AUTHOR_EMAIL,
-        #     maintainer=MAINTAINER or AUTHOR,
-        #     maintainer_email=MAINTAINER_EMAIL or AUTHOR_EMAIL,
-        #     url=URL,
-        #     download_url=DOWNLOAD_URL,
-        #     zip_safe=ZIP_SAFE,
-        #     include_package_data=INCLUDE_PACKAGE_DATA,
-        #     # setup_requires=["isort"],
-        #     install_requires=REQUIRED,
-        #     extras_require=EXTRAS,
-        #     package_data=PACKAGE_DATA,
-        #     project_urls=PROJECT_URLS,
-        #     keywords=KEYWORDS,
-        #     classifiers=CLASSIFIERS,
-        # )
+        setup(
+            name=NAME,
+            version=VERSION,
+            description=DESCRIPTION,
+            python_requires=REQUIRES_PYTHON,
+            package_dir=PACKAGE_DIR,
+            packages=find_namespace_packages(f"{NAME}", exclude=PACKAGE_EXCLUDE),
+            # py_modules=[f"{NAME}"],
+            license=LICENSE,
+            long_description=LONG_DESCRIPTION,
+            long_description_content_type=LONG_DESCRIPTION_CONTENT_TYPE,
+            author=AUTHOR,
+            author_email=AUTHOR_EMAIL,
+            maintainer=MAINTAINER or AUTHOR,
+            maintainer_email=MAINTAINER_EMAIL or AUTHOR_EMAIL,
+            url=URL,
+            download_url=DOWNLOAD_URL,
+            zip_safe=ZIP_SAFE,
+            include_package_data=INCLUDE_PACKAGE_DATA,
+            # setup_requires=["isort"],
+            install_requires=REQUIRED,
+            extras_require=EXTRAS,
+            package_data=PACKAGE_DATA,
+            project_urls=PROJECT_URLS,
+            keywords=KEYWORDS,
+            classifiers=CLASSIFIERS,
+        )
 
     """
     # references ...
