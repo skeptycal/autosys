@@ -16,6 +16,7 @@
 import operator
 import random
 import timeit
+from dataclasses import dataclass
 
 # Third party modules
 import matplotlib.pyplot as plt  # NOQA
@@ -124,13 +125,50 @@ def create_boxplot(duration_list):
     plt.savefig("output.png")
 
 
+def time_text_functions(functions, text, repeat=100, n=100, default_return=True):
+    # palindromes...
+    for func, name in functions:
+
+        assert func(text) == default_return
+
+        durations = timeit.repeat(lambda: func(text), repeat=repeat, number=n)
+        duration_list[name] = durations
+        print(
+            "{func:<20}: "
+            "min: {min:0.3f}s, mean: {mean:0.3f}s, max: {max:0.3f}s".format(
+                func=name,
+                min=min(durations),
+                mean=np.mean(durations),
+                max=max(durations),
+            )
+        )
+
+
+@dataclass
+class ProfileFunc:
+    """ Profile a list of functions that accept text input.
+    """
+
+    DEFAULT_TEXT_LEN: int = 10
+    n: int = 100
+    repeat: int = 100
+
+    def __init__(self):
+
+        functions = functions[::-1]
+        duration_list = {}
+
+
 def main():
-    string_len = 1000
-    n = 100
-    repeat = 100
 
     text = generate_palindrome(nb_chars=string_len)
     not_text = generate_not_palindrome(nb_chars=string_len)
+
+    # print(text)
+    # print(not_text)
+    # print(is_palindrome_str(text))
+    # print(is_palindrome_str(not_text))
+
     functions = [
         (is_palindrome_str, "is_palindrome_str"),
         # (is_palindrome_dict, "is_palindrome_dict"),
@@ -143,7 +181,7 @@ def main():
     # palindromes...
     for func, name in functions:
 
-        assert func(text) == False
+        # assert func(text) == True
 
         durations = timeit.repeat(lambda: func(text), repeat=repeat, number=n)
         duration_list[name] = durations
@@ -160,7 +198,8 @@ def main():
     # non palindromes ...
     for func, name in functions:
 
-        assert func(text) == False
+        assert func(not_text) == False
+
         durations = timeit.repeat(lambda: func(not_text), repeat=repeat, number=n)
         duration_list[name] = durations
         print(
