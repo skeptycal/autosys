@@ -16,4 +16,4 @@ from autosys import *
 if __name__ == "__main__":
     pass
     # typer.run(main)
-    print(dir(autosys))
+    # print(dir(autosys))
