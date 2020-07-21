@@ -51,18 +51,29 @@
 import os
 import sys
 
-from dataclasses import Field, dataclass, field
+# from dataclasses import Field, dataclass, field
 from os import linesep as NL
 from pathlib import Path
 from sys import argv as _argv, path as PYTHONPATH, stderr, stdout
 
 from docopt import docopt
-from loguru import logger
+from loguru import logger  # NOQA
 from setuptools import find_namespace_packages, setup
 
 from typing import Dict, Final, List, Optional, Sequence, Tuple
 
 if True:
+    try:
+        from locale import getpreferredencoding
+
+        DEFAULT_ENCODING = getpreferredencoding(do_setlocale=True)
+        del getpreferredencoding
+    except ImportError:
+        DEFAULT_ENCODING = "utf-8"
+    except:
+        DEFAULT_ENCODING = "utf-8"
+        del getpreferredencoding
+
     from package_metadata import *
 
     __version__: str = "0.4.4"
@@ -78,9 +89,9 @@ if True:
         PY_VENV_PATH = os.environ["VIRTUAL_ENV"]
     except KeyError:
         PY_VENV_PATH = None
-    stream = os.popen("pip show pip")
-    PY_PACKAGES_LOCATION = stream.read()
-    stream.close()
+    # stream = os.popen("pip show pip")
+    # PY_PACKAGES_LOCATION = stream.read()
+    # stream.close()
     # print(PY3)
     # print(PY_INTERPRETER_PATH)
     # print(PY_PACKAGES_LOCATION)
@@ -175,65 +186,54 @@ def table_print(data: (Dict, Sequence), **kwargs):
 class SetupConfigError(Exception):
     """ An error occurred in SetupConfig. """
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        logger.exception()
 
-@dataclass
+
 class SetupConfig:
-    _file_: str = __file__
-    _version_: str = __version__
-    _debug_: bool = _debug_
-    _verbose_: bool = False
-    _logging_: bool = True
-    _logger_: Field = None
-    _opt_: Field = None
-    _encoding_: str = ""
-    name: str = ""
-    setup_args: str = ""
+    # _file_: str = __file__
 
-    def __post_init__(self):
-        self._parents_: List = Path(self._file_).resolve().parents
-        self.here = self._parents_[0]
+    # _logger_: Field = None
+    # _opt_: Field = None
+    # setup_args: str = ""
 
-        # CLI argument overides hard coded or default value
-        if self.arg("--setname"):
-            self.name = self.arg("--setname")
-        # if no arg and no hard coded value, use default (parent folder)
-        elif not self.name:
-            self.name = self.here.name
+    def __init__(
+        self,
+        name: str = "",
+        version: str = __version__,
+        debug: bool = _debug_,
+        verbose: bool = False,
+        logging: bool = True,
+        encoding: str = DEFAULT_ENCODING,
+        usage: docopt = doc,
+    ):
 
-        # self._logger_: logging.Logger = logging.getLogger(self.name)
-        logger.info(f"Begin logging: SetupConfig for package: {self.name}")
-        logger.info(f"Setup Path (here): {self.here}")
-
-        if self.arg("--setver"):
-            self._version_ = self.arg("--setver")
-        if not self._version_:
-            self._version_ = "0.0.1"
-        logger.info(f"Package version is set to '{self.version}'")
-
-        if self.arg("--debug"):
-            self._debug_ = self.arg("--debug")
-        logger.info(f"Debug value is set to '{self.debug}'")
-
-        if self.arg("--verbose"):
-            self._verbose_ = self.arg("--verbose")
-        logger.info(f"Verbose value is set to '{self.verbose}'")
-
-        if self.arg("<setup_args>"):
-            self.setup_args = self.arg("<setup_args>")
-        logger.info(f"Setup Arguments set to '{self.setup_args}'")
-
+        self._here_: Path = None
+        self._doc_: docopt = doc
+        self._opt_: docopt = None
         # make sure script path is in Python's path
         if self.here.as_posix() not in PYTHONPATH:
             PYTHONPATH.insert(0, self.here.as_posix())
 
+        self._version_: str = version
+        self._debug_: bool = debug
+        self._verbose_: bool = verbose
+        self._logging_: bool = logging
+        self._encoding_: str = encoding
+
+        logger.info(f"Begin logging: SetupConfig for package: {self.name}")
+        logger.info(f"Setup Path (here): {self.here}")
+        logger.info(f"Package version is set to '{self.version}'")
+        logger.info(f"Debug value is set to '{self.debug}'")
+        logger.info(f"Verbose value is set to '{self.verbose}'")
+        logger.info(f"Setup Arguments set to '{self.setup_args}'")
+
     @property
     def encoding(self):
-        """ Return file encoding (or lazy load defaults) """
+        """ Return file encoding (or lazy load default) """
         if not self._encoding_:
-            from locale import getpreferredencoding
-
-            self._encoding_ = getpreferredencoding(do_setlocale=True) or "utf-8"
-            del getpreferredencoding
+            self._encoding_ = DEFAULT_ENCODING
         return self._encoding_
 
     def dbprint(self, *args, **kwargs):
@@ -251,43 +251,66 @@ class SetupConfig:
         logger.info(msg.rstrip())
 
     @property
+    def here(self):
+        if not self._here_:
+            self._here_ = Path(__file__).resolve().parents[0]
+        return self._here_
+
+    @property
     def debug(self):
         """ Return debug flag. """
+        if self.arg("--debug"):
+            self._debug_ = self.arg("--debug")
+        elif not self._debug_:
+            self._debug_ = _debug_
         return self._debug_
 
     @property
-    def opt(self):
-        """ Return CLI arguments from 'docopt' package (or lazy load) """
-        if not self._opt_:
-            self._opt_ = docopt(
-                __doc__, version=f"{self.name} version {self._version_}"
-            )
-        return self._opt_
+    def name(self):
+        if self.arg("--setname"):
+            self._name_ = self.arg("--setname")
+        elif not self._name_:
+            self._name_ = self.here.name
+        return self._name_
+
+    @property
+    def verbose(self):
+        """ Return verbose flag. """
+        if self.arg("--verbose"):
+            self._debug_ = self.arg("--verbose")
+        elif not self._verbose_:
+            self._verbose_ = True
+        return self._verbose_
+
+    @property
+    def setup_args(self):
+        """ Return verbose flag. """
+        if self.arg("<setup_args>"):
+            self.setup_args = self.arg("<setup_args>")
+        elif not self.setup_args:
+            self.setup_args = "--help"
+        return self.setup_args
 
     @property
     def err(self):
         """ Log last exception. """
         logger.error("Exception occurred", exc_info=True)
 
+    @property
+    def opt(self):
+        """ Return CLI arguments from 'docopt' package (or lazy load) """
+        if not self._opt_:
+            self._opt_ = doc
+        return self._opt_
+
     def arg(self, name: str = "") -> (str, None):
         """ Return a specific CLI argument from 'docopt' package (or None). """
         try:
             return self.opt[name]
         except KeyError as e:
+            logger.exception(e)
             self.err
             return None
-
-    # def _set_log_handler(
-    #     self,
-    #     formatter_: logging.Formatter,
-    #     handler_: logging.Handler,
-    #     level_: int = logging.DEBUG,
-    # ) -> logging.Handler:
-    # _h: logging.Handler = handler_
-    # _h.setLevel(level_)
-    # _h.setFormatter(formatter_)
-    # return _h
-    # self._logger_.addHandler(handler_)
 
     @property
     def logger(self):
@@ -332,13 +355,15 @@ class SetupConfig:
         return self._logging_
 
     @property
-    def verbose(self):
-        """ Return verbose flag. """
-        return self._verbose_
-
-    @property
     def version(self):
         """ Return verbose flag. """
+        if not self._version_:
+            if self.arg("--setver"):
+                self._version_ = self.arg("--setver")
+            elif __version__:
+                self._version_ = __version__
+            else:
+                self._version_ = "0.0.1"
         return self._version_
 
 
@@ -346,38 +371,41 @@ class SetupConfig:
 
 
 if __name__ == "__main__":
+    doc: docopt = docopt(__doc__, version=f"{__name__} version {__version__}")
     sc = SetupConfig()
     print(f"Setup for {sc.name} version {sc.version}.")
     if sc.debug:  # do some live tests if setup process has changed ...
         print(f"debug mode set to {sc.debug}")
     else:  # run setup ...
-        setup(
-            name=NAME,
-            version=VERSION,
-            description=DESCRIPTION,
-            python_requires=REQUIRES_PYTHON,
-            package_dir=PACKAGE_DIR,
-            packages=find_namespace_packages(f"{NAME}", exclude=PACKAGE_EXCLUDE),
-            # py_modules=[f"{NAME}"],
-            license=LICENSE,
-            long_description=LONG_DESCRIPTION,
-            long_description_content_type=LONG_DESCRIPTION_CONTENT_TYPE,
-            author=AUTHOR,
-            author_email=AUTHOR_EMAIL,
-            maintainer=MAINTAINER or AUTHOR,
-            maintainer_email=MAINTAINER_EMAIL or AUTHOR_EMAIL,
-            url=URL,
-            download_url=DOWNLOAD_URL,
-            zip_safe=ZIP_SAFE,
-            include_package_data=INCLUDE_PACKAGE_DATA,
-            # setup_requires=["isort"],
-            install_requires=REQUIRED,
-            extras_require=EXTRAS,
-            package_data=PACKAGE_DATA,
-            project_urls=PROJECT_URLS,
-            keywords=KEYWORDS,
-            classifiers=CLASSIFIERS,
-        )
+        params = ()
+        setup(**meta_data)
+        # setup(
+        #     name=NAME,
+        #     version=VERSION,
+        #     description=DESCRIPTION,
+        #     python_requires=REQUIRES_PYTHON,
+        #     package_dir=PACKAGE_DIR,
+        #     packages=find_namespace_packages(f"{NAME}", exclude=PACKAGE_EXCLUDE),
+        #     # py_modules=[f"{NAME}"],
+        #     license=LICENSE,
+        #     long_description=LONG_DESCRIPTION,
+        #     long_description_content_type=LONG_DESCRIPTION_CONTENT_TYPE,
+        #     author=AUTHOR,
+        #     author_email=AUTHOR_EMAIL,
+        #     maintainer=MAINTAINER or AUTHOR,
+        #     maintainer_email=MAINTAINER_EMAIL or AUTHOR_EMAIL,
+        #     url=URL,
+        #     download_url=DOWNLOAD_URL,
+        #     zip_safe=ZIP_SAFE,
+        #     include_package_data=INCLUDE_PACKAGE_DATA,
+        #     # setup_requires=["isort"],
+        #     install_requires=REQUIRED,
+        #     extras_require=EXTRAS,
+        #     package_data=PACKAGE_DATA,
+        #     project_urls=PROJECT_URLS,
+        #     keywords=KEYWORDS,
+        #     classifiers=CLASSIFIERS,
+        # )
 
     """
     # references ...
@@ -426,3 +454,15 @@ if __name__ == "__main__":
         'RESET_ALL': '\x1b[0m'
     }
     """
+
+    # def _set_log_handler(
+    #     self,
+    #     formatter_: logging.Formatter,
+    #     handler_: logging.Handler,
+    #     level_: int = logging.DEBUG,
+    # ) -> logging.Handler:
+    # _h: logging.Handler = handler_
+    # _h.setLevel(level_)
+    # _h.setFormatter(formatter_)
+    # return _h
+    # self._logger_.addHandler(handler_)
