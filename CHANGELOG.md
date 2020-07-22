@@ -1,17 +1,22 @@
 # autosys Changelog
 
 ## UNRELEASED
-
 -   Finalize Python 3.9 support
+-   Move to automated git submodules
+-   docopt support
+-   C and C++ extension support
+-   data pipeline support
+
+## autosys 0.5.0
 -   Remove support for python < 3.8
+-   package_metadata has more info and utilities
 -   Begin support for PEP 590, Vectorcall: a fast calling protocol for CPython
+-   Begin C and C++ extension support
 
-## autosys 0.4.4
-
+## autosys 0.4.5
 -   Refactor Setup to include sphinx and package_metadata
 -   streamline CI path (add Azure and Github hooks)
 -   added twine_setup script file to run twine outside of setup.py
-    -   advantages here:
 
 ## autosys 0.4.4
 
@@ -43,3 +48,17 @@
 
 -   Don't import autosys from setup.py
 -   Dev Release. Not Stable
+
+## autosys 0.3.0
+
+- Add file_ops
+- Add Implore
+
+## autosys 0.2.0
+
+- add data and profiling sections
+- add logging
+
+## autosys 0.1.0
+
+- CLI features, including ANSI color text

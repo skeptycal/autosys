@@ -21,7 +21,7 @@ from typing import Dict, List, Tuple
 
 # ? ################################### Default Metadata
 NAME: str = "AutoSys"
-VERSION: str = "0.4.4"
+VERSION: str = "0.5.0"
 DESCRIPTION: str = "System utilities for Python on macOS."
 REQUIRES_PYTHON: str = ">=3.8.0"
 # ? ####################################################

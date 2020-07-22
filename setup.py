@@ -64,8 +64,6 @@ if True:  # ? ################### imports and utilities
 
     from package_metadata import *
 
-    DOC: docopt = docopt(__doc__, version=f"{NAME} version {VERSION}")
-
     _debug_: bool = True
 
     HERE = Path(__file__).resolve().parent.as_posix()
@@ -75,6 +73,13 @@ if True:  # ? ################### imports and utilities
         PYTHONPATH.insert(0, PY_INTERPRETER_PATH)
     if HERE not in PYTHONPATH:
         PYTHONPATH.insert(0, HERE)
+
+    LOG_FORMAT: str = "{time:YYYY-MM-DD at HH:mm:ss} | {level} | {message}"
+
+    logger.add(f"{HERE}/logs/{NAME}.log", retention="3 days")
+    logger.add(
+        f"{HERE}/logs/{NAME}_log.json", serialize=True, retention="10 days",
+    )
 
     def table_print(data: (Dict, Sequence), **kwargs):
         """ Pretty Print sequences or dictionaries.
@@ -104,27 +109,29 @@ if True:  # ? ################### imports and utilities
         print(NL.join(tmp), **kwargs)
 
 
-class SetupConfigError(Exception):
+class LoggedException(Exception):
+    def __init__(self, *args, **kwargs):
+        logger.error(*args, **kwargs)
+        super().__init__(*args, **kwargs)
+
+
+@logger.catch
+class SetupConfigError(LoggedException):
     """ An error occurred in SetupConfig. """
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        logger.exception()
 
-
+@logger.catch
 class SetupConfig:
     def __init__(
         self,
         name: str = NAME,
-        version: str = __version__,
+        version: str = VERSION,
         debug: bool = _debug_,
         verbose: bool = False,
         logging: bool = True,
         encoding: str = DEFAULT_ENCODING,
-        doc: docopt = DOC,
     ):
 
-        self._opt_: docopt = doc
         self._debug_: bool = debug
         self._verbose_: bool = verbose
         self._logging_: bool = logging
@@ -138,17 +145,8 @@ class SetupConfig:
         self._here_: str = ""
         logger.info(f"Script path: {self.here}")
 
-        self._setup_args_: str = ""
         self._encoding_: str = encoding
-        logger.info(f"Setup Arguments set to '{self.setup_args}'")
         logger.info(f"Encoding set to '{self.encoding}'")
-
-    @property
-    def encoding(self):
-        """ Return file encoding (or lazy load default) """
-        if not self._encoding_:
-            self._encoding_ = DEFAULT_ENCODING
-        return self._encoding_
 
     def dbprint(self, *args, **kwargs):
         """ Print Debug Output to stderr. """
@@ -164,6 +162,10 @@ class SetupConfig:
             msg = f"{msg}{str(arg)} "
         logger.info(msg.rstrip())
 
+    def err(self, e):
+        """ Log last exception. """
+        logger.exception(e)
+
     @property
     def here(self) -> str:
         if not self._here_:
@@ -173,106 +175,37 @@ class SetupConfig:
     @property
     def debug(self) -> bool:
         """ Return debug flag. """
-        if self.arg("--debug"):
-            self._debug_ = bool(self.arg("--debug"))
-        elif not self._debug_:
+        # if self.arg("--debug"):
+        #     self._debug_ = bool(self.arg("--debug"))
+        if not self._debug_:
             self._debug_ = _debug_
         return self._debug_
 
     @property
+    def encoding(self):
+        """ Return file encoding (or lazy load default) """
+        if not self._encoding_:
+            self._encoding_ = DEFAULT_ENCODING
+        return self._encoding_
+
+    @property
     def name(self) -> str:
-        if self.arg("--setname"):
-            self._name_ = self.arg("--setname")
-        elif not self._name_:
+        if not self._name_:
             self._name_ = self.here.name
         return self._name_
 
     @property
     def verbose(self) -> bool:
         """ Return verbose flag. """
-        if self.arg("--verbose"):
-            self._debug_ = self.arg("--verbose")
-        elif not self._verbose_:
+        if not self._verbose_:
             self._verbose_ = True
         return self._verbose_
-
-    @property
-    def setup_args(self) -> str:
-        """ Return verbose flag. """
-        if self.arg("<setup_args>"):
-            self._setup_args_ = self.arg("<setup_args>")
-        elif not self._setup_args_:
-            self._setup_args_ = "--help"
-        return self._setup_args_
-
-    def err(self, e):
-        """ Log last exception. """
-        logger.exception(e)
-
-    @property
-    def opt(self):
-        """ Return CLI arguments from 'docopt' package (or lazy load) """
-        if not self._opt_:
-            self._opt_ = doc
-        return self._opt_
-
-    def arg(self, name: str = "") -> (str, None):
-        """ Return a specific CLI argument from 'docopt' package (or None). """
-        try:
-            return self.opt[name]
-        except KeyError as e:
-            self.err(e)
-            return None
-
-    @property
-    def logger(self):
-        # omg logging is a pain ... I'm using the 'loguru' package for now
-        # I do eventually want to make my own, for learning purposes,
-        #   but for now, I just want to use some logging ...
-        if not self._logger_:
-            self._logger_ = logger  # TODO - replacement for my work in progress
-
-            # # lazy load a custom logger
-            # datefmt = "%a, %d %b %Y %H:%M:%S"
-
-            # # add stderr output if 'verbose' is set
-            # if self.verbose:
-            #     stream_format = logging.Formatter(
-            #         "%(name)s - %(levelname)s - %(message)s"
-            #     )
-            #     self._logger_.addHandler(
-            #         self._set_log_handler(stream_format, logging.StreamHandler(),)
-            #     )
-
-            # # add log file output if 'logging' is set
-            # if self.logging:
-            #     log_file_name: str = f"Logs/{self.name}.log"
-            #     print(log_file_name)
-            #     file_format = logging.Formatter(
-            #         "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-            #     )
-            #     print(file_format)
-
-            #     self._logger_.addHandler(
-            #         self._set_log_handler(
-            #             file_format, logging.FileHandler(log_file_name),
-            #         )
-            #     )
-            #     print(self._logger_)
-        return self._logger_
-
-    @property
-    def logging(self):
-        """ Return logging flag. """
-        return self._logging_
 
     @property
     def version(self):
         """ Return verbose flag. """
         if not self._version_:
-            if self.arg("--setver"):
-                self._version_ = self.arg("--setver")
-            elif __version__:
+            if __version__:
                 self._version_ = __version__
             else:
                 self._version_ = "0.0.1"
@@ -282,14 +215,13 @@ class SetupConfig:
 # ? ############################## Setup!
 
 
-if __name__ == "__main__":
+def main():
     sc = SetupConfig()
     sc.info(f"SetupConfig for {sc.name} version {sc.version}.")
 
-    if sc.debug:  # do some live tests if setup process has changed ...
+    if sc.debug:  # do some live tests in debug mode ...
         sc.info(f"sc.debug mode set to {sc.debug}.")
-        print(f"setup {sc.setup_args}")
-        # else:  # run setup ...
+    else:  # run setup ...
         setup(
             name=NAME,
             version=VERSION,
@@ -317,3 +249,7 @@ if __name__ == "__main__":
             keywords=KEYWORDS,
             classifiers=CLASSIFIERS,
         )
+
+
+if __name__ == "__main__":
+    main()
