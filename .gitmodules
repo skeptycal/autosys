@@ -1,0 +1,6 @@
+[submodule "autosys/setup_utils"]
+	path = autosys/setup_utils
+	url = https://www.github.com/skeptycal/setup_utils
+[submodule "autosys/pathpack"]
+	path = autosys/pathpack
+	url = https://www.github.com/skeptycal/pathpack.git

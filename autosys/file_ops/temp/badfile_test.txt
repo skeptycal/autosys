@@ -1,0 +1,31 @@
+
+Debug Info:
+---------------------------------------------------------
+CONSTANTS: ['ARGS', 'ENCODING', 'WIDTH', 'WIN32', '_DEBUG_']
+   ARGS         = []
+   ENCODING     = UTF-8
+   WIDTH        = 57
+   WIN32        = False
+   _DEBUG_      = True
+
+properties and methods:
+	['_output_filename', 'clear', 'copy', 'dir_commands', 'fromkeys', 'get', 'items', 'keys', 'output_path', 'pop', 'popitem', 'setdefault', 'update', 'values']
+
+c.output_path()='/Users/skeptycal/temp/badfile.txt'
+---------------------------------------------------------
+
+function return value:
+
+total 12
+-rw-r--r-- 1 skeptycal staff   18 Feb 12 12:07 TEst
+-rw-r--r-- 1 skeptycal staff    0 Feb 13 02:46 badfile_test.txt
+-rwxrwxr-x 1 skeptycal staff 3816 Feb 13 02:43 catch_redir.py
+-rw-r--r-- 1 skeptycal staff   25 Feb 12 12:07 tEsT1
+
+Debug Info for Output File System:
+   sys.byteorder='little'
+   sys.api_version=1013
+   f.fileno()=3
+   f.isatty()=False
+   f.seekable()=True
+   f.writable()=True

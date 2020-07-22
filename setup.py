@@ -1,154 +1,250 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-from __future__ import absolute_import
-
-if True:  # stdlib imports
-    import os
-    import pprint
-    import sys
-    from pathlib import Path
-    import ast  # safer eval ...
-    from os import linesep as NL  # platform specific newline
-    from os import sep as PATHSEP  # platform specific path separator
-    from typing import Dict, List  # >= 3.6 type hints support
-
-if True:  # setup tools
-    from setuptools import setup, find_packages
-    from autosys._version import *
-
-_debug_: bool = False
-
-
-def readme(filename: str = "README.md"):
-    """ Returns the text of the README file. The default file is `README.md`.
-
-    `readme(filename: str = 'README.md')-> str`
-
-    Example:
+""" #### AutoSys Setup
 
     ```
-    long_description=readme()
+    Usage:  Setup [-dv] [--setname=<name>] [--setver=<version>] <setup_args>
+            Setup [-h | --help] [--version]
+
+    Arguments:
+        setup_args              passed through to Python Setup (*)
+
+    Options:
+        --setname=<name>        Set Package Name
+        --setver=<version>      Set Version Name
+        -d --debug              Set Debug Mode [default=True]
+        -v --verbose            Set Verbose Mode [default=True]
+        -h --help               Show this screen.
+        --version               Show version.
+
+    * Use single quotes around 'setup_args' that contain dashes in order to
+    pass them through to the Python Setup utility.
+
+    ```
+    e.g. Use these:
+    ```
+    python3 -m setup 'build -vn'
+    python3 -m setup '--help-commands'
+    ```
+    instead of these:
+    ```
+    python3 -m setup build -vn
+    python3 -m setup --help-commands
     ```
     """
-    readme_path = Path(__file__).resolve().parents[0] / filename
+""" Part of the [AutoSys][1] package
 
-    with open(readme_path, encoding="utf-8") as f:
-        return f.read()
+    Copyright (c) 2018 [Michael Treanor][2]
+
+    AutoSys is licensed under the [MIT License][3]
+
+    [1]: https://www.github.com/skeptycal/autosys
+    [2]: https://www.twitter.com/skeptycal
+    [3]: https://opensource.org/licenses/MIT
+    """
+
+# Note: To use the 'upload' functionality of this file, you must:
+#   $ pip install twine
 
 
-class SetupAttrs:
-    """ A wrapper for a dictionary of setup attributes.
+if True:  # ? ################### imports and utilities
+    from os import linesep as NL
+    from pathlib import Path
+    from sys import argv as _argv, path as PYTHONPATH, stderr, stdout
 
-        Example:
+    from loguru import logger  # NOQA
+    from setuptools import find_namespace_packages, setup
 
-        ```
-        from setuptools import setup, find_packages
+    from typing import Dict, List, Optional, Sequence, Tuple
 
-        s = SetupAttrs()
-        print(s) # pretty print attributes
+    from package_metadata import *
 
-        setup(**s.setup)
-        ```
-        `Print(s)` will pretty print the attributes.
+    _debug_: bool = False
+
+    HERE = Path(__file__).resolve().parent.as_posix()
+
+    # ... because this stuff never seems to work right ...
+    if PY_INTERPRETER_PATH not in PYTHONPATH:
+        PYTHONPATH.insert(0, PY_INTERPRETER_PATH)
+    if HERE not in PYTHONPATH:
+        PYTHONPATH.insert(0, HERE)
+
+    LOG_FORMAT: str = "{time:YYYY-MM-DD at HH:mm:ss} | {level} | {message}"
+
+    logger.add(f"{HERE}/logs/{NAME}.log", retention="3 days")
+    logger.add(
+        f"{HERE}/logs/{NAME}_log.json", serialize=True, retention="10 days",
+    )
+
+    def table_print(data: (Dict, Sequence), **kwargs):
+        """ Pretty Print sequences or dictionaries.
         """
+        tmp: List = []
+        if isinstance(data, (str, bytes)):
+            raise TypeError(
+                'Strings and bytes cannot be used for "table_print". Try another form of iterable'
+            )
 
-    # ? ---------------------- Setup Attributes
-    _dict: Dict = {}
+        elif isinstance(data, dict):
+            key_width = len(max(data.keys()))
+            print(f"key_width = {key_width}.")
+            tmp.extend(
+                [f"{str(k):<15.15} :  {repr(v):<45.45}" for k, v in data.items()]
+            )
+        elif isinstance(data, (list, tuple, set)):
+            for x in data:
+                try:
+                    tmp.append(f"{str(x):<15.15} :  {repr(f'{x}'):<45.45}")
+                except:
+                    tmp.append(f"{str(x)}")
+        else:
+            raise TypeError(
+                "Parameter must be an iterable Mapping or Sequence (Strings are excluded)."
+            )
+        print(NL.join(tmp), **kwargs)
 
-    def __init__(self):
-        self._dict = {
-            "name": "autosys",
-            "version": __version__,
-            "description": "System utilities for Python on macOS",
-            "long_description": readme(),
-            "long_description_content_type": "text/markdown",
-            "license": "MIT",
-            "author": "Michael Treanor",
-            "author_email": "skeptycal@gmail.com",
-            "maintainer": "Michael Treanor",
-            "maintainer_email": "skeptycal@gmail.com",
-            "url": f"https://skeptycal.github.io/{__title__}/",
-            "python_requires": ">=3.8",
-            # 'cmdclass': '',
-            # 'command_options': '',
-            # 'command_packages': '',
-            # 'data_files': '',
-            # 'distclass': '',
-            "download_url": f"https://www.github.com/skeptycal/{__title__}/",
-            # 'ext_modules': '',
-            # 'ext_package' : '',
-            # 'fullname' : '',
-            # 'headers': '',
-            # 'include_dirs': '',
-            # 'include_package_data': '',
-            # 'libraries': '',
-            # 'obsoletes': '',
-            # 'options': '',
-            # 'package_data': '',
-            # 'package_dir' : {'': __title__},
-            # 'package_dir': '',
-            # 'packages': '',
-            "packages": find_packages(),
-            # 'password' : '',
-            # 'platforms': '',
-            # 'provides': '',
-            # 'py_modules': '',
-            # 'requires': '',
-            # 'script_args': '',
-            # 'script_name' : '',
-            # 'scripts': '',
-            "zip_safe": False,
-            "keywords": "application macOS dev cache utilities cli python text console log debug test testing",
-            "package_data": {
-                # If any package contains txt, rst, md files, include them:
-                "": ["*.txt", "*.rst", "*.md", "*.ini", "*.png", "*.jpg"]
-            },
-            "project_urls": {
-                "Website": f"https://skeptycal.github.io/{__title__}/",
-                "Documentation": f"https://skeptycal.github.io/{__title__}/docs",
-                "Source Code": f"https://www.github.com/skeptycal/{__title__}/",
-            },
-            "classifiers": [
-                "Development Status :: 4 - Beta",
-                "Environment :: Console",
-                "Environment :: MacOS X",
-                "Intended Audience :: Developers",
-                "License :: OSI Approved :: MIT License",
-                "Natural Language :: English",
-                "Operating System :: MacOS",
-                "Programming Language :: Cython",
-                "Programming Language :: Python",
-                "Programming Language :: Python :: 3.8",
-                "Programming Language :: Python :: Implementation :: CPython",
-                "Programming Language :: Python :: Implementation :: PyPy",
-                "Topic :: Software Development :: Libraries :: Python Modules",
-                "Topic :: Software Development :: Testing",
-                "Topic :: Utilities",
-            ],
-        }
 
-    # ? ---------------------- SetupAttrs Methods
+class LoggedException(Exception):
+    def __init__(self, *args, **kwargs):
+        logger.error(*args, **kwargs)
+        super().__init__(*args, **kwargs)
+
+
+@logger.catch
+class SetupConfigError(LoggedException):
+    """ An error occurred in SetupConfig. """
+
+
+@logger.catch
+class SetupConfig:
+    def __init__(
+        self,
+        name: str = NAME,
+        version: str = VERSION,
+        debug: bool = _debug_,
+        verbose: bool = False,
+        logging: bool = True,
+        encoding: str = DEFAULT_ENCODING,
+    ):
+
+        self._debug_: bool = debug
+        self._verbose_: bool = verbose
+        self._logging_: bool = logging
+        logger.info(f"Debug value is set to '{self.debug}'")
+        logger.info(f"Verbose value is set to '{self.verbose}'")
+
+        self._name_: str = name
+        logger.info(f"Package name: {self.name}")
+        self._version_: str = version
+        logger.info(f"Package version: '{self.version}'")
+        self._here_: str = ""
+        logger.info(f"Script path: {self.here}")
+
+        self._encoding_: str = encoding
+        logger.info(f"Encoding set to '{self.encoding}'")
+
+    def dbprint(self, *args, **kwargs):
+        """ Print Debug Output to stderr. """
+        if self.debug:
+            print(*args, file=stderr, **kwargs)
+
+    def info(self, *args):
+        """ Join args into a single string 'info' message and log it. """
+        msg: str = ""
+        # TODO - ' '.join(args) had issues
+        for arg in args:
+            # msg += str(arg) # TODO - is this better than fstrings? ...
+            msg = f"{msg}{str(arg)} "
+        logger.info(msg.rstrip())
+
+    def err(self, e):
+        """ Log last exception. """
+        logger.exception(e)
 
     @property
-    def setup(self):
-        return self._dict
+    def here(self) -> str:
+        if not self._here_:
+            self._here_ = Path(__file__).resolve().parent.as_posix()
+        return self._here_
 
-    def __getitem__(self, name: str):
-        return self._dict[name]
+    @property
+    def debug(self) -> bool:
+        """ Return debug flag. """
+        # if self.arg("--debug"):
+        #     self._debug_ = bool(self.arg("--debug"))
+        if not self._debug_:
+            self._debug_ = _debug_
+        return self._debug_
 
-    def get(self, name: str):
-        return self.__getitem__(name)
+    @property
+    def encoding(self):
+        """ Return file encoding (or lazy load default) """
+        if not self._encoding_:
+            self._encoding_ = DEFAULT_ENCODING
+        return self._encoding_
 
-    def __str__(self):
-        return pprint.pformat(self._dict, depth=5, compact=False)
+    @property
+    def name(self) -> str:
+        if not self._name_:
+            self._name_ = self.here.name
+        return self._name_
+
+    @property
+    def verbose(self) -> bool:
+        """ Return verbose flag. """
+        if not self._verbose_:
+            self._verbose_ = True
+        return self._verbose_
+
+    @property
+    def version(self):
+        """ Return verbose flag. """
+        if not self._version_:
+            if __version__:
+                self._version_ = __version__
+            else:
+                self._version_ = "0.0.1"
+        return self._version_
 
 
-s = SetupAttrs()
+# ? ############################## Setup!
 
-if _debug_:
-    print(f"Running setup for `{s['name']}` version {s['version']}")
-    # print(s)
-    print(s)
-else:
-    setup(**s.setup)
+
+def main():
+    sc = SetupConfig()
+    sc.info(f"SetupConfig for {sc.name} version {sc.version}.")
+
+    if sc.debug:  # do some live tests in debug mode ...
+        sc.info(f"sc.debug mode set to {sc.debug}.")
+    else:  # run setup ...
+        setup(
+            name=NAME,
+            version=VERSION,
+            description=DESCRIPTION,
+            python_requires=REQUIRES_PYTHON,
+            package_dir=PACKAGE_DIR,
+            packages=find_namespace_packages(f"{NAME}", exclude=PACKAGE_EXCLUDE),
+            # py_modules=[f"{NAME}"],
+            license=LICENSE,
+            long_description=LONG_DESCRIPTION,
+            long_description_content_type=LONG_DESCRIPTION_CONTENT_TYPE,
+            author=AUTHOR,
+            author_email=AUTHOR_EMAIL,
+            maintainer=MAINTAINER or AUTHOR,
+            maintainer_email=MAINTAINER_EMAIL or AUTHOR_EMAIL,
+            url=URL,
+            download_url=DOWNLOAD_URL,
+            zip_safe=ZIP_SAFE,
+            include_package_data=INCLUDE_PACKAGE_DATA,
+            # setup_requires=["isort"],
+            install_requires=REQUIRED,
+            extras_require=EXTRAS,
+            package_data=PACKAGE_DATA,
+            project_urls=PROJECT_URLS,
+            keywords=KEYWORDS,
+            classifiers=CLASSIFIERS,
+        )
+
+
+if __name__ == "__main__":
+    main()
