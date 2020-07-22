@@ -13,17 +13,99 @@
     [3]: https://opensource.org/licenses/MIT
     """
 
+import sys
+import os
+
+from pathlib import Path
 from typing import Dict, List, Tuple
-from setup import readme, pip_safe_name
 
-__version__: str = "0.4.4"
-
-NAME: str = pip_safe_name("AutoSys")
-
-VERSION: str = __version__  # "0.4.4"
-VERSION_INFO: Tuple[int] = VERSION.split(".")
+# ? ################################### Default Metadata
+NAME: str = "AutoSys"
+VERSION: str = "0.4.4"
 DESCRIPTION: str = "System utilities for Python on macOS."
 REQUIRES_PYTHON: str = ">=3.8.0"
+# ? ####################################################
+
+try:
+    from locale import getpreferredencoding
+
+    DEFAULT_ENCODING = getpreferredencoding(do_setlocale=True)
+    del getpreferredencoding
+except ImportError:
+    DEFAULT_ENCODING = "utf-8"
+except:
+    DEFAULT_ENCODING = "utf-8"
+    del getpreferredencoding
+
+PY3 = sys.version_info.major > 2
+
+PY_INTERPRETER_PATH = os.path.abspath(sys.executable)
+# FYI, when in a Jupyter notebook, this gives the path to the kernel launcher script.
+PY_INTERPRETER_PATH_ALT = os.environ["_"]
+# if not run from virtual environment, this will be wrong...
+try:
+    PY_VENV_PATH = os.environ["VIRTUAL_ENV"]
+except KeyError:
+    PY_VENV_PATH = None
+
+
+def readme(file_name: str = "readme.md", search_list: List[str] = []):
+    """ Returns the text of the file (defaults to README files)
+
+        The default file is `README.md` and is *NOT* case sensitive. (e.g. `README` is the same as `readme`)
+        Can load *any* text file, but the default search path is setup for readme files
+
+        ```
+        Search path = ["readme.md", "readme.rst", "readme", "readme.txt"]
+        ```
+
+        Example:
+
+        ```
+        long_description=readme()
+        ```
+        """
+
+    # add default search list for README files
+    if not search_list:
+        search_list = ["readme.md", "readme.rst", "readme", "readme.txt"]
+    # make sure 'file_name' is in 'search_list' at index 0
+    if file_name not in search_list:
+        search_list.insert(0, file_name)
+    found: bool = False
+    # traverse up through directory tree searching for each file in 'search_list'
+    for searchfile in search_list:
+        # search in this script's path and above
+        for parent in Path(file_name).resolve().parents:
+            find_path = Path(parent / searchfile)
+            if find_path.exists():
+                found = True
+                break
+        if found:
+            break
+    if found:
+        try:
+            with open(find_path, mode="r", encoding=DEFAULT_ENCODING) as f:
+                return f.read()
+        except IOError as e:
+            raise IOError(f"Cannot read from the 'readme' file '{find_path}'")
+    else:
+        raise FileNotFoundError(
+            f"Cannot find project 'readme' file in project tree. Search list = {search_list}"
+        )
+
+
+def pip_safe_name(s: str):
+    """ Return a name that is converted to pypi safe format.
+        ####
+        (Returns a lowercase string has no spaces or dashes)
+        """
+    return s.lower().replace("-", "_").replace(" ", "_")
+
+
+NAME = pip_safe_name(NAME)
+__version__: str = VERSION
+VERSION_INFO: Tuple[int] = VERSION.split(".")
 PACKAGE_DIR: Dict = {"": f"{NAME}"}
 PACKAGE_EXCLUDE: List[str] = ["*test*", "*bak*"]
 LICENSE: str = "MIT"
@@ -185,7 +267,6 @@ meta_exclude: List = [
     "Dict",
     "List",
     "Tuple",
-    "SetupConfig",
     "meta_exclude",
 ]
 
