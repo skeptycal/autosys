@@ -48,23 +48,18 @@
 
 
 if True:  # ? ################### imports and utilities
-    # import os
-    # import sys
-
-    # from dataclasses import Field, dataclass, field
     from os import linesep as NL
     from pathlib import Path
     from sys import argv as _argv, path as PYTHONPATH, stderr, stdout
 
-    from docopt import docopt
     from loguru import logger  # NOQA
     from setuptools import find_namespace_packages, setup
 
-    from typing import Dict, Final, List, Optional, Sequence, Tuple
+    from typing import Dict, List, Optional, Sequence, Tuple
 
     from package_metadata import *
 
-    _debug_: bool = True
+    _debug_: bool = False
 
     HERE = Path(__file__).resolve().parent.as_posix()
 

@@ -6,6 +6,7 @@ TODO.md
 logs/
 
 # dev files
+coverage.json
 .coveragerc
 .git*
 .netrc

@@ -122,7 +122,6 @@ ZIP_SAFE: bool = False
 INCLUDE_PACKAGE_DATA: bool = True
 # What packages are required for this module to be executed?
 REQUIRED: List[str] = [
-    "aiocontextvars>=0.2.0 ; python_version<'3.7'",
     "colorama>=0.3.4 ; sys_platform=='win32'",
     "win32-setctime>=1.0.0 ; sys_platform=='win32'",
     "APScheduler>=3.6.3",
@@ -148,7 +147,6 @@ REQUIRED: List[str] = [
 
 # What packages are optional?
 EXTRAS: Dict = {
-    ":python_version < '3.5'": ["typing==3.6.1",],
     "dev": [
         "APScheduler>=3.6.3",
         "autopep8>=1.5.3",
