@@ -19,7 +19,7 @@
 
 ---
 
-### _If computers can do so much, why can't we do any of the things we want to do?_ That is the question that we seek to answer with **_AutoSys_**.
+### _If computers can do so much, why can't we do any of the things we want to do?_ That is the question that we seek to answer with **_Implore_**.
 
 ---
 
@@ -54,7 +54,7 @@ _Tell your computer what to do!"_
 
 ---
 
-## AutoSys version 0.4.4
+## Implore (with Autosys) version 0.4.4
 
 ### Features include:
 
@@ -85,7 +85,7 @@ _Tell your computer what to do!"_
 -   **BibTex**
 -   **Time**
 
-_AutoSys requires Python 3.8+ and works best with **lxml** (fast html) and **ujson** (fast json) installed. Text messaging requires macOS._
+_Implore requires Python 3.8+ and works best with **lxml** (fast html) and **ujson** (fast json) installed. Text messaging requires macOS._
 
 [![GitHub Pipenv locked Python version](https://img.shields.io/badge/Python-3.8-yellow?color=3776AB&logo=python&logoColor=yellow)](https://www.python.org/) ![Django v3](https://img.shields.io/badge/Django-v3-%23092E20?logo=django&color=#339933)
 
@@ -101,7 +101,7 @@ _AutoSys requires Python 3.8+ and works best with **lxml** (fast html) and **ujs
 
 ## A solid foundation
 
-> AutoSys uses _Requests_ and _Beautiful Soup_ to parse html and scrape web data. Website output if mostly _Flask_ based. The majority of other functionality is original code.
+> Implore uses _Requests_ and _Beautiful Soup_ to parse html and scrape web data. Website output if mostly _Flask_ based. The majority of other functionality is original code.
 
 ---
 
