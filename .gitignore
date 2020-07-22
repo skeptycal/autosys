@@ -30,10 +30,10 @@ logs/
 **/*.egg-ignore
 **/*.egg-info
 **/*.py[cod]
-**/build/
-**/dist/
-**/env/
-**/venv/
+**/*/build
+**/*/dist
+**/*/env
+**/*/venv
 MANIFEST
 pyproject.toml
 pytest.ini
