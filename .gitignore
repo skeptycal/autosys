@@ -1,5 +1,5 @@
 *.pyc
-*.egg-info
+**/*/*.egg-info
 *.bak*
 *private*
 **/*/tmp/
