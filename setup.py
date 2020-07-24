@@ -47,12 +47,19 @@
 
 _debug_: bool = False
 
+# ? ################################### Default Metadata
+NAME: str = 'AutoSys'
+USERNAME: str = 'skeptycal'
+DESCRIPTION: str = 'System utilities for Python on macOS.'
+PYTHON_REQUIRES: str = '>=3.6.0'
+# ? ####################################################
 
 if True:  # ? ################### imports
     import os
     import re
     import sys
 
+    from io import TextIOWrapper
     from os import linesep as NL
     from sys import stderr, path as PYTHONPATH
 
@@ -74,13 +81,12 @@ if True:  # ? ################### imports
         DEFAULT_ENCODING = 'utf-8'
         del getpreferredencoding
 
-    # from loguru import logger  # NOQA
+    # from loguru import logger
     from auto_loguru import logger
     from setuptools import find_namespace_packages, setup
 
     # from pep517.envbuild import build_wheel, build_sdist
 
-    from io import TextIOWrapper
     from typing import (
         Any,
         AnyStr,
@@ -95,87 +101,16 @@ if True:  # ? ################### imports
     )
 
     PathLike = Union[Path, str, None]
-    NotString = Union[List[Any], Set[Any], Tuple[Any, ...]]
 
-# ? ################################### Default Metadata
-NAME: str = 'AutoSys'
-VERSION: str = '0.5.0'
-DESCRIPTION: str = 'System utilities for Python on macOS.'
-PYTHON_REQUIRES: str = '>=3.8.0'
-KEYWORDS: List[str] = [
-    'application',
-    'macOS',
-    'dev',
-    'devops',
-    'cache',
-    'utilities',
-    'cli',
-    'python',
-    'cython',
-    'text',
-    'console',
-    'log',
-    'debug',
-    'test',
-    'testing',
-    'logging',
-    'logger',
-]
-# ? ####################################################
 
 if True:  # ? ################### imports
     PY3: bool = sys.version_info.major > 2
 
     HOME: str = Path().home().as_posix()
     HERE: str = Path(__file__).resolve().parent.as_posix()
+
     if not NAME:
         NAME = Path(HERE).name
-
-    PY_INTERPRETER: Path = Path(sys.executable).resolve()
-    PY_INTERPRETER_PATH: str = PY_INTERPRETER.parent.as_posix()
-    PY_INT: Path = PY_INTERPRETER
-
-    try:
-        PY_INT = Path(PY_INTERPRETER).relative_to(HERE)
-    except ValueError:
-        pass
-
-    # FYI: when in a Jupyter notebook, this gives the path to the
-    # kernel launcher script.
-    PY_INTERPRETER_NB: str = os.environ['_']
-    # if not run from virtual environment, this will be wrong...
-    PY_VENV_PATH: PathLike = None
-    try:
-        PY_VENV_PATH = Path(os.environ['VIRTUAL_ENV']).resolve()
-    except KeyError:
-        PY_VENV_PATH = None
-
-    if PY_VENV_PATH:
-        try:
-            PY_VENV_PATH = PY_VENV_PATH.relative_to(HERE).as_posix()
-        except ValueError:
-            pass
-
-    __version__: str = VERSION
-    VERSION_INFO: Tuple[int, ...] = tuple(map(int, VERSION.split('.')))
-
-    # from package_metadata import *
-
-    # ... because this stuff never seems to work right ...
-    if PY_VENV_PATH:
-        for p in ['bin', 'lib/python@3.8/site-packages', 'include']:
-            add_path: Path = Path().joinpath(PY_VENV_PATH, p).resolve()
-            if add_path.is_dir():
-                add_str: str = add_path.as_posix()
-                logger.debug(f'adding path to PYTHON_PATH: {add_str}')
-                if add_str not in PYTHONPATH:
-                    PYTHONPATH.insert(0, add_str)
-    if PY_INTERPRETER_PATH not in PYTHONPATH:
-        logger.debug(f'adding path to PYTHON_PATH: {PY_INTERPRETER_PATH}')
-        PYTHONPATH.insert(0, PY_INTERPRETER_PATH)
-    if HERE not in PYTHONPATH:
-        logger.debug(f'adding path to PYTHON_PATH: {HERE}')
-        PYTHONPATH.insert(0, HERE)
 
     LOG_FORMAT: str = '{time:YYYY-MM-DD at HH:mm:ss} | {level} | {message}'
     # choose a common location if you consolidate logs
@@ -240,6 +175,19 @@ if True:  # ? ################### imports
             """
         return s.lower().replace('-', '_').replace(' ', '_')
 
+    NAME = pip_safe_name(NAME)
+
+    def get_version(file_name: str = f'{HERE}/{NAME}/__init__.py') -> str:
+        with Path(file_name).open('r') as fp:
+            regex_version: re.Pattern[Any] = re.compile(
+                r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', re.MULTILINE,
+            )
+            return re.search(regex_version, fp.read()).group(1)  # type: ignore
+
+    VERSION: str = get_version()
+    __version__: str = VERSION
+    VERSION_INFO: Tuple[int, ...] = tuple(map(int, VERSION.split('.')))
+
     def table_print(data: (Dict, Sequence), **kwargs) -> None:  # type: ignore
         """ Pretty Print sequences or dictionaries.
         """
@@ -272,17 +220,6 @@ if True:  # ? ################### imports
                     (Strings are excluded).',
             )
         print(NL.join(tmp), **kwargs)
-
-    def get_version(file_name: str = f'{NAME}/__init__.py') -> str:
-        try:
-            NAME
-        except ValueError:
-            NAME: str = Path(HERE).name
-        with Path(file_name).open('r') as fp:
-            regex_version: re.Pattern[Any] = re.compile(
-                r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', re.MULTILINE,
-            )
-            return re.search(regex_version, fp.read()).group(0)  # type: ignore
 
 
 class LoggedException(Exception):
@@ -391,106 +328,6 @@ class SetupConfig:
         return self._description_
 
     @property
-    def meta_data(self) -> Dict[str, Any]:
-        if not self._meta_data_:
-            self._meta_data_ = {
-                'name': self.name,
-                'version': self.version,
-                'description': self.description,
-                'python_requires': self.python_requires,
-                'package_dir': {'': f'{self.name}'},
-                'packages': find_namespace_packages(
-                    f'{self.name}', exclude=['*test*', '*bak*'],
-                ),
-                'py_modules': [f'{self.name}'],
-                'license': 'MIT',
-                'long_description': readme(),
-                'long_description_content_type': 'text/markdown',
-                'author': 'Michael Treanor',
-                'author_email': 'skeptycal@gmail.com',
-                'maintainer': 'Michael Treanor',
-                'maintainer_email': 'skeptycal@gmail.com',
-                'url': f'https://skeptycal.github.io/{self.name}/',
-                'download_url': f'https://github.com/skeptycal/{self.name}/archive/{self.version}.tar.gz',
-                'zip_safe': False,
-                'include_package_data': True,
-                # What packages are required for this module to be "e""xecuted"?,
-                # "required": [
-                #     "colorama>=0.3.4 ; sys_platform=='win32'",
-                #     "win32-setctime>=1.0.0 ; sys_platform=='win32'",
-                #     "APScheduler>=3.6.3",
-                # ],
-                # What packages are optional?
-                # "extras": {
-                #     "dev": [
-                #         "pytest>=4.6.2",
-                #     ],
-                # },
-                'package_data': {
-                    # If any package contains these files, include them:
-                    '': [
-                        '*.txt',
-                        '*.rst',
-                        '*.md',
-                        '*.ini',
-                        '*.png',
-                        '*.jpg',
-                        '*.py',
-                        '__init__.pyi',
-                        'py.typed',
-                    ],
-                },
-                'project_urls': {
-                    'Website': f'https://skeptycal.github.io/{self.name}/',
-                    'Documentation': f'https://skeptycal.github.io/{self.name}/docs',
-                    'Source Code': f'https://www.github.com/skeptycal/{self.name}/',
-                    'Changelog': f'https://github.com/skeptycal/{self.name}/blob/master/CHANGELOG.md',
-                },
-                'keywords': [
-                    'application',
-                    'macOS',
-                    'dev',
-                    'devops',
-                    'cache',
-                    'utilities',
-                    'cli',
-                    'python',
-                    'cython',
-                    'text',
-                    'console',
-                    'log',
-                    'debug',
-                    'test',
-                    'testing',
-                    'logging',
-                    'logger',
-                ],
-                'classifiers': [
-                    'Development Status :: 4 - Beta',
-                    'License :: OSI Approved :: MIT License',
-                    'Environment :: Console',
-                    'Environment :: MacOS X',
-                    'Intended Audience :: Developers',
-                    'Natural Language :: English',
-                    'Operating System :: MacOS',
-                    'Operating System :: OS Independent',
-                    'Programming Language :: Cython',
-                    'Programming Language :: Python',
-                    'Programming Language :: Python :: 3 :: Only',
-                    'Programming Language :: Python :: 3',
-                    # These are the Python versions tested; it may work on others
-                    'Programming Language :: Python :: 3.8',
-                    'Programming Language :: Python :: 3.9',
-                    'Programming Language :: Python :: Implementation :: CPython',
-                    'Programming Language :: Python :: Implementation :: PyPy',
-                    'Topic :: Software Development :: Libraries :: Python Modules',
-                    'Topic :: Software Development :: Testing',
-                    'Topic :: Utilities',
-                ],
-            }
-        return self._meta_data_
-
-    @property
     def here(self) -> str:
         if not self._here_:
             self._here_ = Path(__file__).resolve().parent.as_posix()
@@ -526,9 +363,24 @@ class SetupConfig:
 
     def run(self) -> None:
         if self.debug:
-            table_print(self.meta_data)
+            table_print(self.__dict__)
         else:
-            setup(**self.meta_data)
+            setup(
+                long_description=readme(),
+                package_dir={'': f'{self.name}'},
+                packages=find_namespace_packages(
+                    f'{self.name}', exclude=['*test*', '*bak*'],
+                ),
+                py_modules=[f'{self.name}'],
+                url=f'https://{USERNAME}.github.io/{self.name}/',
+                download_url=f'https://github.com/{USERNAME}/{self.name}/archive/{self.version}.tar.gz',
+                project_urls={
+                    'Website': f'https://{USERNAME}.github.io/{self.name}/',
+                    'Documentation': f'https://{USERNAME}.github.io/{self.name}/docs',
+                    'Source Code': f'https://www.github.com/{USERNAME}/{self.name}/',
+                    'Changelog': f'https://github.com/{USERNAME}/{self.name}/blob/master/CHANGELOG.md',
+                },
+            )
 
 
 # ? ############################## Setup!

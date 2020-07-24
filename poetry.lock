@@ -86,6 +86,22 @@ docs = ["sphinx", "zope.interface"]
 tests = ["coverage", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.interface"]
 
 [[package]]
+category = "main"
+description = "Fancy defaults for the awesome loguru logs!"
+name = "auto-loguru"
+optional = false
+python-versions = ">=3.6"
+version = "0.1.0"
+
+[package.dependencies]
+colorama = ">=0.3.4"
+loguru = ">=0.5.0"
+win32-setctime = ">=1.0.0"
+
+[package.extras]
+dev = ["codecov (>=2.0.15)", "colorama (>=0.3.4)", "flake8 (>=3.7.7)", "tox (>=3.9.0)", "tox-travis (>=0.12)", "pytest (>=4.6.2)", "pytest-cov (>=2.7.1)", "Sphinx (>=2.2.1)", "sphinx-autobuild (>=0.7.1)", "sphinx-rtd-theme (>=0.4.3)", "black (>=19.10b0)", "isort (>=5.1.1)"]
+
+[[package]]
 category = "dev"
 description = "Internationalization utilities"
 name = "babel"
@@ -1220,7 +1236,8 @@ pandas = ">=0.24"
 requests = ">=2.20"
 
 [metadata]
-content-hash = "64c2c91834d8bb15071affac031782a4c2b7c4d881dc2b6a1411bf9041ff9fcd"
+content-hash = "c09ce0bea5892659a8ec99f4e4697f1090f28adda18c8e31d58702c861e4ef1f"
+lock-version = "1.0"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -1251,6 +1268,10 @@ atomicwrites = [
 attrs = [
     {file = "attrs-19.3.0-py2.py3-none-any.whl", hash = "sha256:08a96c641c3a74e44eb59afb61a24f2cb9f4d7188748e76ba4bb5edfa3cb7d1c"},
     {file = "attrs-19.3.0.tar.gz", hash = "sha256:f7b7ce16570fe9965acd6d30101a28f62fb4a7f9e926b3bbc9b61f8b04247e72"},
+]
+auto-loguru = [
+    {file = "auto_loguru-0.1.0-py3-none-any.whl", hash = "sha256:48ed6e0a2fe220b8a3cab0dc9864c2e893ffd5d7d04f8119f1160e9b6bfb4d54"},
+    {file = "auto_loguru-0.1.0.tar.gz", hash = "sha256:eaeffecefae3e06fc86f0a8690c32bac444c1bcc093a660e3a35c5fda6a357e7"},
 ]
 babel = [
     {file = "Babel-2.8.0-py2.py3-none-any.whl", hash = "sha256:d670ea0b10f8b723672d3a6abeb87b565b244da220d76b4dba1b66269ec152d4"},
