@@ -177,10 +177,11 @@ if True:  # ? ################### imports
 
     NAME = pip_safe_name(NAME)
 
-    def get_version(file_name: str = f'{HERE}/{NAME}/__init__.py') -> str:
+    def get_version(file_name: str = f'{HERE}/pyproject.toml') -> str:
+        logger.info(f'pyproject.toml file: {file_name}')
         with Path(file_name).open('r') as fp:
             regex_version: re.Pattern[Any] = re.compile(
-                r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', re.MULTILINE,
+                r'^version\s*=\s*[\'"]([^\'"]*)[\'"]', re.MULTILINE,
             )
             return re.search(regex_version, fp.read()).group(1)  # type: ignore
 
@@ -366,6 +367,8 @@ class SetupConfig:
             table_print(self.__dict__)
         else:
             setup(
+                name=NAME,
+                version=VERSION,
                 long_description=readme(),
                 package_dir={'': f'{self.name}'},
                 packages=find_namespace_packages(
