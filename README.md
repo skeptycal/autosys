@@ -54,7 +54,7 @@ _Tell your computer what to do!"_
 
 ---
 
-## AutoSys version 0.4.4
+## AutoSys version 0.5.0
 
 ### Features include:
 
