@@ -160,6 +160,17 @@ version = "0.4.3"
 
 [[package]]
 category = "dev"
+description = "A coverage plugin to provide sensible default settings"
+name = "covdefaults"
+optional = false
+python-versions = ">=3.6.1"
+version = "1.1.0"
+
+[package.dependencies]
+coverage = ">=4.5"
+
+[[package]]
+category = "dev"
 description = "Code coverage measurement for Python"
 name = "coverage"
 optional = false
@@ -697,7 +708,7 @@ pandas = ">=0.24"
 requests = ">=2.20"
 
 [metadata]
-content-hash = "1dad074d9fb112fb9e01f42b67a24e743a0c352a561c3349eb641fe2826c9faa"
+content-hash = "be4a1e1a2fbc7881c2ff90ad8273722a2b0f30e9b615e384f367c003928416d5"
 lock-version = "1.0"
 python-versions = "^3.8"
 
@@ -753,6 +764,10 @@ codecov = [
 colorama = [
     {file = "colorama-0.4.3-py2.py3-none-any.whl", hash = "sha256:7d73d2a99753107a36ac6b455ee49046802e59d9d076ef8e47b61499fa29afff"},
     {file = "colorama-0.4.3.tar.gz", hash = "sha256:e96da0d330793e2cb9485e9ddfd918d456036c7149416295932478192f4436a1"},
+]
+covdefaults = [
+    {file = "covdefaults-1.1.0-py2.py3-none-any.whl", hash = "sha256:e121b9516c269d1c385cfa90080088cac7231ed442c322e0729b5e5c7349c148"},
+    {file = "covdefaults-1.1.0.tar.gz", hash = "sha256:2d0684ee1dba204977ddb3968231c8b5cb6bb33e6d2600103d748be9ad9b67c1"},
 ]
 coverage = [
     {file = "coverage-5.2.1-cp27-cp27m-macosx_10_13_intel.whl", hash = "sha256:40f70f81be4d34f8d491e55936904db5c527b0711b2a46513641a5729783c2e4"},
