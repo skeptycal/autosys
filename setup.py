@@ -52,7 +52,7 @@ import toml
 
 metadata=toml.load('pyproject.toml')
 
-setup(**metadata)
+setup(**metadatal)
 
 # # ? ################################### Default Metadata
 # NAME: str = "AutoSys"
