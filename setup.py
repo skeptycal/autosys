@@ -48,10 +48,10 @@
 _debug_: bool = False
 
 # ? ################################### Default Metadata
-NAME: str = 'AutoSys'
-USERNAME: str = 'skeptycal'
-DESCRIPTION: str = 'System utilities for Python on macOS.'
-PYTHON_REQUIRES: str = '>=3.6.0'
+NAME: str = "AutoSys"
+USERNAME: str = "skeptycal"
+DESCRIPTION: str = "System utilities for Python on macOS."
+PYTHON_REQUIRES: str = ">=3.6.0"
 # ? ####################################################
 
 if True:  # ? ################### imports
@@ -63,12 +63,17 @@ if True:  # ? ################### imports
     from os import linesep as NL
     from sys import stderr, path as PYTHONPATH
 
-    IS_WIN32 = sys.platform == 'win32' or (getattr(os, '_name', False) == 'nt')
+    IS_WIN32 = sys.platform == "win32" or (getattr(os, "_name", False) == "nt")
+    PY3: bool = sys.version_info.major > 2
+    PY2: bool = sys.version_info.major < 3
 
     if sys.version_info[:2] >= (3, 6):
-        from pathlib import Path, PurePath
+        from pathlib import Path
+    elif IS_WIN32 and PY2:
+        # workaround for https://github.com/mcmtroffaes/pathlib2/issues/56
+        from autosys.utils.file_utils.via_os_path import Path
     else:
-        from pathlib2 import Path, PurePath
+        from pathlib2 import Path
 
     try:
         from locale import getpreferredencoding
@@ -76,13 +81,13 @@ if True:  # ? ################### imports
         DEFAULT_ENCODING = getpreferredencoding(do_setlocale=True)
         del getpreferredencoding
     except ImportError:
-        DEFAULT_ENCODING = 'utf-8'
+        DEFAULT_ENCODING = "utf-8"
     except Exception:
-        DEFAULT_ENCODING = 'utf-8'
+        DEFAULT_ENCODING = "utf-8"
         del getpreferredencoding
 
     # from loguru import logger
-    from auto_loguru import logger
+    from autosys.auto_loguru import logger
     from setuptools import find_namespace_packages, setup
 
     # from pep517.envbuild import build_wheel, build_sdist
@@ -102,21 +107,16 @@ if True:  # ? ################### imports
 
     PathLike = Union[Path, str, None]
 
-
 if True:  # ? ################### imports
-    PY3: bool = sys.version_info.major > 2
 
     HOME: str = Path().home().as_posix()
     HERE: str = Path(__file__).resolve().parent.as_posix()
 
-    if not NAME:
-        NAME = Path(HERE).name
-
-    LOG_FORMAT: str = '{time:YYYY-MM-DD at HH:mm:ss} | {level} | {message}'
+    LOG_FORMAT: str = "{time:YYYY-MM-DD at HH:mm:ss} | {level} | {message}"
     # choose a common location if you consolidate logs
-    LOG_LOCATION: str = f'{HERE}/logs/'
+    LOG_LOCATION: str = f"{HERE}/logs/"
 
-    def readme(file_name: str = 'readme.md', search_list: List[str] = []) -> str:
+    def readme(file_name: str = "readme.md", search_list: List[str] = []) -> str:
         """ Returns the text of the file (defaults to README files)
 
             The default file is `README.md` and is *NOT* case sensitive.
@@ -137,7 +137,7 @@ if True:  # ? ################### imports
 
         # add default search list for README files
         if not search_list:
-            search_list = ['readme.md', 'readme.rst', 'readme', 'readme.txt']
+            search_list = ["readme.md", "readme.rst", "readme", "readme.txt"]
         # make sure 'file_name' is in 'search_list' at index 0
         if file_name not in search_list:
             search_list.insert(0, file_name)
@@ -155,7 +155,7 @@ if True:  # ? ################### imports
                 break
         if found:
             try:
-                with open(find_path, mode='r', encoding=DEFAULT_ENCODING) as f:
+                with open(find_path, mode="r", encoding=DEFAULT_ENCODING) as f:
                     return f.read()
             except OSError:
                 raise OSError(
@@ -173,21 +173,22 @@ if True:  # ? ################### imports
             ####
             (Returns a lowercase string has no spaces or dashes)
             """
-        return s.lower().replace('-', '_').replace(' ', '_')
+        return s.lower().replace("-", "_").replace(" ", "_")
+
+    if not NAME:
+        NAME = Path(HERE).name
 
     NAME = pip_safe_name(NAME)
 
-    def get_version(file_name: str = f'{HERE}/pyproject.toml') -> str:
-        logger.info(f'pyproject.toml file: {file_name}')
-        with Path(file_name).open('r') as fp:
+    def get_version(file_name: str = f"{HERE}/pyproject.toml") -> str:
+        logger.info(f"pyproject.toml file: {file_name}")
+        with Path(file_name).open("r") as fp:
             regex_version: re.Pattern[Any] = re.compile(
                 r'^version\s*=\s*[\'"]([^\'"]*)[\'"]', re.MULTILINE,
             )
             return re.search(regex_version, fp.read()).group(1)  # type: ignore
 
     VERSION: str = get_version()
-    __version__: str = VERSION
-    VERSION_INFO: Tuple[int, ...] = tuple(map(int, VERSION.split('.')))
 
     def table_print(data: (Dict, Sequence), **kwargs) -> None:  # type: ignore
         """ Pretty Print sequences or dictionaries.
@@ -201,11 +202,11 @@ if True:  # ? ################### imports
 
         elif isinstance(data, dict):
             key_width: int = len(max(data.keys()))
-            print(f'key_width = {key_width}.')
+            print(f"key_width = {key_width}.")
             tmp.extend(
                 [
-                    f'{str(k):<15.15} :  \
-                    {repr(v):<45.45}'
+                    f"{str(k):<15.15} :  \
+                    {repr(v):<45.45}"
                     for k, v in data.items()
                 ],
             )
@@ -214,11 +215,11 @@ if True:  # ? ################### imports
                 try:
                     tmp.append(f"{str(x):<15.15} :  {repr(f'{x}'):<45.45}")
                 except:
-                    tmp.append(f'{str(x)}')
+                    tmp.append(f"{str(x)}")
         else:
             raise TypeError(
-                'Parameter must be an iterable Mapping or Sequence \
-                    (Strings are excluded).',
+                "Parameter must be an iterable Mapping or Sequence \
+                    (Strings are excluded).",
             )
         print(NL.join(tmp), **kwargs)
 
@@ -253,27 +254,27 @@ class SetupConfig:
         self._logging_: bool = logging
         if self.logging:  # TODO - check this stuff
             # standard log - kept for 3 days
-            logger.add(f'{LOG_LOCATION}{NAME}.log', retention='3 days')
+            logger.add(f"{LOG_LOCATION}{NAME}.log", retention="3 days")
             # json log - kept for 10 days
             logger.add(
-                f'{LOG_LOCATION}{NAME}_log.json', serialize=True, retention='10 days',
+                f"{LOG_LOCATION}{NAME}_log.json", serialize=True, retention="10 days",
             )
         if self.debug:
             logger.configure()
-            logger.level = 'DEBUG'  # TODO - level setting is not working
+            logger.level = "DEBUG"  # TODO - level setting is not working
         elif self.verbose:
-            logger.level = 'INFO'
+            logger.level = "INFO"
         else:
-            logger.level = 'SUCCESS'
+            logger.level = "SUCCESS"
         logger.debug(f"Debug value is set to '{self.debug}'")
         logger.debug(f"Verbose value is set to '{self.verbose}'")
 
         self._name_: str = name
-        logger.debug(f'Package name: {self.name}')
+        logger.debug(f"Package name: {self.name}")
         self._version_: str = version
         logger.debug(f"Package version: '{self.version}'")
-        self._here_: str = ''
-        logger.debug(f'Script path: {self.here}')
+        self._here_: str = ""
+        logger.debug(f"Script path: {self.here}")
         self._meta_data_: Dict[str, Any] = {}
         self._description_: str = description
         self._python_requires_: str = python_requires
@@ -286,11 +287,11 @@ class SetupConfig:
 
     def info(self, *args: Sequence[str]) -> None:
         """ Join args into a single string 'info' message and log it. """
-        msg: str = ''
+        msg: str = ""
         # TODO - ' '.join(args) had issues
         for arg in args:
             # msg += str(arg) # TODO - is this better than fstrings? ...
-            msg = f'{msg}{str(arg)} '
+            msg = f"{msg}{str(arg)} "
         logger.info(msg.rstrip())
 
     def err(self, e: Exception) -> None:
@@ -313,7 +314,7 @@ class SetupConfig:
             if VERSION:
                 self._version_ = VERSION
             else:
-                self._version_ = '0.0.1'
+                self._version_ = "0.0.1"
         return self._version_
 
     @property
@@ -370,18 +371,18 @@ class SetupConfig:
                 name=NAME,
                 version=VERSION,
                 long_description=readme(),
-                package_dir={'': f'{self.name}'},
+                package_dir={"": f"{self.name}"},
                 packages=find_namespace_packages(
-                    f'{self.name}', exclude=['*test*', '*bak*'],
+                    f"{self.name}", exclude=["*test*", "*bak*"],
                 ),
-                py_modules=[f'{self.name}'],
-                url=f'https://{USERNAME}.github.io/{self.name}/',
-                download_url=f'https://github.com/{USERNAME}/{self.name}/archive/{self.version}.tar.gz',
+                py_modules=[f"{self.name}"],
+                url=f"https://{USERNAME}.github.io/{self.name}/",
+                download_url=f"https://github.com/{USERNAME}/{self.name}/archive/{self.version}.tar.gz",
                 project_urls={
-                    'Website': f'https://{USERNAME}.github.io/{self.name}/',
-                    'Documentation': f'https://{USERNAME}.github.io/{self.name}/docs',
-                    'Source Code': f'https://www.github.com/{USERNAME}/{self.name}/',
-                    'Changelog': f'https://github.com/{USERNAME}/{self.name}/blob/master/CHANGELOG.md',
+                    "Website": f"https://{USERNAME}.github.io/{self.name}/",
+                    "Documentation": f"https://{USERNAME}.github.io/{self.name}/docs",
+                    "Source Code": f"https://www.github.com/{USERNAME}/{self.name}/",
+                    "Changelog": f"https://github.com/{USERNAME}/{self.name}/blob/master/CHANGELOG.md",
                 },
             )
 
@@ -392,12 +393,12 @@ sc = SetupConfig(debug=_debug_)
 
 @logger.catch
 def main() -> None:
-    sc.info(f'SetupConfig for {sc.name} version {sc.version}.')
+    sc.info(f"SetupConfig for {sc.name} version {sc.version}.")
     if sc.debug:  # do some live tests in debug mode ...
-        logger.debug(f'sc.debug mode set to {sc.debug}.')
+        logger.debug(f"sc.debug mode set to {sc.debug}.")
     else:  # run setup ...
         sc.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
