@@ -8,7 +8,6 @@
 build/
 dist/
 .tox/
-MANIFEST
 *.komodoproject
 .vscode/
 .ignore
@@ -30,8 +29,8 @@ tox.ini
 toxcov.ini
 
 # Python dev files
-**/.gitconfig
-**/.gitmodules
+**/*/.gitconfig
+**/*/.gitmodules*
 **/.mypy_cache/
 **/.pytest_cache/
 **/.vscode/

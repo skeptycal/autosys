@@ -1,0 +1,14 @@
+{
+    "folders": [
+        {
+            "path": "."
+        },
+        {
+            "path": "autosys/auto_loguru"
+        },
+        {
+            "path": "autosys/utils/setup_utils"
+        }
+    ],
+    "settings": {}
+}
