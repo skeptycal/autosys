@@ -24,6 +24,8 @@
 ## autosys 0.5.0
 
 -   Remove support for python < 3.8
+-   improve type definitions
+-   update configuration settings
 -   package_metadata has more info and utilities
 -   Begin support for PEP 590, Vectorcall: a fast calling protocol for CPython
 -   Begin C and C++ extension support
