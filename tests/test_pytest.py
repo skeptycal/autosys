@@ -14,13 +14,27 @@ def test_add():
 
 def test_true():
     """
-    Test Doc: Line 1 ...
+    Test True
     """
     assert True
 
 
 def test_false():
     """
-    Test Doc: Line 1 ...
+    Test False
     """
-    assert False
+    assert bool(0) == False
+
+
+def test_bools():
+    sample_true_test_values =\
+        [2, 2.3, 'yes', '1', '1.7', __file__, True, (3 > 2)]
+
+    sample_false_test_values = \
+        [0, None, '', "", [], {}, (), (2 > 3)]
+
+    for value in sample_false_test_values:
+        assert bool(value) == False
+
+    for value in sample_true_test_values:
+        assert bool(value) == True
