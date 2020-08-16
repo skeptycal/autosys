@@ -15,7 +15,7 @@ copyright = "2020, Michael Treanor"
 author = "Michael Treanor"
 
 # The full version, including alpha/beta/rc tags
-release = "0.5.0"
+release = "0.5.2"
 
 
 # -- General configuration ---------------------------------------------------

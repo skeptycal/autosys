@@ -47,9 +47,15 @@
 
 # _debug_: bool = False
 
+# change version in conf.py
+# the line is:
+# release = "x.x.x"
+
+
+import toml
 
 from setuptools import setup
-import toml
+
 metadata = toml.load('pyproject.toml')
 
 setup(**metadata)
