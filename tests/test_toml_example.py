@@ -10,7 +10,7 @@
     [3]: https://opensource.org/licenses/MIT
     """
 
-from os import PathLike
+from os import PathLike, linesep as NL
 from pathlib import Path
 from pprint import pformat
 
@@ -22,10 +22,17 @@ from typing import Any, Dict, MutableMapping, MutableSequence, Union
 
 
 class _Error(Exception):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, message, errors):
         import traceback
-        s = traceback.format_exc()
-        super().__init__(self, s, *args, **kwargs)
+
+        # Call Exception.__init__(message)
+        # to use the same Message header as the parent class
+        # super().__init__(message)
+        self.errors = errors
+        # Display the errors
+        print('There were some errors:')
+        print(self.errors)
+        # print(pformat(traceback.format_exc(limit=1)))
 
 
 class TomlParserError(_Error):
@@ -33,6 +40,7 @@ class TomlParserError(_Error):
 
 
 def my_name(self):
+    import inspect
     try:
         return inspect.stack()[1][3]
     except:
@@ -105,11 +113,12 @@ class TomlParser(MutableMapping):
         return ''
 
 
-def main():
-    try:
-        assert True == False
-    except Exception as e:
-        raise TomlParserError(e)
+def main(test: bool = False):
+    if test:
+        try:
+            i = 1/0
+        except Exception as e:
+            raise TomlParserError('There were some errors:', e)
 
 
-main()
+main(True)
