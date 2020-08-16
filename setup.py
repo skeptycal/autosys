@@ -47,12 +47,12 @@
 
 # _debug_: bool = False
 
+
 from setuptools import setup
 import toml
+metadata = toml.load('pyproject.toml')
 
-metadata=toml.load('pyproject.toml')
-
-setup(**metadatal)
+setup(**metadata)
 
 # # ? ################################### Default Metadata
 # NAME: str = "AutoSys"
