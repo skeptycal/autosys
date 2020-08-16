@@ -38,6 +38,19 @@ class _Error(Exception):
 class TomlParserError(_Error):
     """ An error occurred while processing a toml file. """
 
+# Reference: https://www.learnpython.dev/03-intermediate-python/40-exceptions/90-custom-exceptions/
+
+
+class GitHubApiException(Exception):
+
+    def __init__(self, status_code):
+        if status_code == 403:
+            message = "Rate limit reached. Please wait a minute and try again."
+        else:
+            message = f"HTTP Status Code was: {status_code}."
+
+        super().__init__(message)
+
 
 def my_name(self):
     import inspect
@@ -121,4 +134,4 @@ def main(test: bool = False):
             raise TomlParserError('There were some errors:', e)
 
 
-main(True)
+main(False)
