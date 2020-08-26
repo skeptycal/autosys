@@ -11,25 +11,48 @@
         `<https://opensource.org/licenses/MIT>`
     """
 
-if True:  # !------------------------ config
-    import re
-    from sys import stderr, stdout
-    from platform import platform
-    from os import environ as ENV
-    from autosys.cli.anansi import a as ansi
+# logging setup
+# Copyright (C) 2012-2019 Vinay Sajip.
+# Licensed to the Python Software Foundation under a contributor agreement.
 
-    # generic script level stderr output characteristics
-    PLATFORM = platform
-    _IS_A_TTY: bool = stderr.isatty() and hasattr(stderr, "isatty")
-    _IS_PPC: bool = PLATFORM() == "Pocket PC"
-    _IS_WIN32: bool = PLATFORM() == "win32"
-    IS_WIN: bool = "win" in PLATFORM().lower()
-    _IS_ANSICON: bool = "ANSICON" in ENV
-    _IS_WIN_COLOR: bool = _IS_WIN32 and _IS_ANSICON
-    _IS_EDGE_CASE: bool = _IS_WIN_COLOR and not _IS_PPC
-    SUPPORTS_COLOR = _IS_A_TTY or _IS_EDGE_CASE
+# 'Standard Library'
+import logging
+import re
+import sys
 
-    _DEBUG_COLOR: str = ansi.WARN + ansi.BOLD
-    _RESET: str = ansi.RESET
-    _DB_PREFIX: str = _DEBUG_COLOR * SUPPORTS_COLOR
-    _DB_SUFFIX: str = _RESET * SUPPORTS_COLOR
+from dataclasses import Field, dataclass, field
+from io import TextIOWrapper
+from os import environ as ENV, linesep as NL
+from sys import argv, path as PYTHON_PATH, stderr, stdout
+
+from typing import Any, Dict, List, NamedTuple, Sequence, Tuple
+
+# 'package imports'
+# from autosys.cli.ansi_codes import AnsiCodes
+# from autosys.cli.ascii_chars import *
+# from autosys.cli.supports_color import SUPPORTS_COLOR
+# from autosys.cli.terminal import *
+
+
+
+class CommandLineInterfaceException(Exception):
+    pass
+
+
+try:
+    from logging import NullHandler
+except ImportError:  # pragma: no cover
+
+    class NullHandler(logging.Handler):
+        def handle(self, record):
+            pass
+
+        def emit(self, record):
+            pass
+
+        def createLock(self):
+            self.lock = None
+
+
+logger = logging.getLogger(__name__)
+logger.addHandler(NullHandler())

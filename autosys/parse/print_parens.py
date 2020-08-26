@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 """ Add parentheses around print arguments.
 
     Used in translating Python 2 code modules to Python 3.
@@ -9,6 +8,7 @@
     The examples below use the module traceback_example.py (provided in the source package for PyMOTW). The contents are:
     """
 
+# 'Standard Library'
 import re
 import sys
 import traceback

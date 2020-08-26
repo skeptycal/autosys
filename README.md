@@ -1,8 +1,8 @@
-# [Implore!](https://www.github.com/skeptycal/implore)
+# [AutoSys][1]
 
-[![netlify badge](https://api.netlify.com/api/v1/badges/416b8ca3-82db-470f-9adf-a6d06264ca75/deploy-status)](https://app.netlify.com/sites/mystifying-keller-ab5658/deploys) [![Build Status](https://travis-ci.com/skeptycal/autosys.svg?branch=master)](https://travis-ci.com/skeptycal/autosys)
+[![netlify badge](https://api.netlify.com/api/v1/badges/416b8ca3-82db-470f-9adf-a6d06264ca75/deploy-status)][link_netlify] [![Build Status](https://travis-ci.com/skeptycal/autosys.svg?branch=master)][link_travis]
 
-![Twitter Follow](https://img.shields.io/twitter/follow/skeptycal.svg?style=social) ![GitHub followers](https://img.shields.io/github/followers/skeptycal.svg?label=GitHub&style=social)
+[![Twitter Follow](https://img.shields.io/twitter/follow/skeptycal.svg?style=social)][link_twitter] [![GitHub followers](https://img.shields.io/github/followers/skeptycal.svg?label=GitHub&style=social)][link_github]
 
 ---
 
@@ -23,7 +23,7 @@
 
 ---
 
-[![test coverage](https://img.shields.io/badge/test_coverage-100%25-6600CC.svg?logo=Coveralls&color=3F5767)](https://coveralls.io) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3454/badge)](https://bestpractices.coreinfrastructure.org/projects/3454)
+[![test coverage](https://img.shields.io/badge/test_coverage-100%25-6600CC.svg?logo=Coveralls&color=3F5767)](https://coveralls.io) ![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3454/badge)
 
 ### **Integrates easily in a simple, human way with:**
 
@@ -159,3 +159,9 @@ _Web development, one drop at a time_
 [Flask Documentation](https://palletsprojects.com/p/flask/)
 
 > Flask is a lightweight WSGI web application framework. It is designed to make getting started quick and easy, with the ability to scale up to complex applications. It began as a simple wrapper around Werkzeug and Jinja and has become one of the most popular Python web application frameworks.
+
+[1]: (https://www.github.com/skeptycal/autosys)
+[link_netlify]: (https://app.netlify.com/sites/mystifying-keller-ab5658/deploys)
+[link_travis]: (https://travis-ci.com/skeptycal/autosys)
+[link_twitter]: (https://www.twitter.com/skeptycal)
+[link_github]: (https://www.github.com/skeptycal)

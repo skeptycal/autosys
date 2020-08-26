@@ -1,5 +1,9 @@
 # Project-specific files
-TODO.md 
+TODO.md
+**/package-py
+**/py_template
+**/data
+logs/
 
 # dev files
 .coveragerc
@@ -10,16 +14,15 @@ TODO.md
 .pylintrc
 .vsce
 .vuerc
-**/__pycache__/
 **/.gitconfig
 **/.gitmodules
-**/.mypy_cache/
-**/.pytest_cache/
 **/.vscode/
 **/gists/
 **/node_modules/
 
 # Python build files
+**/_build
+**/_templates
 .coveralls.yml
 .pypirc
 .tox/
@@ -34,6 +37,9 @@ TODO.md
 MANIFEST
 pyproject.toml
 pytest.ini
+**/.mypy_cache/
+**/.pytest_cache/
+**/__pycache__/
 
 # general ignore files
 .ignore
@@ -46,16 +52,15 @@ pytest.ini
 medium_token
 
 # temp, scratch, bak, etc
-**/*/bak/
+**/*bak*
 **/*/temp/
 **/*/tmp/
 *bak*
-*temp*
-*tmp*
 
 # security
+*token*
 *history*
-config.py
+config.py.removed
 config.json
 sftp.json
 */*.key

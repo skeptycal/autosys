@@ -11,20 +11,21 @@
         `<https://opensource.org/licenses/MIT>`
     """
 
+# 'Standard Library'
+from io import TextIOWrapper
+from locale import getpreferredencoding
+from logging import Logger
 from pathlib import Path
 from sys import argv
 from tempfile import NamedTemporaryFile
-from locale import getpreferredencoding
+
 from typing import Dict, Final, List, Tuple
-from io import TextIOWrapper
-from logging import Logger
 
 
 class FileSet(list):
     input_list: List[str]
     temp_file: TextIOWrapper
     log: Logger
-    DEFAULT_ENCODING: Final[str] = getpreferredencoding(do_setlocale=True) or "utf-8"
 
     def __init__(self, *args):
         self.input_list = args

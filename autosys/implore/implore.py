@@ -30,18 +30,18 @@
     """
 
 
-# if True:  # Standard Library Dependencies
-#     from collections import Counter, deque
-#     from datetime import datetime
-#     from pprint import pprint
-#     from time import time, sleep, process_time, perf_counter, gmtime, localtime
-#     from typing import Any, Dict, List, MutableSequence
-#     from locale import getdefaultencoding
-#     import cgitb
-#     import locale
-#     import os
-#     import sys
-#     import traceback
+if True:  # Standard Library Dependencies
+    from collections import Counter, deque
+    from datetime import datetime
+    from pprint import pprint
+    from time import time, sleep, process_time, perf_counter, gmtime, localtime
+    from typing import Any, Dict, List, MutableSequence
+    from locale import getdefaultencoding
+    import cgitb
+    import locale
+    import os
+    import sys
+    import traceback
 
 if True:  # External Dependencies
     from apscheduler.schedulers.blocking import BlockingScheduler
@@ -80,7 +80,6 @@ if True:  # setup html parser
         XML = True
         XML_PARSER: str = "xml"
     except:
-        XML = False
         try:  # use <html5lib> for accuracy (VERY slow)
             import html5lib as parser
 

@@ -4,34 +4,64 @@ from os import linesep as NL, environ as ENV
 from platform import platform
 from io import TextIOWrapper
 from dataclasses import dataclass
-from autosys.log.autosys_logger import *
 
-log = autosys_logger
+from autosys.debug.dbprint import *
 
 PLATFORM = platform()
-DEFAULT_COLOR = "MAIN"
+DEFAULT_COLOR = 'MAIN'
 
 
-def replace_all(
-    needle: Sequence, haystack: Sequence, volunteer: Sequence = ""
-) -> Sequence:
-    """ return a sequence with all `needles` in `haystack` replaced with `volunteers` """
-    return "".join(volunteer if c in needle else c for c in haystack)
+def replace_all(needle: Sequence,
+                haystack: Sequence,
+                volunteer: Sequence = '') -> Sequence:
+    ''' return a sequence with all `needles` in `haystack` replaced with `volunteers` '''
+    return ''.join(volunteer if c in needle else c for c in haystack)
 
 
-def rep_whitelist(
-    needle: Sequence, haystack: Sequence, volunteer: Sequence = ""
-) -> Sequence:
-    """ return a sequence with all `needles` in `haystack` saved and all other characters replaced with `volunteers` """
-    return "".join(volunteer if c not in needle else c for c in haystack)
+def rep_whitelist(needle: Sequence,
+                  haystack: Sequence,
+                  volunteer: Sequence = '') -> Sequence:
+    ''' return a sequence with all `needles` in `haystack` saved and all other characters replaced with `volunteers` '''
+    return ''.join(volunteer if c not in needle else c for c in haystack)
 
 
-def make_safe_id(haystack: Sequence, volunteer: Sequence = "_") -> Sequence:
-    """ return a string that has only alphanumeric and _ characters.
+def make_safe_id(haystack: Sequence, volunteer: Sequence = '_') -> Sequence:
+    ''' return a string that has only alphanumeric and _ characters.
+    
+        others are replaced with `volunteer` (default `_`) '''
+    return ''.join(volunteer if not c.isidentifier() else c for c in haystack)
 
-        others are replaced with `volunteer` (default `_`) """
-    return "".join(volunteer if not c.isidentifier() else c for c in haystack)
 
+@dataclass
+class FakeLog:
+    def _fakelog(self, *args, line_color: str = 'MAIN'):
+        args = arg_str(*args)
+        fmt = eval(f"color.{line_color}")
+        print(f"{fmt}{args}{color.RESET}")
+
+    def info(self, *args):
+        ''' placeholder for logging function... '''
+        self._fakelog(*args, line_color='BLUE')
+
+    def error(self, *args):
+        ''' placeholder for logging function ... '''
+        self._fakelog(*args, line_color='WARN')
+
+    def var(self, my_var: str = ''):
+        ''' log value of a variable. 
+        
+            my_var is translated to a safe version before processing.'''
+        try:
+            my_var = str(my_var)
+            evl: Sequence = replace_all(':=/!#;\\', my_var, '_')
+            # evl: Sequence = make_safe_id(my_var)
+            fmt: str = f"{my_var} | {eval(evl)}"
+            self._fakelog(fmt, line_color='RAIN')
+        except Exception as e:
+            self.error(f'ERROR: {my_var=} | {type(my_var)=} |  {e.args[0]}')
+
+
+log = FakeLog()
 
 if True:  # !------------------------ CLI display utilities
 
@@ -47,12 +77,12 @@ if True:  # !------------------------ CLI display utilities
         return hr(s=s, n=n, print_it=print_it)
 
     def br(n: int = 1, print_it: bool = True):
-        """ yes, a newline inspired by <BR />
+        """ yes, a newline inspired by <BR /> 
 
             n: int = number of blank lines
 
             set retval=True to return instead of print."""
-        return hr(s=" ", n=n, print_it=print_it)
+        return hr(s=' ', n=n, print_it=print_it)
 
     def vprint(var_name: str, print_it: bool = True):
         fmt = f"{var_name}"
@@ -91,7 +121,8 @@ class Terminal:  # !------------------------ Terminal Class
     def rows(self) -> int:
         return self.SIZE[1]
 
-    # !------------------------------ methods
+
+# !------------------------------ methods
 
     def __str__(self) -> str:
         return f"Terminal object (Supports color? {self.SUPPORTS_COLOR})"
@@ -134,11 +165,8 @@ class Terminal:  # !------------------------ Terminal Class
 
         try:
             print(1 / 0)
-            cr = (
-                self._ioctl_get_win_size(0)
-                or self._ioctl_get_win_size(1)
-                or self._ioctl_get_win_size(2)
-            )
+            cr = (self._ioctl_get_win_size(0) or self._ioctl_get_win_size(1)
+                  or self._ioctl_get_win_size(2))
             if cr:
                 log.info(f"cr from 'or' ioctl's: {cr}")
                 return cr
@@ -147,8 +175,7 @@ class Terminal:  # !------------------------ Terminal Class
         log.info(f"no cr from 'or' ioctl's")
 
         try:
-            from os import close as _close, open as _open, ctermid, O_RDONLY
-
+            from os import (close as _close, open as _open, ctermid, O_RDONLY)
             fd = _open(ctermid(), O_RDONLY)
             cr = self._ioctl_get_win_size(fd)
             _close(fd)
@@ -175,17 +202,19 @@ class Terminal:  # !------------------------ Terminal Class
         try:
             # 'fallback' also sets default if nothing else has worked
             from shutil import get_terminal_size as _SH_SIZE
-
             cr = _SH_SIZE(fallback=Terminal.DEFAULT_TERMINAL_SIZE)
             if cr:
-                log.info(f"shutil.get_terminal_size returns ({cr.columns},{cr.lines})")
+                log.info(
+                    f"shutil.get_terminal_size returns ({cr.columns},{cr.lines})"
+                )
                 return (cr.columns, cr.lines)
         except Exception as e:
             log.error(e)
         log.info("no return from shutil.get_terminal_size")
         log.info(f"using {Terminal.DEFAULT_TERMINAL_SIZE} for cr")
 
-        return Terminal.DEFAULT_TERMINAL_SIZE[0], Terminal.DEFAULT_TERMINAL_SIZE[1]
+        return Terminal.DEFAULT_TERMINAL_SIZE[
+            0], Terminal.DEFAULT_TERMINAL_SIZE[1]
 
     def _get_supports_color(self) -> bool:
         # generic script level stderr output characteristics
@@ -201,17 +230,16 @@ class Terminal:  # !------------------------ Terminal Class
         return self._IS_A_TTY or self._IS_EDGE_TTY
 
     def _show_debug_info(self):
-        hr(s="=")
+        hr(s='=')
         print("Terminal Properties:")
         hr()
-        constants = {k: eval(f"term.{k}") for k in dir(term) if k.isupper()}
+        constants = {k: eval(f'term.{k}') for k in dir(term) if k.isupper()}
         for k, v in constants.items():
             print(k, v)
         print("---------------------------------------")
 
     def out(self, *args, sep=" ", end=NL, flush=False):
         print(*args, sep=sep, end=end, flush=flush, file=self._stream)
-
 
 term = Terminal()
 SUPPORTS_COLOR: bool = term.SUPPORTS_COLOR
@@ -243,7 +271,7 @@ class LogColors:
     LC_10: str = color.GO
 
     def str(self):
-        print(self.LC_50, f"{self.LC_50}color")
+        print(self.LC_50, f'{self.LC_50}color')
 
 
 lc = LogColors()
@@ -254,11 +282,11 @@ if __name__ == "__main__":
     def _test_terminal_():
 
         hr()
-        log.var("PLATFORM")
-        log.var("term")
+        log.var('PLATFORM')
+        log.var('term')
         log.var("term.SUPPORTS_COLOR")
         log.var("SUPPORTS_COLOR")
-        log.var("term._stream")
+        log.var('term._stream')
         log.var("term._SIZE")
         log.var("term.SIZE")
         log.info(f"Terminal SIZE is set to ({term.cols}, {term.rows})")

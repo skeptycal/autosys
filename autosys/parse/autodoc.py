@@ -10,11 +10,12 @@
     `AutoSys` is licensed under the `MIT License
         `<https://opensource.org/licenses/MIT>`
     """
-from typing import Dict, List
+# 'Standard Library'
 from dataclasses import dataclass
-
 from datetime import date as _date
 from pprint import pprint
+
+from typing import Dict, List
 
 
 # print(dir(_date))
@@ -62,7 +63,6 @@ class ApiSpy:
         - try calling f
         - take a list of inputs to use for f(x) and zip up a dict
         """
-
     def __init__(self, d):
         pass
         """

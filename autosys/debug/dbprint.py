@@ -1,4 +1,7 @@
-from autosys import NL, stderr, stdout
+# 'Standard Library'
+from os import linesep as NL
+from sys import stderr, stdout
+
 from typing import List
 
 try:
@@ -58,5 +61,5 @@ def dbprint(*db_args, sep=" ", end=NL, file=stderr, flush=False):
         )
 
 
-if __name__ == '__main__':
-    dbprint('This stuff is a test...')
+if __name__ == "__main__":
+    dbprint("This stuff is a test...")
