@@ -23,7 +23,7 @@ idna==2.10
 iniconfig==1.0.1
 isort==5.2.2
 itsdangerous==1.1.0
-Jinja2==2.11.2
+Jinja2==2.11.3
 kiwisolver==1.2.0
 lazy-object-proxy==1.5.1
 loguru==0.5.1
